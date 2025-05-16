@@ -14,7 +14,7 @@ Follow these steps to get the add-on repository installed on your system:
 1. Navigate in your Home Assistant frontend to **Settings** -> **Add-ons** -> **Add-on store**.
 1. Click the three vertical dots in the top-right corner and select **Repositories**.
 1. Enter https://github.com/seud0nym/home-assistant-addons and click the **ADD** button.
-1. Close the Repositories window.
+1. Close the Repositories window and refresh.
 
 
 ## Add-ons in this Repository
@@ -23,7 +23,5 @@ Follow these steps to get the add-on repository installed on your system:
 
 ![Supports aarch64 Architecture](https://img.shields.io/badge/aarch64-yes-green.svg)
 ![Supports amd64 Architecture](https://img.shields.io/badge/amd64-yes-green.svg)
-![Supports armhf Architecture](https://img.shields.io/badge/armhf-yes-green.svg)
-![Supports armv7 Architecture](https://img.shields.io/badge/armv7-yes-green.svg)
 
 `sigenergy2mqtt` allows you to publish Modbus data from your Sigenergy energy management system to an MQTT Broker (such as the [Mosquitto](https://github.com/home-assistant/addons/tree/master/mosquitto) Home Assistant Add-on). The Sigenergy devices will be auto-discovered by Home Assistant. In addition, it supports optionally uploading production (and consumption if desired) to [PVOutput](https://pvoutput.org/).

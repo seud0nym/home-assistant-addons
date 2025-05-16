@@ -2,10 +2,8 @@
 
 ![Supports aarch64 Architecture](https://img.shields.io/badge/aarch64-yes-green.svg)
 ![Supports amd64 Architecture](https://img.shields.io/badge/amd64-yes-green.svg)
-![Supports armhf Architecture](https://img.shields.io/badge/armhf-yes-green.svg)
-![Supports armv7 Architecture](https://img.shields.io/badge/armv7-yes-green.svg)
 
-`sigenergy2mqtt` is a bridge between the Modbus interface of the Sigenergy energy system and the MQTT lightweight publish/subscribe messaging protocol.
+[sigenergy2mqtt](https://github.com/seud0nym/sigenergy2mqtt) is a bridge between the Modbus interface of the Sigenergy energy system and the MQTT lightweight publish/subscribe messaging protocol.
 
 In addition, `sigenergy2mqtt` has several optional features: 
 

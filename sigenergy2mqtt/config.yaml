@@ -5,8 +5,6 @@ slug: sigenergy2mqtt
 description: Publish Modbus data from Sigenergy to an MQTT Broker, with optional PVOutput updating
 url: "https://github.com/seud0nym/home-assistant-addons/tree/main/sigenergy2mqtt"
 arch:
-  - armhf
-  - armv7
   - aarch64
   - amd64
 image: "ghcr.io/seud0nym/home-assistant-addon-sigenergy2mqtt-{arch}"
