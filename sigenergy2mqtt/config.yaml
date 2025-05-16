@@ -9,6 +9,7 @@ arch:
   - armv7
   - aarch64
   - amd64
+image: "ghcr.io/seud0nym/home-assistant-addon-sigenergy2mqtt-{arch}"
 init: false
 map:
   - addon_config
@@ -56,4 +57,3 @@ schema:
   pvoutput_log_level: "list(DEBUG|INFO|WARNING|ERROR|CRITICAL)?"
 services:
   - "mqtt:want"
-image: "ghcr.io/seud0nym/home-assistant/sigenergy2mqtt-{arch}-addon"
