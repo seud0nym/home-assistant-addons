@@ -1,44 +1,33 @@
 # https://developers.home-assistant.io/docs/add-ons/configuration#add-on-config
 name: sigenergy2mqtt
-version: "2025.5.16"
+version: "2025.5.16-1"
+image: "ghcr.io/seud0nym/home-assistant-addon-sigenergy2mqtt-{arch}"
 slug: sigenergy2mqtt
 description: Publish Modbus data from Sigenergy to an MQTT Broker, with optional PVOutput updating
 url: "https://github.com/seud0nym/home-assistant-addons/tree/main/sigenergy2mqtt"
 arch:
   - aarch64
   - amd64
-image: "ghcr.io/seud0nym/home-assistant-addon-sigenergy2mqtt-{arch}"
 init: false
 map:
   - addon_config
 options:
-  mqtt_broker: ""
-  mqtt_username: ""
-  mqtt_password: ""
   modbus_host: ""
   modbus_slave: ""
   pvoutput_enabled: false
   pvoutput_api_key: ""
   pvoutput_system_id: ""
-  pvoutput_consumption: false
-  pvoutput_interval: "5"
+  mqtt_broker: ""
+  mqtt_username: ""
+  mqtt_password: ""
 schema:
-  log_level: "list(DEBUG|INFO|WARNING|ERROR|CRITICAL)?"
-  discovery_prefix: "str?"
-  entity_id_prefix: "str?"
-  unique_id_prefix: "str?"
-  device_name_prefix: "str?"
-  mqtt_broker: "str?"
-  mqtt_port: "str?"
-  mqtt_username: "str?"
-  mqtt_password: "password?"
-  mqtt_log_level: "list(DEBUG|INFO|WARNING|ERROR|CRITICAL)?"
+  log_level: "list(DEBUG|INFO|WARNING|ERROR)?"
   modbus_host: "str?"
-  modbus_port: "int?"
-  modbus_slave: "int?"
+  modbus_port: "port?"
+  modbus_slave: "str?"
   modbus_accharger_slave: "int?"
   modbus_dccharger_slave: "int?"
-  modbus_log_level: "list(DEBUG|INFO|WARNING|ERROR|CRITICAL)?"
+  modbus_log_level: "list(DEBUG|INFO|WARNING|ERROR)?"
   smartport_enabled: "bool?"
   smartport_module_name: "str?"
   smartport_host: "str?"
@@ -52,6 +41,15 @@ schema:
   pvoutput_system_id: "str?"
   pvoutput_consumption: "bool?"
   pvoutput_interval: "list(5|10|15)?"
-  pvoutput_log_level: "list(DEBUG|INFO|WARNING|ERROR|CRITICAL)?"
+  pvoutput_log_level: "list(DEBUG|INFO|WARNING|ERROR)?"
+  mqtt_broker: "str?"
+  mqtt_port: "port?"
+  mqtt_username: "str?"
+  mqtt_password: "password?"
+  mqtt_log_level: "list(DEBUG|INFO|WARNING|ERROR)?"
+  discovery_prefix: "str?"
+  entity_id_prefix: "str?"
+  unique_id_prefix: "str?"
+  device_name_prefix: "str?"
 services:
   - "mqtt:want"

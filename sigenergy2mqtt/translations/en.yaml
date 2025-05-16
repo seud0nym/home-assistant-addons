@@ -2,33 +2,6 @@ configuration:
   log_level:
     name: Logging Level
     description: Set the sigenergy2mqtt log level.
-  discovery_prefix:
-    name: Home Assistant Discovery Prefix
-    description: Override the Home Assistant MQTT Discovery topic prefix to use. Only change this if you have already changed it in the MQTT settings in Home Assistant. The default is 'homeassistant'.
-  entity_id_prefix:
-    name: Home Assistant Entity ID Prefix
-    description: The prefix to use for Home Assistant entity IDs. e.g. A prefix of 'prefix' will prepend 'prefix_' to entity IDs. If you don't specify a prefix, the entity ID will be prefixed with 'sigen'.  
-  unique_id_prefix:
-    name: Home Assistant Unique ID Prefix
-    description: The prefix to use for Home Assistant unique IDs. e.g. A prefix of 'prefix' will prepend 'prefix_' to unique IDs. Once you have set this, you should NEVER change it, as it will break existing entities in Home Assistant. If you don't specify a prefix, the entity ID will be prefixed with 'sigen'.
-  device_name_prefix:
-    name: Home Assistant Device Name Prefix
-    description: The prefix to use for Home Assistant entity names. e.g. A prefix of 'prefix' will prepend 'prefix ' to entity names. The default is no prefix.
-  mqtt_broker:
-    name: MQTT Broker
-    description: The hostname or IP address of your MQTT broker.
-  mqtt_port:
-    name: MQTT Port
-    description: The listening port of the MQTT broker.
-  mqtt_username:
-    name: MQTT User Name
-    description: A valid user name for the MQTT broker.
-  mqtt_password:
-    name: MQTT Password
-    description: A valid password for the MQTT broker username.
-  mqtt_log_level:
-    name: MQTT Logging Level
-    description: Set the paho.mqtt logging level.
   modbus_host:
     name: Sigenergy Modbus Host
     description: The hostname or IP address of the Sigenergy device.
@@ -37,7 +10,7 @@ configuration:
     description: The Sigenergy device Modbus port number.
   modbus_slave:
     name: Sigenergy Inverter Device ID
-    description: The Sigenergy Inverter Modbus Device ID (Slave ID).
+    description: The Sigenergy Inverter Modbus Device ID (Slave ID). If you have multiple inverters, you can specify a space-separated list of IDs.
   modbus_accharger_slave:
     name: Sigenergy AC-Charger Device ID
     description: The Sigenergy AC Charger Modbus Device ID (Slave ID).
@@ -89,3 +62,30 @@ configuration:
   pvoutput_log_level:
     name: PVOutput Logging Level
     description: Set the PVOutput logging level.
+  mqtt_broker:
+    name: MQTT Broker
+    description: The hostname or IP address of your MQTT broker.
+  mqtt_port:
+    name: MQTT Port
+    description: The listening port of the MQTT broker.
+  mqtt_username:
+    name: MQTT User Name
+    description: A valid user name for the MQTT broker.
+  mqtt_password:
+    name: MQTT Password
+    description: A valid password for the MQTT broker username.
+  mqtt_log_level:
+    name: MQTT Logging Level
+    description: Set the paho.mqtt logging level.
+  discovery_prefix:
+    name: Home Assistant Discovery Prefix
+    description: Override the Home Assistant MQTT Discovery topic prefix to use. Only change this if you have already changed it in the MQTT settings in Home Assistant. The default is 'homeassistant'.
+  entity_id_prefix:
+    name: Home Assistant Entity ID Prefix
+    description: The prefix to use for Home Assistant entity IDs. e.g. A prefix of 'prefix' will prepend 'prefix_' to entity IDs. If you don't specify a prefix, the entity ID will be prefixed with 'sigen'.  
+  unique_id_prefix:
+    name: Home Assistant Unique ID Prefix
+    description: The prefix to use for Home Assistant unique IDs. e.g. A prefix of 'prefix' will prepend 'prefix_' to unique IDs. Once you have set this, you should NEVER change it, as it will break existing entities in Home Assistant. If you don't specify a prefix, the entity ID will be prefixed with 'sigen'.
+  device_name_prefix:
+    name: Home Assistant Device Name Prefix
+    description: The prefix to use for Home Assistant entity names. e.g. A prefix of 'prefix' will prepend 'prefix ' to entity names. The default is no prefix.

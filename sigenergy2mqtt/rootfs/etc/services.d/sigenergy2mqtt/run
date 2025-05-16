@@ -73,9 +73,9 @@ elif [[ $HAS_CONFIG == 0 ]]; then
   exit 1
 fi
 bashio::config.has_value 'modbus_port'            && CMD_PARAMETERS+=(--modbus-port="$(bashio::config 'modbus_port')")
-bashio::config.has_value 'modbus_slave'           && CMD_PARAMETERS+=(--modbus-slave="$(bashio::config 'modbus_slave')")
-bashio::config.has_value 'modbus_accharger_slave' && CMD_PARAMETERS+=(--modbus-accharger-slave="$(bashio::config 'modbus_accharger_slave')")
-bashio::config.has_value 'modbus_dccharger_slave' && CMD_PARAMETERS+=(--modbus-dccharger-slave="$(bashio::config 'modbus_dccharger_slave')")
+bashio::config.has_value 'modbus_slave'           && CMD_PARAMETERS+=(--modbus-slave $(bashio::config 'modbus_slave'))
+bashio::config.has_value 'modbus_accharger_slave' && CMD_PARAMETERS+=(--modbus-accharger-slave $(bashio::config 'modbus_accharger_slave'))
+bashio::config.has_value 'modbus_dccharger_slave' && CMD_PARAMETERS+=(--modbus-dccharger-slave $(bashio::config 'modbus_dccharger_slave'))
 bashio::config.has_value 'modbus_log_level'       && CMD_PARAMETERS+=(--modbus-log-level="$(bashio::config 'modbus_log_level')")
 
 # Get smart-port parameters from the configuration
