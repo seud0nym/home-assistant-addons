@@ -1,0 +1,4 @@
+# https://developers.home-assistant.io/docs/add-ons/repository#repository-configuration
+name: seud0nym's Home Assistant add-on repository
+url: 'https://github.com/seud0nym/home-assistant-addons'
+maintainer: Stephen Stevens <seud0nym@yahoo.com>

@@ -1,0 +1,91 @@
+configuration:
+  log_level:
+    name: Logging Level
+    description: Set the sigenergy2mqtt log level.
+  discovery_prefix:
+    name: Home Assistant Discovery Prefix
+    description: Override the Home Assistant MQTT Discovery topic prefix to use. Only change this if you have already changed it in the MQTT settings in Home Assistant. The default is 'homeassistant'.
+  entity_id_prefix:
+    name: Home Assistant Entity ID Prefix
+    description: The prefix to use for Home Assistant entity IDs. e.g. A prefix of 'prefix' will prepend 'prefix_' to entity IDs. If you don't specify a prefix, the entity ID will be prefixed with 'sigen'.  
+  unique_id_prefix:
+    name: Home Assistant Unique ID Prefix
+    description: The prefix to use for Home Assistant unique IDs. e.g. A prefix of 'prefix' will prepend 'prefix_' to unique IDs. Once you have set this, you should NEVER change it, as it will break existing entities in Home Assistant. If you don't specify a prefix, the entity ID will be prefixed with 'sigen'.
+  device_name_prefix:
+    name: Home Assistant Device Name Prefix
+    description: The prefix to use for Home Assistant entity names. e.g. A prefix of 'prefix' will prepend 'prefix ' to entity names. The default is no prefix.
+  mqtt_broker:
+    name: MQTT Broker
+    description: The hostname or IP address of your MQTT broker.
+  mqtt_port:
+    name: MQTT Port
+    description: The listening port of the MQTT broker.
+  mqtt_username:
+    name: MQTT User Name
+    description: A valid user name for the MQTT broker.
+  mqtt_password:
+    name: MQTT Password
+    description: A valid password for the MQTT broker username.
+  mqtt_log_level:
+    name: MQTT Logging Level
+    description: Set the paho.mqtt logging level.
+  modbus_host:
+    name: Sigenergy Modbus Host
+    description: The hostname or IP address of the Sigenergy device.
+  modbus_port:
+    name: Sigenergy Modbus Port
+    description: The Sigenergy device Modbus port number.
+  modbus_slave:
+    name: Sigenergy Inverter Device ID
+    description: The Sigenergy Inverter Modbus Device ID (Slave ID).
+  modbus_accharger_slave:
+    name: Sigenergy AC-Charger Device ID
+    description: The Sigenergy AC Charger Modbus Device ID (Slave ID).
+  modbus_dccharger_slave:
+    name: Sigenergy DC-Charger Device ID
+    description: The Sigenergy DC Charger Modbus Device ID (Slave ID).
+  modbus_log_level:
+    name: Modbus Logging Level
+    description: Set the pymodbus logging level.
+  smartport_enabled:
+    name: Smart-Port Enabled
+    description: Enable interrogation of a third-party device for production data.
+  smartport_module_name:
+    name: Smart-Port Module Name
+    description: The name of the module which will be used to obtain third-party device production data.
+  smartport_host:
+    name: Smart-Port Host
+    description: The IP address or hostname of the third-party device.
+  smartport_username:
+    name: Smart-Port User Name
+    description: The user name to authenticate to the third-party device.
+  smartport_password:
+    name: Smart-Port Password
+    description: The password to authenticate to the third-party device.
+  smartport_pv_power:
+    name: Smart-Port PV power
+    description: The sensor class to hold the production data obtained from the third-party device.
+  smartport_mqtt_topic:
+    name: Smart-Port MQTT topic
+    description: The MQTT topic to which to subscribe to obtain the production data for the third-party device.
+  smartport_mqtt_gain:
+    name: Smart-Port MQTT gain
+    description: The gain to be applied to the production data for the third-party device obtained from the MQTT topic. (e.g. 1000 if the data is in kW) Default is 1 (Watts).
+  pvoutput_enabled:
+    name: PVOutput Enabled
+    description: Enable status updates to PVOutput.
+  pvoutput_api_key:
+    name: PVOutput API Key
+    description: The API Key for PVOutput
+  pvoutput_system_id:
+    name: PVOutput System ID
+    description: The PVOutput System ID
+  pvoutput_consumption:
+    name: PVOutput Consumption
+    description: Enable sending consumption status to PVOutput.
+  pvoutput_interval:
+    name: PVOutput Interval
+    description: The interval in minutes to send data to PVOutput.
+  pvoutput_log_level:
+    name: PVOutput Logging Level
+    description: Set the PVOutput logging level.
