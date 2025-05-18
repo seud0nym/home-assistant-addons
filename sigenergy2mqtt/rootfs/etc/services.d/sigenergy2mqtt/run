@@ -77,6 +77,15 @@ bashio::config.has_value 'modbus_slave'           && CMD_PARAMETERS+=(--modbus-s
 bashio::config.has_value 'modbus_accharger_slave' && CMD_PARAMETERS+=(--modbus-accharger-slave $(bashio::config 'modbus_accharger_slave'))
 bashio::config.has_value 'modbus_dccharger_slave' && CMD_PARAMETERS+=(--modbus-dccharger-slave $(bashio::config 'modbus_dccharger_slave'))
 bashio::config.has_value 'modbus_log_level'       && CMD_PARAMETERS+=(--modbus-log-level="$(bashio::config 'modbus_log_level')")
+if bashio::config.has_value 'modbus_read_only'; then
+  MODBUS_READ_ONLY="$(bashio::config 'modbus_read_only')"
+  if [[ "${MODBUS_READ_ONLY}" == "true" ]]; then
+       CMD_PARAMETERS+=(--modbus-readonly) 
+       bashio::log.info "Read-only mode enabled, no write operations will be performed."
+  else
+       bashio::log.info "Read-write mode enabled, write operations will be performed."
+  fi
+fi
 
 # Get smart-port parameters from the configuration
 if bashio::config.has_value 'smartport_enabled'; then

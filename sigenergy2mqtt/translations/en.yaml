@@ -17,6 +17,9 @@ configuration:
   modbus_dccharger_slave:
     name: Sigenergy DC-Charger Device ID
     description: The Sigenergy DC Charger Modbus Device ID (Slave ID).
+  modbus_read_only:
+    name: Modbus Read Only
+    description: Enable to only read data from the Sigenergy device. Disable to allow writing data to the Sigenergy device.
   modbus_log_level:
     name: Modbus Logging Level
     description: Set the pymodbus logging level.
