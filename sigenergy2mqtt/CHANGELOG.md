@@ -1,5 +1,9 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 2025.5.30-1
+
+* Fix for failed start on 3 phase installations ([#3](https://github.com/seud0nym/home-assistant-addons/issues/3))
+
 ## 2025.5.30
 
 * Fixed bug that caused all writes to Modbus registers to fail silently
