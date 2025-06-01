@@ -1,5 +1,16 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 2025.6.1
+
+* Fixed bug in calculation of PV string power ([#2](https://github.com/seud0nym/sigenergy2mqtt/issues/2))
+* Fixed bug where Remote EMS availability was incorrectly applied to inverter R/W sensors, causing them to be unavailable for updates unless Remote EMS was enabled
+* Fixed bug in resetting daily accumulation totals
+* Fixed bug that prevented Enphase Smart-Port daily PV energy from being updated
+* Improved handling of negatives when accumulating energy lifetime statistics ([#2](https://github.com/seud0nym/home-assistant-addons/issues/2))
+* Added sanity check to ignore negative consumption ([#2](https://github.com/seud0nym/home-assistant-addons/issues/2))
+* Added new configuration option to allow all Remote EMS-related sensors to be hidden
+* Added new configuration option to log debug messages from a sensor (or from multiple sensors whose names contain the same string)
+
 ## 2025.5.30-1
 
 * Fix for failed start on 3 phase installations ([#3](https://github.com/seud0nym/home-assistant-addons/issues/3))
@@ -20,7 +31,6 @@
 
 * Daily Peak PV Power will now be automatically updated on PVOutput at 21:45 each day
 * Minor bug fixes
-
 
 ## 2025.5.18
 

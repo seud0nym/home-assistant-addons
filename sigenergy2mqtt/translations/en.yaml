@@ -2,6 +2,9 @@ configuration:
   log_level:
     name: Logging Level
     description: Set the sigenergy2mqtt log level.
+  debug_sensor:
+    name: Sensor to Debug
+    description: Specify a sensor to be debugged using either the full entity id, a partial entity id, the full sensor class name, or a partial sensor class name. For example, specifying 'daily' would match all sensors with daily in their entity name. If specified, 'Logging Level' is also forced to DEBUG.
   modbus_host:
     name: Sigenergy Modbus Host
     description: The hostname or IP address of the Sigenergy device.
@@ -20,6 +23,9 @@ configuration:
   modbus_read_only:
     name: Modbus Read Only
     description: Enable to only read data from the Sigenergy device. Disable to allow writing data to the Sigenergy device.
+  modbus_no_remote_ems:
+    name: Modbus No Remote EMS
+    description: Enable to hide all read/write sensors used for remote Energy Management System (EMS) integration. This may be applicable if, for example, you are part of a VPP which manages the battery. Ignored if 'Modbus Read Only' is enabled.
   modbus_log_level:
     name: Modbus Logging Level
     description: Set the pymodbus logging level.

@@ -77,13 +77,17 @@ bashio::config.has_value 'modbus_slave'           && CMD_PARAMETERS+=(--modbus-s
 bashio::config.has_value 'modbus_accharger_slave' && CMD_PARAMETERS+=(--modbus-accharger-slave $(bashio::config 'modbus_accharger_slave'))
 bashio::config.has_value 'modbus_dccharger_slave' && CMD_PARAMETERS+=(--modbus-dccharger-slave $(bashio::config 'modbus_dccharger_slave'))
 bashio::config.has_value 'modbus_log_level'       && CMD_PARAMETERS+=(--modbus-log-level="$(bashio::config 'modbus_log_level')")
-if bashio::config.has_value 'modbus_read_only'; then
-  MODBUS_READ_ONLY="$(bashio::config 'modbus_read_only')"
-  if [[ "${MODBUS_READ_ONLY}" == "true" ]]; then
-       CMD_PARAMETERS+=(--modbus-readonly) 
-       bashio::log.info "Read-only mode enabled, no write operations will be performed."
-  else
-       bashio::log.info "Read-write mode enabled, write operations will be performed."
+bashio::config.has_value 'modbus_read_only'       && MODBUS_READ_ONLY="$(bashio::config 'modbus_read_only')"
+if [[ "${MODBUS_READ_ONLY}" == "true" ]]; then
+  CMD_PARAMETERS+=(--modbus-readonly) 
+  bashio::log.info "Read-only mode enabled, no write operations can be performed."
+else
+  bashio::log.info "Read-write mode enabled, write operations can be performed."
+  if bashio::config.has_value 'modbus_no_remote_ems'; then
+    if [[ "$(bashio::config 'modbus_no_remote_ems')" == "true" ]]; then
+      CMD_PARAMETERS+=(--modbus-no-remote-ems) 
+      bashio::log.info "Remote EMS mode disabled, no remote EMS related sensors will be published."
+    fi
   fi
 fi
 
@@ -138,7 +142,9 @@ bashio::config.has_value 'entity_id_prefix'       && CMD_PARAMETERS+=(--hass-ent
 bashio::config.has_value 'unique_id_prefix'       && CMD_PARAMETERS+=(--hass-unique-id-prefix="$(bashio::config 'unique_id_prefix')")
 bashio::config.has_value 'device_name_prefix'     && CMD_PARAMETERS+=(--hass-device-name-prefix="$(bashio::config 'device_name_prefix')")
 
+# Get logging and debugging parameters from the configuration
 bashio::config.has_value 'log_level'              && CMD_PARAMETERS+=(--log-level="$(bashio::config 'log_level')")
+bashio::config.has_value 'debug_sensor'           && CMD_PARAMETERS+=(--debug-sensor="$(bashio::config 'debug_sensor')")
 
 # Boot up
 bashio::log.info "Starting sigenergy2mqtt service..."
