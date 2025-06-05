@@ -1,5 +1,11 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 2025.6.5
+
+* Fixed PVOutput service losing daily peak power when service restarted
+* Refactored PVOutput services to remove duplication
+* Refactored Modbus locking to implement timeouts
+
 ## 2025.5.31
 
 Note: There is a version mismatch with this release. The actual version of `sigenergy2mqtt` included with this release of the add-on is 2025.6.1.
