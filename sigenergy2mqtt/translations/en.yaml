@@ -26,6 +26,18 @@ configuration:
   modbus_no_remote_ems:
     name: Modbus No Remote EMS
     description: Enable to hide all read/write sensors used for remote Energy Management System (EMS) integration. This may be applicable if, for example, you are part of a VPP which manages the battery. Ignored if 'Modbus Read Only' is enabled.
+  scan_interval_realtime:
+    name: Scan Interval (Near Realtime Frequency)
+    description: The scan interval in seconds for Modbus registers that are to be scanned in near-real time. Default is 5 (seconds), and the minimum value is 1.
+  scan_interval_high:
+    name: Scan Interval (High Frequency)
+    description: The scan interval in seconds for Modbus registers that are to be scanned at a high frequency. Default is 10 (seconds), and the minimum value is 5.
+  scan_interval_medium:
+    name: Scan Interval (Medium Frequency)
+    description: The scan interval in seconds for Modbus registers that are to be scanned at a medium frequency. Default is 60 (seconds), and the minimum value is 30.
+  scan_interval_low:
+    name: Scan Interval (Low Frequency)
+    description: The scan interval in seconds for Modbus registers that are to be scanned at a low frequency. Default is 600 (seconds), and the minimum value is 300.
   modbus_log_level:
     name: Modbus Logging Level
     description: Set the pymodbus logging level.

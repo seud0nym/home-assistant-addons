@@ -146,6 +146,12 @@ bashio::config.has_value 'device_name_prefix'     && CMD_PARAMETERS+=(--hass-dev
 bashio::config.has_value 'log_level'              && CMD_PARAMETERS+=(--log-level="$(bashio::config 'log_level')")
 bashio::config.has_value 'debug_sensor'           && CMD_PARAMETERS+=(--debug-sensor="$(bashio::config 'debug_sensor')")
 
+# Get the scanning interval frequencies from the configuration
+bashio::config.has_value 'scan_interval_low'      && CMD_PARAMETERS+=(--scan-interval-low="$(bashio::config 'scan_interval_low')")
+bashio::config.has_value 'scan_interval_medium'   && CMD_PARAMETERS+=(--scan-interval-medium="$(bashio::config 'scan_interval_medium')")
+bashio::config.has_value 'scan_interval_high'     && CMD_PARAMETERS+=(--scan-interval-high="$(bashio::config 'scan_interval_high')")
+bashio::config.has_value 'scan_interval_realtime' && CMD_PARAMETERS+=(--scan-interval-realtime="$(bashio::config 'scan_interval_realtime')")
+
 # Boot up
 bashio::log.info "Starting sigenergy2mqtt service..."
 exec ~/.local/bin/sigenergy2mqtt \

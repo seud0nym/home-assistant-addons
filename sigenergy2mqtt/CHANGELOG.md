@@ -1,9 +1,14 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 2025.6.11
+
+* Added configuration options to allow scanning interval frequencies to be overridden
+* Fixed bug in scheduling next days PVOutput peak power update
+
 ## 2025.6.5
 
 * Fixed PVOutput service losing daily peak power when service restarted
-* Refactored PVOutput services to remove duplication
+* Refactored PVOutput services to remove code duplication
 * Refactored Modbus locking to implement timeouts
 
 ## 2025.5.31
