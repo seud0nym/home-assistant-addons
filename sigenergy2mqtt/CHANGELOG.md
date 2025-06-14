@@ -1,5 +1,13 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 2025.6.14
+
+* Firmware V100R001C00SPC109 added new EMS Work Mode 'Time-Based Control'
+* Fixed Inverter Device Info not updating after firmware update
+* Ignored spurious peak power values for PVOutput outside of daylight hours
+* Ignored empty payloads from subscribed MQTT topics ([#4](https://github.com/seud0nym/sigenergy2mqtt/issues/4))
+* Changed wait timeout for Home Assistant discovery acknowledgement to 10s
+
 ## 2025.6.11
 
 * Added configuration options to allow scanning interval frequencies to be overridden
