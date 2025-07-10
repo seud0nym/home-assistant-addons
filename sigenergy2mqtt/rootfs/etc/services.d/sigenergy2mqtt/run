@@ -123,7 +123,7 @@ if bashio::config.has_value 'pvoutput_enabled'; then
     bashio::config.has_value 'pvoutput_api_key'     && PVOUTPUT_API_KEY="$(bashio::config 'pvoutput_api_key')"
     bashio::config.has_value 'pvoutput_system_id'   && PVOUTPUT_SYSTEM_ID="$(bashio::config 'pvoutput_system_id')"
     if [[ -z "${PVOUTPUT_API_KEY}" || -z "${PVOUTPUT_SYSTEM_ID}" ]]; then
-      bashio::log.fatal "PVOutput enabled, but API Key and System ID not found; cannot continue."
+      bashio::log.fatal "PVOutput enabled, but API Key and/or System ID not found; cannot continue."
       exit 1
     fi
     CMD_PARAMETERS+=(--pvoutput-enabled)
@@ -132,7 +132,7 @@ if bashio::config.has_value 'pvoutput_enabled'; then
     bashio::config.has_value 'pvoutput_consumption' && bashio::config 'pvoutput_consumption' && CMD_PARAMETERS+=(--pvoutput-consumption)
     bashio::config.has_value 'pvoutput_interval'    && CMD_PARAMETERS+=(--pvoutput-interval="$(bashio::config 'pvoutput_interval')")
     bashio::config.has_value 'pvoutput_log_level'   && CMD_PARAMETERS+=(--pvoutput-log-level="$(bashio::config 'pvoutput_log_level')")
-    bashio::log.info "PVOutput enabled, using API Key: ${PVOUTPUT_API_KEY} System ID: ${PVOUTPUT_SYSTEM_ID} Interval: $(bashio::config 'pvoutput_interval')"  
+    bashio::log.info "PVOutput enabled, using API Key: **************************************** System ID: ${PVOUTPUT_SYSTEM_ID} Interval: $(bashio::config 'pvoutput_interval')"  
   fi
 fi
 
@@ -151,6 +151,9 @@ bashio::config.has_value 'scan_interval_low'      && CMD_PARAMETERS+=(--scan-int
 bashio::config.has_value 'scan_interval_medium'   && CMD_PARAMETERS+=(--scan-interval-medium="$(bashio::config 'scan_interval_medium')")
 bashio::config.has_value 'scan_interval_high'     && CMD_PARAMETERS+=(--scan-interval-high="$(bashio::config 'scan_interval_high')")
 bashio::config.has_value 'scan_interval_realtime' && CMD_PARAMETERS+=(--scan-interval-realtime="$(bashio::config 'scan_interval_realtime')")
+
+# Get the sanity check default kW value from the configuration
+bashio::config.has_value 'sanity_sanity_check_default_kw' && CMD_PARAMETERS+=(--sanity-check-default-kw="$(bashio::config 'sanity_check_default_kw')")
 
 # Boot up
 bashio::log.info "Starting sigenergy2mqtt service..."

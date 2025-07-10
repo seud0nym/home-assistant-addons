@@ -1,5 +1,63 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 2025.7.10
+
+> [!WARNING]  
+> All accumulation sensors that were previously calculated by `sigenergy2mqtt` and have now been replaced by values read from the Modbus interface will probably record a large increase or decrease after installing this release, reflecting the change from an estimated value to the real value as provided by the Modbus interface.
+
+> [!WARNING]  
+> All daily sensors that were previously derived from a calculated accumulation sensor will also reflect a large increase or decrease, as they are calculated from the accumulation sensor value as at the previous midnight. You can adjust the daily figures manually through the provided "Set Daily ..." controls, or they will update correctly on the next day.
+
+* Fixed stepping on the percentage sliders so that they increment/decrement by 1 rather than fractions
+* Added default sanity checks on all power and energy sensors
+  * The sanity check value can be modified through the Add-on configuration
+  * The default value is 100:
+    * Power sensor values that are outside the range of ±100 kW per second (measured by scan interval) will be ignored
+    * Changes in energy sensor values that are outside the range of ±100 kWh per second (measured by scan interval) will be ignored
+  * Sanity check minimum/maximum values for individual sensors can be set using a configuration file
+
+* Implemented Sigenergy Modbus Protocol V2.6
+  * Replaced calculated plant running info sensors with values now supplied by the Modbus interface: 
+    * Lifetime PV Production
+    * Daily Consumption
+    * Lifetime Consumption 
+  * Added new plant sensors for Smart Load 01-24 Total Consumption and Power
+  * Ability to set battery Backup SoC, Charge Cut-Off SoC, and Discharge Cut-Off SoC
+  * Replaced calculated inverter sensors with values supplied by the Modbus interface: 
+    * Daily PV Production
+    * Lifetime PV Production
+    
+* Implemented Sigenergy Modbus Protocol V2.7
+  * New sensors for Third-Party PV Power and Lifetime PV Energy supplied by the Modbus interface
+      * These sensor can replace the `sigenergy2mqtt` Smart-Port configuration (although they do appear to be updated less frequently)
+  * Replaced calculated plant running info sensors with values now supplied by the Modbus interface: 
+    * Lifetime Charge Energy
+    * Lifetime Discharge Energy
+    * Lifetime Imported Energy
+    * Lifetime Exported Energy
+  * Added new accumulation sensors now supplied by the Modbus interface:
+    * Lifetime DC EV Charge Energy
+    * Lifetime DC EV Discharge Energy
+    * Lifetime Generator Output Energy
+  * Added new Plant Statistics device for the new Modbus energy statistics interface to distinguish them from the legacy lifetime sensors
+    * Sensor values supplied by the Modbus interface: 
+      * Total Common Load Consumption
+      * Total AC EV Charge Energy
+      * Total Self PV Generation
+      * Total Third-Party PV Generation
+      * Total Charge Energy
+      * Total Discharge Energy
+      * Total DC EV Charge Energy
+      * Total DC EV Discharge Energy
+      * Total Imported Energy
+      * Total Exported Energy
+      * Total Generator Output Energy
+      
+> [!IMPORTANT]
+> For the new energy statistics interface from Modbus Protocol V2.7, after upgrading the device firmware to support this interface, the sensor values will reset to 0 and start fresh counting without inheriting historical data. They may therefore differ from the legacy sensors on the Plant device.
+
+
+
 ## 2025.6.14
 
 * Firmware V100R001C00SPC109 added new EMS Work Mode 'Time-Based Control'

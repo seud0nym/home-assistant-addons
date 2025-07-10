@@ -27,6 +27,10 @@ home-assistant:
 
 Use to set the `sigenergy2mqtt` log level. By default, only WARNING messages are logged.
 
+### Option: `Sensor to Debug` (optional)
+
+Specify a sensor to be debugged using either the full entity id, a partial entity id, the full sensor class name, or a partial sensor class name. For example, specifying 'daily' would match all sensors with daily in their entity name. If specified, 'Logging Level' is also forced to DEBUG.
+
 ## Home Assistant Integration Configuration
 
 ### Option: `Home Assistant Discovery Prefix` (optional)
@@ -94,6 +98,26 @@ The Sigenergy AC Charger Modbus Device ID (Slave ID).
 ### Option: `Sigenergy DC-Charger Device ID` (optional)
 
 The Sigenergy DC Charger Modbus Device ID (Slave ID).
+
+### Option: `Scan Interval (Near Realtime Frequency)` (optional)
+
+The scan interval in seconds for Modbus registers that are to be scanned in near-real time. Default is 5 (seconds), and the minimum value is 1.
+
+### Option: `Scan Interval (High Frequency)` (optional)
+
+The scan interval in seconds for Modbus registers that are to be scanned at a high frequency. Default is 10 (seconds), and the minimum value is 5.
+
+### Option: `Scan Interval (Medium Frequency)` (optional)
+
+The scan interval in seconds for Modbus registers that are to be scanned at a medium frequency. Default is 60 (seconds), and the minimum value is 30.
+
+### Option: `Scan Interval (Low Frequency)` (optional)
+
+The scan interval in seconds for Modbus registers that are to be scanned at a low frequency. Default is 600 (seconds), and the minimum value is 300.
+
+### Option: `Sanity Check Default kW` (optional)
+
+The default value in kW used for sanity checks to validate the maximum and minimum values for actual value of power sensors and the delta value of energy sensors. The default value is 100 kW per second, meaning readings outside the range ±100 are ignored.
 
 ### Option: `Modbus Logging Level` (optional)
 
