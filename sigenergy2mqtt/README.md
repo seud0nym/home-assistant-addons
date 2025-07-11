@@ -17,9 +17,7 @@ You can automatically upload your production (and optionally, consumption) data 
 
 ## Third-Party Solar Production
 
-Since the V100R001C00SPC108 firmware update, production systems connected to the Sigenergy Gateway Smart-Port are no longer included in the PV Power reported by the Modbus interface. Without this production data, calculation of consumption is problematic, since PV production is a core element in the computation and if third-party production is not counted, it leads to obvious errors like negative consumption. 
-
-Whilst this may change in future firmware releases, at the moment there is no way through the Modbus data to include third-party PV production.
+Prior to the V100R001C00SPC108 firmware update, production systems connected to the Sigenergy Gateway Smart-Port were included in the Plant PV Power reported by the Modbus interface. In firmware V100R001C00SPC108, the PV Power register only reports production from panels connected directly to Sigenergy. Firmware V100R001C00SPC109 adds a new sensor for Third-Party PV Power. This register, however, only appears to be updated every 8-10 seconds in my testing with my Enphase micro-inverters, so if you want more frequent updates of Total PV Power and Consumed Power, then you should enable smart-port in the configuration and configure either the Enphase Envoy and/or the MQTT smart-port integrations.
 
 `sigenergy2mqtt` can incorporate third-party PV production via internal Python modules (at this stage, only Enphase micro-inverters are supported), or by subscribing to an MQTT topic that provides the data.
 
