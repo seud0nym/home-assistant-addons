@@ -24,4 +24,4 @@ Prior to the V100R001C00SPC108 firmware update, production systems connected to 
 
 ## Issues
 
-If you a have a problem with this add-on, please raise an issue [here](sigenergy2mqtt: https://github.com/seud0nym/sigenergy2mqtt/issues).
+If you a have a problem with this add-on, please raise an issue [here](https://github.com/seud0nym/sigenergy2mqtt/issues).
