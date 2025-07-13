@@ -1,5 +1,12 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 2025.7.13
+
+* Fixed bug that prevented PVOutput peak-power reporting
+* Fixed bug that caused PVOutput values to be incorrect by factor of 10
+  * Because of the way that PVOutput validates uploaded data, the remaining updates for the day you install this fix may not be recorded
+* Minor fixes to aid debugging
+
 ## 2025.7.10
 
 > [!WARNING]  
