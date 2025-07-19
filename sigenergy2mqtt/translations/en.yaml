@@ -83,6 +83,9 @@ configuration:
   pvoutput_interval:
     name: PVOutput Interval
     description: The interval in minutes to send data to PVOutput.
+  pvoutput_temp_topic: 
+    name: PVOutput Temperature Topic
+    description: The MQTT topic to which to subscribe to obtain the current temperature data for PVOutput. If specified, the temperature will be sent to PVOutput.
   pvoutput_log_level:
     name: PVOutput Logging Level
     description: Set the PVOutput logging level.

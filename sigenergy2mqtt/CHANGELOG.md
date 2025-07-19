@@ -1,5 +1,12 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 2025.7.19
+
+* Fixed bug that caused some write operations to fail ([#9](https://github.com/seud0nym/sigenergy2mqtt/issues/9))
+* Fixed potential issue with installations that have multiple inverters
+* Added average voltage across PV strings to PVOutput status updates
+* Added ability to optionally add temperature to PVOutput status updates by defining an MQTT topic from which current temperature can be obtained
+
 ## 2025.7.13-1
 
 * Fixed bug that caused DailyChargeEnergy, DailyDischargeEnergy, TotalLoadDailyConsumption, and InverterPVDailyGeneration to be disabled at midnight when they reset to zero ([Discussion #6](https://github.com/seud0nym/sigenergy2mqtt/discussions/6))
