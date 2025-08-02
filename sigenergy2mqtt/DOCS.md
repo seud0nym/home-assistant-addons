@@ -25,7 +25,8 @@ home-assistant:
 
 | Option | Condition | Description |
 |--------|-----------|-------------|
-| `Logging Level` | Optional | Use to set the `sigenergy2mqtt` log level. By default, only WARNING messages are logged. |
+| `sigenergy2mqtt Logging Level` | Optional | Use to set the `sigenergy2mqtt` log level. By default, only WARNING messages are logged. |
+| `Enable sigenergy2mqtt Metrics` | Optional | Enable the publication of sigenergy2mqtt metrics to Home Assistant. |
 | `Sensor to Debug` | Optional | Specify a sensor to be debugged using either the full entity id, a partial entity id, the full sensor class name, or a partial sensor class name. For example, specifying 'daily' would match all sensors with daily in their entity name. If specified, 'Logging Level' is also forced to DEBUG. |
 
 ## Home Assistant Integration Configuration
@@ -59,9 +60,9 @@ You must enter the IP address or host name of your **Sigenergy Modbus Host**. If
 |--------|-----------|-------------|
 | `Sigenergy Modbus Host` | Required | The hostname or IP address of the Sigenergy device. This is _mandatory_. |
 | `Sigenergy Modbus Port` | Optional | The Sigenergy device Modbus port number. |
-| `Sigenergy Inverter Device ID` | Required | The Sigenergy Inverter Modbus Device ID (Slave ID). This is _mandatory_, but defaults to **1** if not specified. |
-| `Sigenergy AC-Charger Device ID` | Optional | The Sigenergy AC Charger Modbus Device ID (Slave ID). |
-| `Sigenergy DC-Charger Device ID` | Optional | The Sigenergy DC Charger Modbus Device ID (Slave ID). |
+| `Sigenergy Inverter Device ID` | Required | The Sigenergy Inverter Modbus Device ID. This is _mandatory_, but defaults to **1** if not specified. |
+| `Sigenergy AC-Charger Device ID` | Optional | The Sigenergy AC Charger Modbus Device ID. |
+| `Sigenergy DC-Charger Device ID` | Optional | The Sigenergy DC Charger Modbus Device ID. |
 | `Scan Interval (Near Realtime Frequency)` | Optional | The scan interval in seconds for Modbus registers that are to be scanned in near-real time. Default is 5 (seconds), and the minimum value is 1. |
 | `Scan Interval (High Frequency)` | Optional | The scan interval in seconds for Modbus registers that are to be scanned at a high frequency. Default is 10 (seconds), and the minimum value is 5. |
 | `Scan Interval (Medium Frequency)` | Optional | The scan interval in seconds for Modbus registers that are to be scanned at a medium frequency. Default is 60 (seconds), and the minimum value is 30. |
@@ -90,7 +91,6 @@ You must enter the IP address or host name of your **Sigenergy Modbus Host**. If
 | `PVOutput API Key` | Optional | Your API Key for PVOutput. This _mandatory_ if PVOutput enabled. |
 | `PVOutput System ID` | Optional | Your PVOutput System ID. This _mandatory_ if PVOutput enabled. |
 | `PVOutput Consumption` | Optional | Enable sending consumption status to PVOutput. |
-| `PVOutput Interval` | Optional | The interval in minutes to send data to PVOutput. |
 | `PVOutput Temperature Topic` | Optional | The MQTT topic to which to subscribe to obtain the current temperature data for PVOutput. If specified, the temperature will be sent to PVOutput. |
 | `PVOutput Logging Level` | Optional | Set the PVOutput logging level. |
 

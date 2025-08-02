@@ -1,6 +1,6 @@
 configuration:
   log_level:
-    name: Logging Level
+    name: sigenergy2mqtt Logging Level
     description: Set the sigenergy2mqtt log level.
   debug_sensor:
     name: Sensor to Debug
@@ -13,13 +13,13 @@ configuration:
     description: The Sigenergy device Modbus port number.
   modbus_slave:
     name: Sigenergy Inverter Device ID
-    description: The Sigenergy Inverter Modbus Device ID (Slave ID). If you have multiple inverters, you can specify a space-separated list of IDs.
+    description: The Sigenergy Inverter Modbus Device ID. If you have multiple inverters, you can specify a space-separated list of IDs.
   modbus_accharger_slave:
     name: Sigenergy AC-Charger Device ID
-    description: The Sigenergy AC Charger Modbus Device ID (Slave ID).
+    description: The Sigenergy AC Charger Modbus Device ID.
   modbus_dccharger_slave:
     name: Sigenergy DC-Charger Device ID
-    description: The Sigenergy DC Charger Modbus Device ID (Slave ID).
+    description: The Sigenergy DC Charger Modbus Device ID.
   modbus_read_only:
     name: Modbus Read Only
     description: Enable to only read data from the Sigenergy device. Disable to allow writing data to the Sigenergy device.
@@ -46,7 +46,7 @@ configuration:
     description: Set the pymodbus logging level.
   smartport_enabled:
     name: Smart-Port Enabled
-    description: Enable interrogation of a third-party device for production data.
+    description: Enable integration of a third-party device for production data.
   smartport_module_name:
     name: Smart-Port Module Name
     description: The name of the module which will be used to obtain third-party device production data.
@@ -80,9 +80,6 @@ configuration:
   pvoutput_consumption:
     name: PVOutput Consumption
     description: Enable sending consumption status to PVOutput.
-  pvoutput_interval:
-    name: PVOutput Interval
-    description: The interval in minutes to send data to PVOutput.
   pvoutput_temp_topic: 
     name: PVOutput Temperature Topic
     description: The MQTT topic to which to subscribe to obtain the current temperature data for PVOutput. If specified, the temperature will be sent to PVOutput.
@@ -116,3 +113,6 @@ configuration:
   device_name_prefix:
     name: Home Assistant Device Name Prefix
     description: The prefix to use for Home Assistant entity names. e.g. A prefix of 'prefix' will prepend 'prefix ' to entity names. The default is no prefix.
+  metrics_enabled:
+    name: Enable sigenergy2mqtt Metrics
+    description: Enable the publication of sigenergy2mqtt metrics to Home Assistant.

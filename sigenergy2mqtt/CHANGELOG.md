@@ -1,5 +1,45 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+
+## 2025.8.2
+
+### What's Fixed?
+
+* Fixed Max Charge Limit, Max Discharge Limit and PV Max Power Limit not available when Remote EMS enabled ([#12](https://github.com/seud0nym/sigenergy2mqtt/issues/12))
+* Fixed incorrect publishing of unpublishable sensors on Home Assistant restart
+* Fixed warning log messages when saved state files contain initial `None` value
+* Fixed Sigenergy Modbus Protocol version in Plant Device Info (was showing V2.5 but should be V2.7)
+* Fixed Inverter Device Info hardware version not updating after firmware update
+* Workaround for alarm values returned as a list rather than single UINT16
+* Fixed handling of Modbus connection failure and reduced associated log spamming
+
+### What's New?
+
+* Added a new `Sigenergy Metrics` device containing some `sigenergy2mqtt` Modbus read/write metrics
+  * By default this is disabled, but there is a new configuration option called `Enable sigenergy2mqtt Metrics` which can be used to control the publication of the metrics
+* Added some inverter sensors that threw ILLEGAL DATA ADDRESS errors prior to Firmware V100R001C00SPC110 (these sensors will not be enabled by default):
+  * Active Power Fixed Value Adjustment Feedback
+  * Reactive Power Fixed Value Adjustment Feedback
+  * Active Power Percentage Adjustment Feedback
+  * Reactive Power Percentage Adjustment Feedback
+* The attributes of updatable sensors now contains the update topic for use in automations 
+* Added warning log message if PVOutput source topics not updated within last update interval
+
+### What's Gone?
+
+* The `PVOutput Interval` configuration option has been removed because the Status Interval is now determined from the settings on pvoutput.org via the PVOutput API
+* AC/DC Charger statistics will not be published if no chargers defined
+
+### What's Changed?
+
+* Upgraded dependencies:
+  * paho-mqtt: 1.6.1 → 2.1.0
+  * pymodbus: 3.8.4 → 3.10.0
+  * requests: 2.32.3 → 2.32.4
+  * ruamel.yaml: 0.18.6 → 0.18.14
+* Cleaned up some informational messages that were only used for debugging
+* Removed stale persistent state files on initialisation
+
 ## 2025.7.19
 
 * Fixed bug that caused some write operations to fail ([#9](https://github.com/seud0nym/sigenergy2mqtt/issues/9))

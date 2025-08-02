@@ -15,6 +15,7 @@
         "paho",
         "pvoutput",
         "pymodbus",
+        "ruamel",
         "seud",
         "sigen",
         "sigenergy",

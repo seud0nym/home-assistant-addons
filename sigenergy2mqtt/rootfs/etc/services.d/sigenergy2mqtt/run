@@ -7,6 +7,12 @@
 # Get supervisor configuration:
 bashio::log.info "Configuring..."
 
+# Remove obsolete options
+if bashio::config.exists 'pvoutput_interval'; then
+  bashio::log.info "Removing obsolete option 'pvoutput_interval' from configuration"
+  bashio::addon.option 'pvoutput_interval'
+fi
+  
 # Define config options to use:
 CMD_PARAMETERS=()
 
@@ -73,9 +79,9 @@ elif [[ $HAS_CONFIG == 0 ]]; then
   exit 1
 fi
 bashio::config.has_value 'modbus_port'            && CMD_PARAMETERS+=(--modbus-port="$(bashio::config 'modbus_port')")
-bashio::config.has_value 'modbus_slave'           && CMD_PARAMETERS+=(--modbus-slave $(bashio::config 'modbus_slave'))
-bashio::config.has_value 'modbus_accharger_slave' && CMD_PARAMETERS+=(--modbus-accharger-slave $(bashio::config 'modbus_accharger_slave'))
-bashio::config.has_value 'modbus_dccharger_slave' && CMD_PARAMETERS+=(--modbus-dccharger-slave $(bashio::config 'modbus_dccharger_slave'))
+bashio::config.has_value 'modbus_slave'           && CMD_PARAMETERS+=(--modbus-inverter-device-id $(bashio::config 'modbus_slave'))
+bashio::config.has_value 'modbus_accharger_slave' && CMD_PARAMETERS+=(--modbus-accharger-device-id $(bashio::config 'modbus_accharger_slave'))
+bashio::config.has_value 'modbus_dccharger_slave' && CMD_PARAMETERS+=(--modbus-dccharger-device-id $(bashio::config 'modbus_dccharger_slave'))
 bashio::config.has_value 'modbus_log_level'       && CMD_PARAMETERS+=(--modbus-log-level="$(bashio::config 'modbus_log_level')")
 bashio::config.has_value 'modbus_read_only'       && MODBUS_READ_ONLY="$(bashio::config 'modbus_read_only')"
 if [[ "${MODBUS_READ_ONLY}" == "true" ]]; then
@@ -130,7 +136,6 @@ if bashio::config.has_value 'pvoutput_enabled'; then
     CMD_PARAMETERS+=(--pvoutput-api-key="${PVOUTPUT_API_KEY}")
     CMD_PARAMETERS+=(--pvoutput-system-id="${PVOUTPUT_SYSTEM_ID}")
     bashio::config.has_value 'pvoutput_consumption' && bashio::config 'pvoutput_consumption' && CMD_PARAMETERS+=(--pvoutput-consumption)
-    bashio::config.has_value 'pvoutput_interval'    && CMD_PARAMETERS+=(--pvoutput-interval="$(bashio::config 'pvoutput_interval')")
     bashio::config.has_value 'pvoutput_temp_topic'  && CMD_PARAMETERS+=(--pvoutput-temp-topic="$(bashio::config 'pvoutput_temp_topic')")
     bashio::config.has_value 'pvoutput_log_level'   && CMD_PARAMETERS+=(--pvoutput-log-level="$(bashio::config 'pvoutput_log_level')")
     bashio::log.info "PVOutput enabled, using API Key: [REDACTED] System ID: ${PVOUTPUT_SYSTEM_ID} Interval: $(bashio::config 'pvoutput_interval')"  
@@ -155,6 +160,19 @@ bashio::config.has_value 'scan_interval_realtime' && CMD_PARAMETERS+=(--scan-int
 
 # Get the sanity check default kW value from the configuration
 bashio::config.has_value 'sanity_check_default_kw' && CMD_PARAMETERS+=(--sanity-check-default-kw="$(bashio::config 'sanity_check_default_kw')")
+
+# Get the metrics enabled parameter from the configuration
+if bashio::config.has_value 'metrics_enabled'; then
+  METRICS_ENABLED="$(bashio::config 'metrics_enabled')"
+else
+  METRICS_ENABLED="false"
+fi
+if [[ "${METRICS_ENABLED}" != "true" ]]; then
+  CMD_PARAMETERS+=(--no-metrics)
+  bashio::log.info "Metrics disabled, not publishing metrics to Home Assistant."
+else
+  bashio::log.info "Metrics enabled, publishing metrics to Home Assistant."
+fi
 
 # Boot up
 bashio::log.info "Starting sigenergy2mqtt service..."
