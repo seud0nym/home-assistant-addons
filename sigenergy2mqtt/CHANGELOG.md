@@ -1,6 +1,13 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
 
+## 2025.8.2-1
+
+### What's Fixed?
+
+* Fixed bug introduced in 2025.8.2 when handling command line options ([#15](https://github.com/seud0nym/sigenergy2mqtt/issues/15))
+
+
 ## 2025.8.2
 
 ### What's Fixed?
