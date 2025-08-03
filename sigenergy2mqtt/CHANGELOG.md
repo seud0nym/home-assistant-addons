@@ -1,6 +1,13 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
 
+## 2025.8.3
+
+### What's Fixed?
+
+* Fixed merging of add-on configuration when a configuration file was used ([#14](https://github.com/seud0nym/sigenergy2mqtt/issues/14))
+
+
 ## 2025.8.2-1
 
 ### What's Fixed?

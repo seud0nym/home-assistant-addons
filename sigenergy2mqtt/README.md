@@ -14,7 +14,7 @@
 
 ### PVOutput
 
-You can automatically upload your production (and optionally, consumption) data to [PVOutput](https://pvoutput.org/). All you need to do is enable it in the configuration, and enter your API Key and System ID. By default, uploads occur every 5 minutes, but is configurable to 5, 10 or 15 minute intervals (the interval should match the Status Interval setting under Live Settings in the system settings)
+You can automatically upload your production (and optionally, consumption) data to [PVOutput](https://pvoutput.org/). All you need to do is enable it in the configuration, and enter your API Key and System ID. Uploads occur at the interval defined in Status Interval setting under Live Settings in the PVOutput system settings.
 
 ### Third-Party Solar Production
 
