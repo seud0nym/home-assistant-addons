@@ -1,6 +1,23 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
 
+## 2025.8.5
+
+### What's Fixed?
+
+* Fixed 'dictionary changed size during iteration' error in PVOutput services ([#16](https://github.com/seud0nym/sigenergy2mqtt/issues/16))
+* Fixed infinite loop on error in PVOutput services ([#16](https://github.com/seud0nym/sigenergy2mqtt/issues/16))
+* Fixed incorrect device class and state class for inverter `Reactive Power Fixed Value Adjustment Feedback`
+* Fixed 'Lock bound to different event loop' error during metrics publish
+* Logged failure to connect to MQTT broker rather than silently failing
+
+### What's Changed?
+
+* Improved accuracy of sensor scanning intervals
+* Improved general exception logging with improved representation of error
+* PVOutput last updated warnings will only appear at most once per hour
+
+
 ## 2025.8.3
 
 ### What's Fixed?

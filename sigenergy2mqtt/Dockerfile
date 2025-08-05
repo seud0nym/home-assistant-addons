@@ -2,7 +2,7 @@
 ARG BUILD_FROM
 FROM $BUILD_FROM
 
-RUN apk add pipx && pipx install sigenergy2mqtt
+RUN apk add pipx && pipx install sigenergy2mqtt==2025.8.5
 
 COPY rootfs /
 RUN chmod +x /etc/services.d/sigenergy2mqtt/*
