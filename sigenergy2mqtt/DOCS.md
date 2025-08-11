@@ -47,7 +47,8 @@ Otherwise, you _must_ enter the IP address or host name of the **MQTT Broker**, 
 | Option | Condition | Description |
 |--------|-----------|-------------|
 | `MQTT Broker` | Optional | The hostname or IP address of your MQTT broker. |
-| `MQTT Port` | Optional | The listening port of the MQTT broker. |
+| `MQTT Port` | Optional | The listening port of the MQTT broker. The default is 1883, unless MQTT TLS Communication is enabled, in which case the default is 8883. |
+| `MQTT TLS Communication Enabled` | Enable secure communication to MQTT broker over TLS/SSL (if the broker supports it). |
 | `MQTT User Name` | Optional | A valid user name for the MQTT broker. |
 | `MQTT Password` | Optional | A valid password for the MQTT broker username. |
 | `MQTT Logging Level` | Optional | Set the paho.mqtt logging level. |
@@ -70,6 +71,18 @@ You must enter the IP address or host name of your **Sigenergy Modbus Host**. If
 | `Sanity Check Default kW` | Optional | The default value in kW used for sanity checks to validate the maximum and minimum values for actual value of power sensors and the delta value of energy sensors. The default value is 100 kW per second, meaning readings outside the range ±100 are ignored. |
 | `Modbus Logging Level` | Optional | Set the pymodbus logging level. |
 
+## PVOutput Configuration
+
+| Option | Condition | Description |
+|--------|-----------|-------------|
+| `PVOutput Enabled` | Optional | Enable status updates to PVOutput. |
+| `PVOutput API Key` | Optional | Your API Key for PVOutput. This _mandatory_ if PVOutput enabled. |
+| `PVOutput System ID` | Optional | Your PVOutput System ID. This _mandatory_ if PVOutput enabled. |
+| `PVOutput Consumption` | Optional | Enable sending consumption status to PVOutput. |
+| `PVOutput Temperature Topic` | Optional | The MQTT topic to which to subscribe to obtain the current temperature data for PVOutput. If specified, the temperature will be sent to PVOutput. |
+| `PVOutput Logging Level` | Optional | Set the PVOutput logging level. |
+
+
 ## Third-Party PV Production Configuration
 
 | Option | Condition | Description |
@@ -82,16 +95,4 @@ You must enter the IP address or host name of your **Sigenergy Modbus Host**. If
 | `Smart-Port PV power` | Optional | The sensor class to hold the production data obtained from the third-party device. |
 | `Smart-Port MQTT topic` | Optional | The MQTT topic to which to subscribe to obtain the production data for the third-party device. |
 | `Smart-Port MQTT gain` | Optional | The gain to be applied to the production data for the third-party device obtained from the MQTT topic. (e.g. 1000 if the data is in kW) Default is 1 (Watts). |
-
-## PVOutput Configuration
-
-| Option | Condition | Description |
-|--------|-----------|-------------|
-| `PVOutput Enabled` | Optional | Enable status updates to PVOutput. |
-| `PVOutput API Key` | Optional | Your API Key for PVOutput. This _mandatory_ if PVOutput enabled. |
-| `PVOutput System ID` | Optional | Your PVOutput System ID. This _mandatory_ if PVOutput enabled. |
-| `PVOutput Consumption` | Optional | Enable sending consumption status to PVOutput. |
-| `PVOutput Temperature Topic` | Optional | The MQTT topic to which to subscribe to obtain the current temperature data for PVOutput. If specified, the temperature will be sent to PVOutput. |
-| `PVOutput Logging Level` | Optional | Set the PVOutput logging level. |
-
 

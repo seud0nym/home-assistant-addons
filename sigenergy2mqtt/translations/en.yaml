@@ -91,7 +91,10 @@ configuration:
     description: The hostname or IP address of your MQTT broker.
   mqtt_port:
     name: MQTT Port
-    description: The listening port of the MQTT broker.
+    description: The listening port of the MQTT broker. The default is 1883, unless MQTT TLS Communication is enabled, in which case the default is 8883.
+  mqtt_tls:
+    name: MQTT TLS Communication Enabled
+    description: Enable secure communication to MQTT broker over TLS/SSL (if the broker supports it).
   mqtt_username:
     name: MQTT User Name
     description: A valid user name for the MQTT broker.

@@ -46,9 +46,11 @@ bashio::config.has_value 'mqtt_host'      && { MQTT_HOST="$(bashio::config 'mqtt
 bashio::config.has_value 'mqtt_port'      && { MQTT_PORT="$(bashio::config 'mqtt_port')"; bashio::log.info "Overriding MQTT port: '${MQTT_PORT}'"; }
 bashio::config.has_value 'mqtt_username'  && { MQTT_USERNAME="$(bashio::config 'mqtt_username')"; bashio::log.info "Overriding MQTT username: '${MQTT_USERNAME}'"; }
 bashio::config.has_value 'mqtt_password'  && { MQTT_PASSWORD="$(bashio::config 'mqtt_password')"; bashio::log.info "Overriding MQTT password: [REDACTED: ${#MQTT_PASSWORD} chars]"; }
+bashio::config.has_value 'mqtt_tls'       && { MQTT_TLS="$(bashio::config 'mqtt_tls')"; bashio::log.info "MQTT TLS Communication enabled: '${MQTT_TLS}'"; } || MQTT_TLS="false"
 bashio::config.has_value 'mqtt_log_level' && CMD_PARAMETERS+=(--mqtt-log-level="$(bashio::config 'mqtt_log_level')")
 [[ ! -z "${MQTT_HOST}" ]]                 && CMD_PARAMETERS+=(--mqtt-broker="${MQTT_HOST}")
 [[ ! -z "${MQTT_PORT}" ]]                 && CMD_PARAMETERS+=(--mqtt-port="${MQTT_PORT}")
+[[ "${MQTT_TLS}" == "true" ]]             && CMD_PARAMETERS+=(--mqtt-tls)
 [[ ! -z "${MQTT_USERNAME}" ]]             && CMD_PARAMETERS+=(--mqtt-username="${MQTT_USERNAME}")
 [[ ! -z "${MQTT_PASSWORD}" ]]             && CMD_PARAMETERS+=(--mqtt-password="${MQTT_PASSWORD}")
 [[ -z "${MQTT_USERNAME}${MQTT_PASSWORD}"  && $HAS_CONFIG == 0 ]] && CMD_PARAMETERS+=(--mqtt-anonymous)

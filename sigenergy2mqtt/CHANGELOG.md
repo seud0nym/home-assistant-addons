@@ -1,5 +1,23 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 2025.8.11
+
+### What's Fixed?
+
+* Smart Load Power sensors (01-24) had incorrect Unit of Measurement (kWh should be kW) and Device Class (Energy should be Power) ([#20](https://github.com/seud0nym/sigenergy2mqtt/issues/20))
+
+### What's Changed?
+
+* Sensor attributes now contain source for derived (calculated) sensors and any relevant comments from the Modbus Protocol document
+* Consumed Power now includes AC/DC Charger output power
+* Alarms and AC/DC Charger power sensors are now refreshed at the 'realtime' scan interval (default = 5s)
+* Upgraded to pymodbus 3.11.0
+* Add-on now built from same wheel as Docker build, rather than pulling latest version from PyPi
+
+### What's New?
+
+* MQTT broker communication can now be configured to use TSL/SSL encryption if the configured broker supports it ([#19](https://github.com/seud0nym/sigenergy2mqtt/issues/19))
+
 
 ## 2025.8.5
 
