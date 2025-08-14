@@ -1,5 +1,11 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 2025.8.15
+
+### What's Fixed?
+
+* Fixed AssertionError when creating AC Charger device
+
 ## 2025.8.11
 
 ### What's Fixed?
