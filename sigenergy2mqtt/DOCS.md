@@ -29,41 +29,18 @@ home-assistant:
 | `Enable sigenergy2mqtt Metrics` | Optional | Enable the publication of sigenergy2mqtt metrics to Home Assistant. |
 | `Sensor to Debug` | Optional | Specify a sensor to be debugged using either the full entity id, a partial entity id, the full sensor class name, or a partial sensor class name. For example, specifying 'daily' would match all sensors with daily in their entity name. If specified, 'Logging Level' is also forced to DEBUG. |
 
-## Home Assistant Integration Configuration
-
-| Option | Condition | Description |
-|--------|-----------|-------------|
-| `Home Assistant Discovery Prefix` | Optional | Override the Home Assistant MQTT Discovery topic prefix to use. Only change this if you have already changed it in the MQTT settings in Home Assistant. The default is 'homeassistant'. |
-| `Home Assistant Entity ID Prefix` | Optional | The prefix to use for Home Assistant entity IDs. e.g. A prefix of 'prefix' will prepend 'prefix_' to entity IDs. If you don't specify a prefix, the entity ID will be prefixed with 'sigen'.  |
-| `Home Assistant Unique ID Prefix` | Optional | The prefix to use for Home Assistant unique IDs. e.g. A prefix of 'prefix' will prepend 'prefix_' to unique IDs. Once you have set this, you should NEVER change it, as it will break existing entities in Home Assistant. If you don't specify a prefix, the entity ID will be prefixed with 'sigen'. |
-| `Home Assistant Device Name Prefix` | Optional | The prefix to use for Home Assistant entity names. e.g. A prefix of 'prefix' will prepend 'prefix ' to entity names. The default is no prefix. |
-
-## MQTT Broker Configuration
-
-If you are using the [Mosquitto Broker](https://github.com/home-assistant/addons/tree/master/mosquitto) Home Assistant Add-on, you can skip the MQTT configuration options. `sigenergy2mqtt` will retrieve them automatically.
-
-Otherwise, you _must_ enter the IP address or host name of the **MQTT Broker**, the **MQTT Port** (if it is not listening on the default port 1883), and if the broker requires authentication, the **MQTT User Name** and **MQTT Password**.
-
-| Option | Condition | Description |
-|--------|-----------|-------------|
-| `MQTT Broker` | Optional | The hostname or IP address of your MQTT broker. |
-| `MQTT Port` | Optional | The listening port of the MQTT broker. The default is 1883, unless MQTT TLS Communication is enabled, in which case the default is 8883. |
-| `MQTT TLS Communication Enabled` | Enable secure communication to MQTT broker over TLS/SSL (if the broker supports it). |
-| `MQTT User Name` | Optional | A valid user name for the MQTT broker. |
-| `MQTT Password` | Optional | A valid password for the MQTT broker username. |
-| `MQTT Logging Level` | Optional | Set the paho.mqtt logging level. |
-
 ## Sigenergy Modbus Interface Configuration
 
 You must enter the IP address or host name of your **Sigenergy Modbus Host**. If it is not listening on the default port 502, your must also enter the **Sigenergy Modbus Port**
 
 | Option | Condition | Description |
 |--------|-----------|-------------|
-| `Sigenergy Modbus Host` | Required | The hostname or IP address of the Sigenergy device. This is _mandatory_. |
-| `Sigenergy Modbus Port` | Optional | The Sigenergy device Modbus port number. |
-| `Sigenergy Inverter Device ID` | Required | The Sigenergy Inverter Modbus Device ID. This is _mandatory_, but defaults to **1** if not specified. |
-| `Sigenergy AC-Charger Device ID` | Optional | The Sigenergy AC Charger Modbus Device ID. |
-| `Sigenergy DC-Charger Device ID` | Optional | The Sigenergy DC Charger Modbus Device ID. |
+| `Force Modbus Auto Discovery` | Optional | Enable to force the automatic discovery of Sigenergy Modbus hosts and associated Device IDs. You only need enable this if you have previously auto-discovered hosts/device IDs and your network or devices have changed. Once auto-discovery has been forced, this option will be reset to disabled. However, this may not be reflected in the Configuration User Interface. |
+| `Sigenergy Modbus Host` | Optional | The hostname or IP address of the Sigenergy device. If you do not specify the host, auto-discovery will be attempted. If a host is auto-discovered, all associated Device IDs will also be auto-discovered. Auto-discovery results are cached, so you only need to force auto-discovery if anything has changed. |
+| `Sigenergy Modbus Port` | Optional | The Sigenergy device Modbus port number. The default is **502** |
+| `Sigenergy Inverter Device ID` | Optional | The Sigenergy Inverter Modbus Device ID. This defaults to **1** if not specified, *OR* it will be determined automatically during auto-discovery. |
+| `Sigenergy AC-Charger Device ID` | Optional | The Sigenergy AC Charger Modbus Device ID. Auto-discovery will identify AC Charger devices. |
+| `Sigenergy DC-Charger Device ID` | Optional | The Sigenergy DC Charger Modbus Device ID. Auto-discovery will identify DC Charger devices. |
 | `Scan Interval (Near Realtime Frequency)` | Optional | The scan interval in seconds for Modbus registers that are to be scanned in near-real time. Default is 5 (seconds), and the minimum value is 1. |
 | `Scan Interval (High Frequency)` | Optional | The scan interval in seconds for Modbus registers that are to be scanned at a high frequency. Default is 10 (seconds), and the minimum value is 5. |
 | `Scan Interval (Medium Frequency)` | Optional | The scan interval in seconds for Modbus registers that are to be scanned at a medium frequency. Default is 60 (seconds), and the minimum value is 30. |
@@ -82,6 +59,29 @@ You must enter the IP address or host name of your **Sigenergy Modbus Host**. If
 | `PVOutput Temperature Topic` | Optional | The MQTT topic to which to subscribe to obtain the current temperature data for PVOutput. If specified, the temperature will be sent to PVOutput. |
 | `PVOutput Logging Level` | Optional | Set the PVOutput logging level. |
 
+## MQTT Broker Configuration
+
+If you are using the [Mosquitto Broker](https://github.com/home-assistant/addons/tree/master/mosquitto) Home Assistant Add-on, you can skip the MQTT configuration options. `sigenergy2mqtt` will retrieve them automatically.
+
+Otherwise, you _must_ enter the IP address or host name of the **MQTT Broker**, the **MQTT Port** (if it is not listening on the default port 1883), and if the broker requires authentication, the **MQTT User Name** and **MQTT Password**.
+
+| Option | Condition | Description |
+|--------|-----------|-------------|
+| `MQTT Broker` | Optional | The hostname or IP address of your MQTT broker. |
+| `MQTT Port` | Optional | The listening port of the MQTT broker. The default is 1883, unless MQTT TLS Communication is enabled, in which case the default is 8883. |
+| `MQTT TLS Communication Enabled` | Enable secure communication to MQTT broker over TLS/SSL (if the broker supports it). |
+| `MQTT User Name` | Optional | A valid user name for the MQTT broker. |
+| `MQTT Password` | Optional | A valid password for the MQTT broker username. |
+| `MQTT Logging Level` | Optional | Set the paho.mqtt logging level. |
+
+## Home Assistant Integration Configuration
+
+| Option | Condition | Description |
+|--------|-----------|-------------|
+| `Home Assistant Discovery Prefix` | Optional | Override the Home Assistant MQTT Discovery topic prefix to use. Only change this if you have already changed it in the MQTT settings in Home Assistant. The default is 'homeassistant'. |
+| `Home Assistant Entity ID Prefix` | Optional | The prefix to use for Home Assistant entity IDs. e.g. A prefix of 'prefix' will prepend 'prefix_' to entity IDs. If you don't specify a prefix, the entity ID will be prefixed with 'sigen'.  |
+| `Home Assistant Unique ID Prefix` | Optional | The prefix to use for Home Assistant unique IDs. e.g. A prefix of 'prefix' will prepend 'prefix_' to unique IDs. Once you have set this, you should NEVER change it, as it will break existing entities in Home Assistant. If you don't specify a prefix, the entity ID will be prefixed with 'sigen'. |
+| `Home Assistant Device Name Prefix` | Optional | The prefix to use for Home Assistant entity names. e.g. A prefix of 'prefix' will prepend 'prefix ' to entity names. The default is no prefix. |
 
 ## Third-Party PV Production Configuration
 

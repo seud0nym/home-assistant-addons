@@ -56,13 +56,29 @@ bashio::config.has_value 'mqtt_log_level' && CMD_PARAMETERS+=(--mqtt-log-level="
 [[ -z "${MQTT_USERNAME}${MQTT_PASSWORD}"  && $HAS_CONFIG == 0 ]] && CMD_PARAMETERS+=(--mqtt-anonymous)
 
 # Get Modbus parameters from the configuration
-bashio::config.has_value 'modbus_host'            && CMD_PARAMETERS+=(--modbus-host="$(bashio::config 'modbus_host')")
-bashio::config.has_value 'modbus_port'            && CMD_PARAMETERS+=(--modbus-port="$(bashio::config 'modbus_port')")
-bashio::config.has_value 'modbus_slave'           && CMD_PARAMETERS+=(--modbus-inverter-device-id $(bashio::config 'modbus_slave'))
-bashio::config.has_value 'modbus_accharger_slave' && CMD_PARAMETERS+=(--modbus-accharger-device-id $(bashio::config 'modbus_accharger_slave'))
-bashio::config.has_value 'modbus_dccharger_slave' && CMD_PARAMETERS+=(--modbus-dccharger-device-id $(bashio::config 'modbus_dccharger_slave'))
-bashio::config.has_value 'modbus_log_level'       && CMD_PARAMETERS+=(--modbus-log-level="$(bashio::config 'modbus_log_level')")
-bashio::config.has_value 'modbus_read_only'       && MODBUS_READ_ONLY="$(bashio::config 'modbus_read_only')"
+bashio::config.has_value 'modbus_force_auto_discovery' && MODBUS_AUTO_DISCOVERY="$(bashio::config 'modbus_force_auto_discovery')" || MODBUS_AUTO_DISCOVERY='false'
+bashio::config.has_value 'modbus_host'                 && MODBUS_HOST="$(bashio::config 'modbus_host')" || MODBUS_HOST=""
+if [[ "${MODBUS_AUTO_DISCOVERY}" == "true" ]]; then
+  bashio::log.info "Forcing Modbus auto-discovery"
+  CMD_PARAMETERS+=(--modbus-auto-discovery=force)
+  bashio::log.info "Resetting 'modbus_force_auto_discovery' to 'false'"
+  bashio::addon.option 'modbus_force_auto_discovery' 'false'
+  bashio::log.info "modbus_force_auto_discovery=$(bashio::config 'modbus_force_auto_discovery')"
+elif [[ -e /data/sigenergy2mqtt/auto-discovery.yaml ]]; then
+  bashio::log.info "Enabling Modbus auto-discovery because auto-discovery cache file exists"
+  CMD_PARAMETERS+=(--modbus-auto-discovery=once)
+elif [[ "$MODBUS_HOST" == "" ]]; then
+  bashio::log.info "Enabling Modbus auto-discovery because no Modbus host specified"
+  CMD_PARAMETERS+=(--modbus-auto-discovery=once)
+else
+  [[ "$MODBUS_HOST" != "" ]]                           && CMD_PARAMETERS+=(--modbus-host="${MODBUS_HOST}")
+  bashio::config.has_value 'modbus_slave'              && CMD_PARAMETERS+=(--modbus-inverter-device-id=$(bashio::config 'modbus_slave'))
+  bashio::config.has_value 'modbus_accharger_slave'    && CMD_PARAMETERS+=(--modbus-accharger-device-id=$(bashio::config 'modbus_accharger_slave'))
+  bashio::config.has_value 'modbus_dccharger_slave'    && CMD_PARAMETERS+=(--modbus-dccharger-device-id=$(bashio::config 'modbus_dccharger_slave'))
+fi
+bashio::config.has_value 'modbus_port'                 && CMD_PARAMETERS+=(--modbus-port="$(bashio::config 'modbus_port')")
+bashio::config.has_value 'modbus_log_level'            && CMD_PARAMETERS+=(--modbus-log-level="$(bashio::config 'modbus_log_level')")
+bashio::config.has_value 'modbus_read_only'            && MODBUS_READ_ONLY="$(bashio::config 'modbus_read_only')"
 if [[ "${MODBUS_READ_ONLY}" == "true" ]]; then
   CMD_PARAMETERS+=(--modbus-readonly) 
   bashio::log.info "Read-only mode enabled, no write operations can be performed."

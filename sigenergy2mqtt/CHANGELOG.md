@@ -1,10 +1,32 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 2025.8.17
+
+### What's Fixed?
+
+* Fixed bug in resetting calculated daily sensors on restart
+* Fixed names of AC/DC Charger Start/Stop buttons (previously labelled as Power On/Off)
+
+### What's New?
+
+* Auto-discovery of Sigenergy Modbus hosts and device IDs. This will happen by default if no Sigenergy Modbus Host is specified in the Configuration, or you may optionally force it.
+
+### What's Changed?
+
+* Upgraded dependencies:
+  * pymodbus: 3.11.0 → 3.11.1
+  * requests: 2.32.4 → 2.32.5
+  * ruamel.yaml: 0.18.14 → 0.18.15
+* Added CRITICAL logging level for PVOutput, MQTT and Modbus to eliminate all log messages except those that are fatal
+* Ensure the length of combined alarm sensor values does not exceed HA limit of 255 characters
+* Exclude .yaml files from stale file clean-up
+
 ## 2025.8.15
 
 ### What's Fixed?
 
 * Fixed AssertionError when creating AC Charger device
+
 
 ## 2025.8.11
 

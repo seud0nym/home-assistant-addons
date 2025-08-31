@@ -5,21 +5,24 @@ configuration:
   debug_sensor:
     name: Sensor to Debug
     description: Specify a sensor to be debugged using either the full entity id, a partial entity id, the full sensor class name, or a partial sensor class name. For example, specifying 'daily' would match all sensors with daily in their entity name. If specified, 'Logging Level' is also forced to DEBUG.
+  modbus_force_auto_discovery:
+    name: Force Modbus Auto Discovery
+    description: Enable to force the automatic discovery of Sigenergy Modbus hosts and associated Device IDs. You only need enable this if you have previously auto-discovered hosts/device IDs and your network or devices have changed.
   modbus_host:
     name: Sigenergy Modbus Host
-    description: The hostname or IP address of the Sigenergy device.
+    description: The hostname or IP address of the Sigenergy device. Leave blank to auto-discover Sigenergy devices on your network.
   modbus_port:
     name: Sigenergy Modbus Port
     description: The Sigenergy device Modbus port number.
   modbus_slave:
     name: Sigenergy Inverter Device ID
-    description: The Sigenergy Inverter Modbus Device ID. If you have multiple inverters, you can specify a space-separated list of IDs.
+    description: The Sigenergy Inverter Modbus Device ID. If you have multiple inverters, you can specify a space-separated list of IDs. Auto-discovery will identify inverter devices.
   modbus_accharger_slave:
     name: Sigenergy AC-Charger Device ID
-    description: The Sigenergy AC Charger Modbus Device ID.
+    description: The Sigenergy AC Charger Modbus Device ID. Auto-discovery will identify AC Charger devices.
   modbus_dccharger_slave:
     name: Sigenergy DC-Charger Device ID
-    description: The Sigenergy DC Charger Modbus Device ID.
+    description: The Sigenergy DC Charger Modbus Device ID. Auto-discovery will identify DC Charger devices.
   modbus_read_only:
     name: Modbus Read Only
     description: Enable to only read data from the Sigenergy device. Disable to allow writing data to the Sigenergy device.

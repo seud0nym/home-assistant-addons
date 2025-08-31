@@ -1,6 +1,6 @@
 # https://developers.home-assistant.io/docs/add-ons/configuration#add-on-config
 name: sigenergy2mqtt
-version: "2025.8.15"
+version: "2025.8.31"
 image: "ghcr.io/seud0nym/home-assistant-addon-sigenergy2mqtt-{arch}"
 slug: sigenergy2mqtt
 description: Publish Modbus data from Sigenergy to an MQTT Broker, with optional PVOutput updating
@@ -11,7 +11,9 @@ arch:
 init: false
 map:
   - addon_config
+host_network: true
 options:
+  modbus_force_auto_discovery: false
   modbus_host: ""
   modbus_slave: ""
   modbus_read_only: false 
@@ -19,6 +21,7 @@ options:
   pvoutput_api_key: ""
   pvoutput_system_id: ""
 schema:
+  modbus_force_auto_discovery: "bool"
   modbus_host: "str?"
   modbus_port: "port?"
   modbus_slave: "str?"
@@ -31,7 +34,7 @@ schema:
   scan_interval_high: "int(5,)?"
   scan_interval_realtime: "int(1,)?"
   sanity_check_default_kw: "int(1,)?" 
-  modbus_log_level: "list(DEBUG|INFO|WARNING|ERROR)?"
+  modbus_log_level: "list(DEBUG|INFO|WARNING|ERROR|CRITICAL)?"
   smartport_enabled: "bool?"
   smartport_module_name: "str?"
   smartport_host: "str?"
@@ -45,13 +48,13 @@ schema:
   pvoutput_system_id: "str?"
   pvoutput_consumption: "bool?"
   pvoutput_temp_topic: "str?"
-  pvoutput_log_level: "list(DEBUG|INFO|WARNING|ERROR)?"
+  pvoutput_log_level: "list(DEBUG|INFO|WARNING|ERROR|CRITICAL)?"
   mqtt_broker: "str?"
   mqtt_port: "port?"
   mqtt_tls: "bool?"
   mqtt_username: "str?"
   mqtt_password: "password?"
-  mqtt_log_level: "list(DEBUG|INFO|WARNING|ERROR)?"
+  mqtt_log_level: "list(DEBUG|INFO|WARNING|ERROR|CRITICAL)?"
   metrics_enabled: "bool?"
   log_level: "list(DEBUG|INFO|WARNING|ERROR)?"
   debug_sensor: "str?"
