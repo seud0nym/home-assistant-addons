@@ -1,10 +1,18 @@
 # Home Assistant Add-on: sigenergy2mqtt
 
+## Pre-Requisites
+
+The `sigenergy2mqtt` add-on requires an MQTT broker to operate. 
+
+You must either have installed the Home Assistant [Mosquitto broker add-on](https://github.com/home-assistant/addons/blob/master/mosquitto/DOCS.md) or have an existing MQTT broker that you have already integrated with Home Assistant.
+
+## Configuration
+
 You must configure the add-on before starting it.
 
 There are two ways to configure the add-on. You can provide basic configuration through the Configuration tab and/or you can upload a Configuration file.
 
-# Configuration File
+### Configuration File
 
 You can upload a [configuration file](https://github.com/seud0nym/sigenergy2mqtt/blob/main/sigenergy2mqtt.yaml) to the addon_configs directory on your Home Assistant server for more advanced configuration options. The file _must_ be named `sigenergy2mqtt.yaml`, and placed inside the directory under addon_configs that ends with `sigenergy2mqtt`.
 
@@ -17,11 +25,11 @@ home-assistant:
   enabled: true
 ```
 
-# Configuration Tab
+### Configuration Tab
 
 **NOTE:** These settings will **override** any identical settings in the configuration file.
 
-## `sigenergy2mqtt` General Configuration
+#### `sigenergy2mqtt` General Configuration
 
 | Option | Condition | Description |
 |--------|-----------|-------------|
@@ -29,9 +37,9 @@ home-assistant:
 | `Enable sigenergy2mqtt Metrics` | Optional | Enable the publication of sigenergy2mqtt metrics to Home Assistant. |
 | `Sensor to Debug` | Optional | Specify a sensor to be debugged using either the full entity id, a partial entity id, the full sensor class name, or a partial sensor class name. For example, specifying 'daily' would match all sensors with daily in their entity name. If specified, 'Logging Level' is also forced to DEBUG. |
 
-## Sigenergy Modbus Interface Configuration
+#### Sigenergy Modbus Interface Configuration
 
-You must enter the IP address or host name of your **Sigenergy Modbus Host**. If it is not listening on the default port 502, your must also enter the **Sigenergy Modbus Port**
+The Sigenergy Modbus Host and the Device IDs for Inverters, AC Chargers, and DC Chargers will be automatically discovered, or you may enter them manually. If your host is not listening on the default port 502, your _must_ enter the **Sigenergy Modbus Port**
 
 | Option | Condition | Description |
 |--------|-----------|-------------|
@@ -48,18 +56,63 @@ You must enter the IP address or host name of your **Sigenergy Modbus Host**. If
 | `Sanity Check Default kW` | Optional | The default value in kW used for sanity checks to validate the maximum and minimum values for actual value of power sensors and the delta value of energy sensors. The default value is 100 kW per second, meaning readings outside the range ±100 are ignored. |
 | `Modbus Logging Level` | Optional | Set the pymodbus logging level. |
 
-## PVOutput Configuration
+#### PVOutput Configuration
+
+If you enable status updates to PVOutput, you must enter both the ***API Key*** and ***System ID***. If you donate to PVOutput, you can configure the extended data fields (see below).
 
 | Option | Condition | Description |
 |--------|-----------|-------------|
 | `PVOutput Enabled` | Optional | Enable status updates to PVOutput. |
-| `PVOutput API Key` | Optional | Your API Key for PVOutput. This _mandatory_ if PVOutput enabled. |
-| `PVOutput System ID` | Optional | Your PVOutput System ID. This _mandatory_ if PVOutput enabled. |
-| `PVOutput Consumption` | Optional | Enable sending consumption status to PVOutput. |
+| `PVOutput API Key` | Optional | Your API Key for PVOutput. This is _mandatory_ if PVOutput enabled. |
+| `PVOutput System ID` | Optional | Your PVOutput System ID. This is _mandatory_ if PVOutput enabled. |
+| `PVOutput Consumption` | Optional | Enable sending consumption status to PVOutput. See note below. |
 | `PVOutput Temperature Topic` | Optional | The MQTT topic to which to subscribe to obtain the current temperature data for PVOutput. If specified, the temperature will be sent to PVOutput. |
+| `PVOutput Extended Data v7` | Optional | A sensor class name that will be used to populate the v7 extended data field in PVOutput. |
+| `PVOutput Extended Data v8` | Optional | A sensor class name that will be used to populate the v8 extended data field in PVOutput. |
+| `PVOutput Extended Data v9` | Optional | A sensor class name that will be used to populate the v9 extended data field in PVOutput. |
+| `PVOutput Extended Data v10` | Optional | A sensor class name that will be used to populate the v10 extended data field in PVOutput. |
+| `PVOutput Extended Data v11` | Optional | A sensor class name that will be used to populate the v11 extended data field in PVOutput. |
+| `PVOutput Extended Data v12` | Optional | A sensor class name that will be used to populate the v12 extended data field in PVOutput. |
 | `PVOutput Logging Level` | Optional | Set the PVOutput logging level. |
 
-## MQTT Broker Configuration
+##### PVOutput Consumption
+
+When you enable recording of consumption in PVOutput, PVOutput automatically calculates exports. The calculated exports, however, will always be incorrect because they do not take into consideration battery charge/discharger. Worse, the calculated exports figure _cannot_ be updated.
+
+If you do _not_ enable consumption, `sigenergy2mqtt` will upload your actual exports at the end of the day (along with the peak power reading).
+
+##### PVOutput Temperature
+
+You can publish temperature changes from Home Assistant using the the default weather integration, or whatever integration you use. This is an example of an automation that will publish the temperature whenever it changes (you will need to modify the `entity_id` to match your location):
+
+```yaml
+alias: Publish Current Temperature
+description: ""
+triggers:
+  - trigger: state
+    entity_id:
+      - weather.forecast_prahran
+    attribute: temperature
+conditions: []
+actions:
+  - action: mqtt.publish
+    data:
+      qos: "1"
+      retain: true
+      topic: homeassistant/weather/temperature
+      payload: "{{ state_attr(\"weather.forecast_prahran\", \"temperature\") }}"
+mode: single
+```
+
+Once you have this automation running, you can add it to your PVOutput status uploads by specifying the MQTT topic `homeassistant/weather/temperature` in the `PVOutput Temperature Topic` configuration field.
+
+##### PVOutput Extended Data Fields
+
+Extended data fields are only sent to PVOutput if your donation status is current. 
+
+The sensor class names that you can use for these fields can be found in the Attributes of the sensor you wish to send to PVOutput. You can use any sensor that shows a numeric value. If a sensor class is used for multiple sensors (e.g. the `PhaseVoltage` sensor class is used for phases A, B and C), the sensor values will be averaged and a single value sent to PVOutput.
+
+#### MQTT Broker Configuration
 
 If you are using the [Mosquitto Broker](https://github.com/home-assistant/addons/tree/master/mosquitto) Home Assistant Add-on, you can skip the MQTT configuration options. `sigenergy2mqtt` will retrieve them automatically.
 
@@ -74,7 +127,9 @@ Otherwise, you _must_ enter the IP address or host name of the **MQTT Broker**, 
 | `MQTT Password` | Optional | A valid password for the MQTT broker username. |
 | `MQTT Logging Level` | Optional | Set the paho.mqtt logging level. |
 
-## Home Assistant Integration Configuration
+#### Home Assistant Integration Configuration
+
+These optional settings should only changed if you have very specific requirements.
 
 | Option | Condition | Description |
 |--------|-----------|-------------|
@@ -83,7 +138,11 @@ Otherwise, you _must_ enter the IP address or host name of the **MQTT Broker**, 
 | `Home Assistant Unique ID Prefix` | Optional | The prefix to use for Home Assistant unique IDs. e.g. A prefix of 'prefix' will prepend 'prefix_' to unique IDs. Once you have set this, you should NEVER change it, as it will break existing entities in Home Assistant. If you don't specify a prefix, the entity ID will be prefixed with 'sigen'. |
 | `Home Assistant Device Name Prefix` | Optional | The prefix to use for Home Assistant entity names. e.g. A prefix of 'prefix' will prepend 'prefix ' to entity names. The default is no prefix. |
 
-## Third-Party PV Production Configuration
+#### Third-Party PV Production Configuration
+
+Third-party PV is an optional configuration if you wish faster updates than the Sigenergy Modbus Third-party PC sensors provide.
+
+At this time, only Enphase Envoy with firmware versions prefixed with D7 and D8 can be directly integrated. Other third-party PV systems may be integrated if their data can be derived via MQTT.
 
 | Option | Condition | Description |
 |--------|-----------|-------------|

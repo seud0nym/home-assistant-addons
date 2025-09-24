@@ -1,6 +1,35 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
-## 2025.8.17
+## 2025.9.24
+
+### What's Fixed?
+
+* Installations with multiple inverters were not able to enter multiple device ids [(#36)](https://github.com/seud0nym/sigenergy2mqtt/issues/36)
+* Auto-discovery could not be over-ridden by manually configuring a `Sigenergy Modbus Host` [(#36)](https://github.com/seud0nym/sigenergy2mqtt/issues/36)
+* Auto-discovery could duplicate plant and inverters when connected to LAN by both ethernet and Wi-Fi [(#36)](https://github.com/seud0nym/sigenergy2mqtt/issues/36)
+* AC/DC Charger Start/Stop actions reversed
+* MQTT subscriptions were not being renewed on reconnection to the MQTT broker (e.g. after updating the Mosquitto add-on), so no control value changes were being processed and no data was uploaded to PVOutput until add-on was restarted
+* Status uploads are now only sent to PVOutput if the source sensors are being updated
+* Improved documentation
+
+### What's New?
+
+* PVOutput donators can now specify up to six numeric sensor classes to be uploaded as extended data
+* Verification of PVOutput daily upload and retry if not recorded correctly
+
+### What's Changed?
+
+* Refactored Phase sensors and sensors that have string values to remove code duplication
+* Refactored sensor publishing locking strategy
+* Refactored Modbus handling to reduce number of reads and improve performance at high-frequency scan intervals
+* Added sanity checks to inverter power factor and temperature sensors
+* Upgraded home-assistant/builder: 2025.03.0 → 2025.09.0
+* Upgraded dependencies:
+  * pymodbus: 3.11.1 → 3.11.2
+  * psutil: 7.0.0 → 7.1.0
+
+
+## 2025.8.31
 
 ### What's Fixed?
 
@@ -20,6 +49,7 @@
 * Added CRITICAL logging level for PVOutput, MQTT and Modbus to eliminate all log messages except those that are fatal
 * Ensure the length of combined alarm sensor values does not exceed HA limit of 255 characters
 * Exclude .yaml files from stale file clean-up
+
 
 ## 2025.8.15
 
