@@ -1,5 +1,12 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 2025.9.24-1
+
+### What's Fixed?
+
+* Installations with multiple inverters were _still_ not able to manually define multiple device ids [(#36)](https://github.com/seud0nym/sigenergy2mqtt/issues/36)
+
+
 ## 2025.9.24
 
 ### What's Fixed?

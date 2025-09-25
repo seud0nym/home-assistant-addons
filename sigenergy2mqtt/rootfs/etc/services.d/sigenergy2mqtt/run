@@ -71,24 +71,18 @@ elif [[ "$MODBUS_HOST" == "" ]]; then
   bashio::log.info "Enabling Modbus auto-discovery because no Modbus host specified"
   CMD_PARAMETERS+=(--modbus-auto-discovery=once)
 else
-  [[ "$MODBUS_HOST" != "" ]] && CMD_PARAMETERS+=(--modbus-host="${MODBUS_HOST}")
+  CMD_PARAMETERS+=(--modbus-host="${MODBUS_HOST}")
   if bashio::config.has_value 'modbus_slave'; then
-    IFS=', '
-    for id in $(bashio::config 'modbus_slave'); do
-      CMD_PARAMETERS+=(--modbus-inverter-device-id=$id)
-    done
+    id=$(bashio::config 'modbus_slave')
+    CMD_PARAMETERS+=(--modbus-inverter-device-id ${id//,/ })
   fi
   if bashio::config.has_value 'modbus_accharger_slave'; then
-    IFS=', '
-    for id in $(bashio::config 'modbus_accharger_slave'); do
-      CMD_PARAMETERS+=(--modbus-accharger-device-id=$id)
-    done
+    id=$(bashio::config 'modbus_accharger_slave')
+    CMD_PARAMETERS+=(--modbus-accharger-device-id ${id//,/ })
   fi
   if bashio::config.has_value 'modbus_dccharger_slave'; then
-    IFS=', '
-    for id in $(bashio::config 'modbus_dccharger_slave'); do
-      CMD_PARAMETERS+=(--modbus-dccharger-device-id=$id)
-    done
+    id=$(bashio::config 'modbus_dccharger_slave')
+    CMD_PARAMETERS+=(--modbus-dccharger-device-id ${id//,/ })
   fi
 fi
 bashio::config.has_value 'modbus_port'               && CMD_PARAMETERS+=(--modbus-port="$(bashio::config 'modbus_port')")

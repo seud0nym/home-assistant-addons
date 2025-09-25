@@ -16,13 +16,13 @@ configuration:
     description: The Sigenergy device Modbus port number.
   modbus_slave:
     name: Sigenergy Inverter Device ID
-    description: The Sigenergy Inverter Modbus Device ID. If you have multiple inverters, you can specify a space-separated list of IDs. Auto-discovery will identify inverter devices.
+    description: The Sigenergy Inverter Modbus Device ID. If you have multiple inverters, you can specify a space-separated list of IDs. Ignored if no Modbus Host specified. Otherwise, auto-discovery can identify inverter devices.
   modbus_accharger_slave:
     name: Sigenergy AC-Charger Device ID
-    description: The Sigenergy AC Charger Modbus Device ID. Auto-discovery will identify AC Charger devices.
+    description: The Sigenergy AC Charger Modbus Device ID. Ignored if no Modbus Host specified. Otherwise, auto-discovery can identify AC Charger devices.
   modbus_dccharger_slave:
     name: Sigenergy DC-Charger Device ID
-    description: The Sigenergy DC Charger Modbus Device ID. Auto-discovery will identify DC Charger devices.
+    description: The Sigenergy DC Charger Modbus Device ID. Ignored if no Modbus Host specified. Otherwise, auto-discovery can identify DC Charger devices.
   modbus_read_only:
     name: Modbus Read Only
     description: Enable to only read data from the Sigenergy device. Disable to allow writing data to the Sigenergy device.
