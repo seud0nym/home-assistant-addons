@@ -1,5 +1,36 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 2025.10.5
+
+### Known Issues
+
+1. Invalid Inverter Power Factor values outside of the valid range of 0.0 to 1.0 have been ignored and not published since Release 2025.9.24 (although a warning log message is generated). Nonsensical values like 64.5 have been reported to Sigenergy with detailed logs.
+1. The PVOutput end-of-day output upload (exports, imports, and peak power) sometimes appears to fail with no reason. Peak power gets recorded, but exports and imports do not appear in the Daily Standard or Details views in PVOutput. No error is reported by PVOutput. This problem is still under investigation.
+
+### What's Fixed
+
+* Corrected the state class for Total Consumption on Smart Load ports (should be TOTAL INCREASING, not TOTAL) [(#39)](https://github.com/seud0nym/sigenergy2mqtt/pull/39) - Thanks to @3432
+* Home Assistant MQTT auto-discovery requires "default_entity_id" instead of "object_id" as of Core 2025.10
+
+### What's Changed?
+
+* Reworked PVOutput upload to try and fix several issues:
+  * Changed scheduling logic because end-of-day output upload (export/import/peak power) could drift past midnight [(#36)](https://github.com/seud0nym/sigenergy2mqtt/pull/36)
+  * Upload of exports and imports can now be disabled (in addition to consumption which was already optional)
+  * End of day totals upload can now be scheduled to run at same interval as status updates, which means that export/import/peak power changes are visible during the day, rather than having to wait until next day
+  * Under some circumstances, some data was missing from the uploads
+* Auto-discovery changes:
+  * Modbus devices with lowest latency will be scanned first, to try and detect the Ethernet connection in preference to the Wi-Fi connection
+  * Already detected serial numbers will be ignored to prevent duplication of devices that have both Ethernet and Wi-Fi connectivity 
+* Retry failed MQTT connection on start-up 3 times at 30 second intervals before failing
+* Upgraded dependencies:
+  * pymodbus: 3.11.2 → 3.11.3
+
+### What's New?
+
+* Added tracing of Modbus packets when sensor debugging enabled
+
+
 ## 2025.9.24-1
 
 ### What's Fixed?

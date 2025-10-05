@@ -136,11 +136,19 @@ if bashio::config.has_value 'pvoutput_enabled'; then
       bashio::log.fatal "PVOutput enabled, but API Key and/or System ID not found; cannot continue."
       exit 1
     fi
+    bashio::log.info "PVOutput enabled, using API Key: [REDACTED: ${#PVOUTPUT_API_KEY} chars] System ID: ${PVOUTPUT_SYSTEM_ID}"  
+    bashio::config.has_value 'pvoutput_consumption' && PVOUTPUT_CONSUMPTION=$(bashio::config 'pvoutput_consumption')
+    bashio::config.has_value 'pvoutput_exports'     && PVOUTPUT_EXPORTS=$(bashio::config 'pvoutput_exports')
+    bashio::config.has_value 'pvoutput_imports'     && PVOUTPUT_IMPORTS=$(bashio::config 'pvoutput_imports')
+    bashio::config.has_value 'pvoutput_eod_update'  && PVOUTPUT_EOD_UPDATE=$(bashio::config 'pvoutput_eod_update')
+    [[ "${PVOUTPUT_CONSUMPTION}" == "true" && ("${PVOUTPUT_EXPORTS}" == "true" || "${PVOUTPUT_IMPORTS}" == "true") ]] && bashio::log.warning "PVOutput upload of Consumption AND Exports and/or Imports enabled: PVOutput may ignore uploaded Exports/Imports"  
     CMD_PARAMETERS+=(--pvoutput-enabled)
     CMD_PARAMETERS+=(--pvoutput-api-key="${PVOUTPUT_API_KEY}")
     CMD_PARAMETERS+=(--pvoutput-system-id="${PVOUTPUT_SYSTEM_ID}")
-    bashio::log.info "PVOutput enabled, using API Key: [REDACTED: ${#PVOUTPUT_API_KEY} chars] System ID: ${PVOUTPUT_SYSTEM_ID}"  
-    bashio::config.has_value 'pvoutput_consumption' && bashio::config 'pvoutput_consumption' && CMD_PARAMETERS+=(--pvoutput-consumption)
+    [[ "${PVOUTPUT_CONSUMPTION}" == "true" ]]       && CMD_PARAMETERS+=(--pvoutput-consumption)
+    [[ "${PVOUTPUT_EXPORTS}" == "true" ]]           && CMD_PARAMETERS+=(--pvoutput-exports)
+    [[ "${PVOUTPUT_IMPORTS}" == "true" ]]           && CMD_PARAMETERS+=(--pvoutput-imports)
+    [[ "${PVOUTPUT_EOD_UPDATE}" != "true" ]]        && CMD_PARAMETERS+=(--pvoutput-output-hour=-1)
     bashio::config.has_value 'pvoutput_temp_topic'  && CMD_PARAMETERS+=(--pvoutput-temp-topic="$(bashio::config 'pvoutput_temp_topic')")
     bashio::config.has_value 'pvoutput_log_level'   && CMD_PARAMETERS+=(--pvoutput-log-level="$(bashio::config 'pvoutput_log_level')")
     bashio::config.has_value 'pvoutput_ext_v7'      && CMD_PARAMETERS+=(--pvoutput-ext-v7="$(bashio::config 'pvoutput_ext_v7')")

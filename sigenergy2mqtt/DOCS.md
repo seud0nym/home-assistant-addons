@@ -65,7 +65,10 @@ If you enable status updates to PVOutput, you must enter both the ***API Key*** 
 | `PVOutput Enabled` | Optional | Enable status updates to PVOutput. |
 | `PVOutput API Key` | Optional | Your API Key for PVOutput. This is _mandatory_ if PVOutput enabled. |
 | `PVOutput System ID` | Optional | Your PVOutput System ID. This is _mandatory_ if PVOutput enabled. |
-| `PVOutput Consumption` | Optional | Enable sending consumption status to PVOutput. See note below. |
+| `PVOutput Consumption` | Optional | Enable sending consumption data to PVOutput. See note below. |
+| `PVOutput Exports` | Optional | Enable sending export data to PVOutput. See note below. |
+| `PVOutput Imports` | Optional | Enable sending import data to PVOutput. See note below. |
+| `PVOutput End-of-Day Upload` | Optional | If enabled, peak generation and the daily totals for exports and imports (if enabled) are sent to PVOutput at end of day. If disabled, these values are uploaded on the same schedule as status updates. |
 | `PVOutput Temperature Topic` | Optional | The MQTT topic to which to subscribe to obtain the current temperature data for PVOutput. If specified, the temperature will be sent to PVOutput. |
 | `PVOutput Extended Data v7` | Optional | A sensor class name that will be used to populate the v7 extended data field in PVOutput. |
 | `PVOutput Extended Data v8` | Optional | A sensor class name that will be used to populate the v8 extended data field in PVOutput. |
@@ -75,11 +78,13 @@ If you enable status updates to PVOutput, you must enter both the ***API Key*** 
 | `PVOutput Extended Data v12` | Optional | A sensor class name that will be used to populate the v12 extended data field in PVOutput. |
 | `PVOutput Logging Level` | Optional | Set the PVOutput logging level. |
 
-##### PVOutput Consumption
+##### PVOutput Consumption, Exports and Imports
 
-When you enable recording of consumption in PVOutput, PVOutput automatically calculates exports. The calculated exports, however, will always be incorrect because they do not take into consideration battery charge/discharger. Worse, the calculated exports figure _cannot_ be updated.
+When you enable recording of consumption in PVOutput, PVOutput automatically calculates exports and imports. The calculated values, however, will probably be incorrect because they do not take into consideration battery charge/discharger. 
 
-If you do _not_ enable consumption, `sigenergy2mqtt` will upload your actual exports at the end of the day (along with the peak power reading).
+`sigenergy2mqtt` can upload your actual exports and imports at the end of the day (along with the peak power reading), if it is enabled in your configuration. This is the default. 
+
+If consumption and either or both of exports/imports are enabled, PVOutput may automatically calculate exports and imports and the uploaded values may be ignored.
 
 ##### PVOutput Temperature
 

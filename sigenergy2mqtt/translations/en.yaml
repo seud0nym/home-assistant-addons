@@ -82,7 +82,16 @@ configuration:
     description: The PVOutput System ID
   pvoutput_consumption:
     name: PVOutput Consumption
-    description: Enable sending consumption status to PVOutput. WARNING - If enabled, PVOutput will incorrectly calculate exports! 
+    description: Enable sending consumption status to PVOutput. If enabled, PVOutput may incorrectly calculate exports and imports! 
+  pvoutput_exports:
+    name: PVOutput Exports
+    description: Enable sending export data to PVOutput. If consumption reporting is also enabled, uploaded export values may be ignored by PVOutput.
+  pvoutput_imports:
+    name: PVOutput Imports
+    description: Enable sending import data to PVOutput. If consumption reporting is also enabled, uploaded import values may be ignored by PVOutput.
+  pvoutput_eod_update:
+    name: PVOutput End-of-Day Upload 
+    description: If enabled, peak generation and the daily totals for exports and imports (if enabled) are sent to PVOutput at end of day. If disabled, these values are uploaded on the same schedule as status updates.
   pvoutput_temp_topic: 
     name: PVOutput Temperature Topic
     description: The MQTT topic to which to subscribe to obtain the current temperature data for PVOutput. If specified, the temperature will be sent to PVOutput.
