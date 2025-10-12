@@ -1,5 +1,16 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 2025.10.12
+
+### What's Fixed
+
+* Fixed default_entity_id missing platform prefix in Home Assistant MQTT auto-discovery that caused all sensors to be named `unnamed_device_xx_xxx` ([#44](https://github.com/seud0nym/sigenergy2mqtt/issues/44)/[#45](https://github.com/seud0nym/sigenergy2mqtt/issues/45)) for _new_ installs
+
+### What's Changed
+
+* Internal code refactoring in PVOutput services
+
+
 ## 2025.10.5
 
 ### Known Issues
@@ -10,12 +21,12 @@
 ### What's Fixed
 
 * Corrected the state class for Total Consumption on Smart Load ports (should be TOTAL INCREASING, not TOTAL) [(#39)](https://github.com/seud0nym/sigenergy2mqtt/pull/39) - Thanks to @3432
-* Home Assistant MQTT auto-discovery requires "default_entity_id" instead of "object_id" as of Core 2025.10
+* Home Assistant MQTT auto-discovery requires "default_entity_id" as of Core 2025.10
 
 ### What's Changed?
 
 * Reworked PVOutput upload to try and fix several issues:
-  * Changed scheduling logic because end-of-day output upload (export/import/peak power) could drift past midnight [(#36)](https://github.com/seud0nym/sigenergy2mqtt/pull/36)
+  * Changed scheduling logic because end-of-day output upload (export/import/peak power) could drift past midnight [(#36)](https://github.com/seud0nym/sigenergy2mqtt/issues/36)
   * Upload of exports and imports can now be disabled (in addition to consumption which was already optional)
   * End of day totals upload can now be scheduled to run at same interval as status updates, which means that export/import/peak power changes are visible during the day, rather than having to wait until next day
   * Under some circumstances, some data was missing from the uploads
