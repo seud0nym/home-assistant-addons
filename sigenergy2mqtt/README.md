@@ -13,7 +13,7 @@
 ## Optional features: 
 
 * Auto-discovery of Sigenergy hosts and device IDs for inverters and chargers
-* You can automatically upload your production (and optionally, consumption) data to [PVOutput](https://pvoutput.org/).
+* You can automatically upload your generation, battery (for donators only) and optionally, consumption, exports and imports, data to [PVOutput](https://pvoutput.org/).
 * `sigenergy2mqtt` can incorporate third-party PV production via internal Python modules (at this stage, only Enphase micro-inverters are supported), or by subscribing to an MQTT topic that provides the data, as an alternative to using the Sigenergy Modbus registers for third-party PV.
 
 ## Issues

@@ -58,37 +58,38 @@ The Sigenergy Modbus Host and the Device IDs for Inverters, AC Chargers, and DC 
 
 #### PVOutput Configuration
 
-If you enable status updates to PVOutput, you must enter both the ***API Key*** and ***System ID***. If you donate to PVOutput, you can configure the extended data fields (see below).
+If you enable status updates to PVOutput, you must enter both the ***API Key*** and ***System ID***. If you donate to PVOutput, battery data will be uploaded and you can configure the extended data fields (see below).
 
-| Option | Condition | Description |
-|--------|-----------|-------------|
-| `PVOutput Enabled` | Optional | Enable status updates to PVOutput. |
-| `PVOutput API Key` | Optional | Your API Key for PVOutput. This is _mandatory_ if PVOutput enabled. |
-| `PVOutput System ID` | Optional | Your PVOutput System ID. This is _mandatory_ if PVOutput enabled. |
-| `PVOutput Consumption` | Optional | Enable sending consumption data to PVOutput. See note below. |
-| `PVOutput Exports` | Optional | Enable sending export data to PVOutput. See note below. |
-| `PVOutput Imports` | Optional | Enable sending import data to PVOutput. See note below. |
-| `PVOutput End-of-Day Upload` | Optional | If enabled, peak generation and the daily totals for exports and imports (if enabled) are sent to PVOutput at end of day. If disabled, these values are uploaded on the same schedule as status updates. |
-| `PVOutput Temperature Topic` | Optional | The MQTT topic to which to subscribe to obtain the current temperature data for PVOutput. If specified, the temperature will be sent to PVOutput. |
-| `PVOutput Extended Data v7` | Optional | A sensor class name that will be used to populate the v7 extended data field in PVOutput. |
-| `PVOutput Extended Data v8` | Optional | A sensor class name that will be used to populate the v8 extended data field in PVOutput. |
-| `PVOutput Extended Data v9` | Optional | A sensor class name that will be used to populate the v9 extended data field in PVOutput. |
-| `PVOutput Extended Data v10` | Optional | A sensor class name that will be used to populate the v10 extended data field in PVOutput. |
-| `PVOutput Extended Data v11` | Optional | A sensor class name that will be used to populate the v11 extended data field in PVOutput. |
-| `PVOutput Extended Data v12` | Optional | A sensor class name that will be used to populate the v12 extended data field in PVOutput. |
-| `PVOutput Logging Level` | Optional | Set the PVOutput logging level. |
+<table>
+  <thead><tr><th>Option</th><th>Condition</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>PVOutput Enabled</code></td><td>Optional</td><td>Enable status updates to PVOutput.</td></tr>
+    <tr><td><code>PVOutput API Key</code></td><td>Optional</td><td>Your API Key for PVOutput. This is <i>mandatory</i> if PVOutput enabled.</td></tr>
+    <tr><td><code>PVOutput System ID</code></td><td>Optional</td><td>Your PVOutput System ID. This is <i>mandatory</i> if PVOutput enabled.</td></tr>
+    <tr><td><code>PVOutput Consumption</code></td><td>Optional</td><td>Enable sending consumption data to PVOutput.</td></tr>
+    <tr><td><code>PVOutput Exports</code></td><td>Optional</td><td>Enable sending export data to PVOutput.</td></tr>
+    <tr><td><code>PVOutput Imports</code></td><td>Optional</td><td>Enable sending import data to PVOutput.</td></tr>
+    <tr><td><code>PVOutput End-of-Day Upload</code></td><td>Optional</td><td>If enabled, peak generation and the daily totals for exports and imports (if enabled) are sent to PVOutput at end of day <i>only</i>.<br>If disabled, these values are uploaded at the same interval as status updates.</td></tr>
+    <tr><td><code>PVOutput Temperature Topic</code></td><td>Optional</td><td>The MQTT topic to which to subscribe to obtain the current temperature data for PVOutput. If specified, the temperature will be sent to PVOutput. See note below.</td></tr>
+    <tr><td><code>PVOutput Extended Data v7</code></td><td>Optional</td><td rowspan=6>A sensor class name, or entity_id without the 'sensor.' prefix, that will be used to populate the associated extended data field in PVOutput. If not specified, OR your donation status is not current, the field will not be sent to PVOutput. You can use any sensor with a numeric value.<br><br> See note below.</td></tr>
+    <tr><td><code>PVOutput Extended Data v8</code></td><td>Optional</td></tr>
+    <tr><td><code>PVOutput Extended Data v9</code></td><td>Optional</td></tr>
+    <tr><td><code>PVOutput Extended Data v10</code></td><td>Optional</td></tr>
+    <tr><td><code>PVOutput Extended Data v11</code></td><td>Optional</td></tr>
+    <tr><td><code>PVOutput Extended Data v12</code></td><td>Optional</td></tr>
+    <tr><td><code>PVOutput Logging Level</code></td><td>Optional</td><td>Set the PVOutput logging level.</td></tr>
+  </tbody>
+</table>
 
-##### PVOutput Consumption, Exports and Imports
+##### PVOutput Battery Data
 
-When you enable recording of consumption in PVOutput, PVOutput automatically calculates exports and imports. The calculated values, however, will probably be incorrect because they do not take into consideration battery charge/discharger. 
-
-`sigenergy2mqtt` can upload your actual exports and imports at the end of the day (along with the peak power reading), if it is enabled in your configuration. This is the default. 
-
-If consumption and either or both of exports/imports are enabled, PVOutput may automatically calculate exports and imports and the uploaded values may be ignored.
+If your donation status is current, the Battery Power, SoC, Usable Capacity, and Lifetime Charge/Discharge will be automatically uploaded with each status update.
 
 ##### PVOutput Temperature
 
-You can publish temperature changes from Home Assistant using the the default weather integration, or whatever integration you use. This is an example of an automation that will publish the temperature whenever it changes (you will need to modify the `entity_id` to match your location):
+You can publish temperature to PVOutput. As an add-on, `sigenergy2mqtt` does not have direct access to the Home Assistant sensors. It can only consume temperature that has been published to MQTT.
+
+If your Home Assistant weather integration does not publish the temperature to MQTT, you can create an automation that will publish the temperature whenever it changes. This is an example (you will need to modify the `entity_id` to match your location):
 
 ```yaml
 alias: Publish Current Temperature
@@ -115,7 +116,10 @@ Once you have this automation running, you can add it to your PVOutput status up
 
 Extended data fields are only sent to PVOutput if your donation status is current. 
 
-The sensor class names that you can use for these fields can be found in the Attributes of the sensor you wish to send to PVOutput. You can use any sensor that shows a numeric value. If a sensor class is used for multiple sensors (e.g. the `PhaseVoltage` sensor class is used for phases A, B and C), the sensor values will be averaged and a single value sent to PVOutput.
+The sensor class names that you can use for these fields can be found in the Attributes of the sensor you wish to send to PVOutput. You can use any sensor that shows a numeric value. 
+
+If a sensor class is used for multiple sensors (e.g. the `PhaseVoltage` sensor class is used for phases A, B and C), the sensor values will be averaged and a single value sent to PVOutput.
+If you specify an Energy sensor class, the value sent to PVOutput will be the <i>power</i> value over the Status Interval.
 
 #### MQTT Broker Configuration
 

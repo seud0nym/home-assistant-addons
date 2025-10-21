@@ -1,5 +1,29 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 2025.10.21
+
+### What's Fixed
+
+* Changed the way that the random MQTT Client ID was generated because of issues with entropy in Docker containers ([#47](https://github.com/seud0nym/sigenergy2mqtt/issues/47))
+* Now exits gracefully with an appropriate error message if auto-discovery fails to find a device, rather than just crashing ([#49](https://github.com/seud0nym/sigenergy2mqtt/issues/49))
+* Fixed bug in detection of PVOutput donation status that caused it to always be false, so extended data fields were never uploaded
+* Data errors in PVOutput uploads are now reported correctly and do not trigger a retry of the upload
+* During a grid outage, AC/DC charger power will be ignored in the calculation of Plant Consumed Power because if these devices are not backed up, the absence of data causes consumption to not be published
+
+### What's Changed
+
+* All scan intervals now have a minimum interval of 1 second
+* Generation and consumption uploaded to PVOutput is now the power value over the status interval (rather than uploading lifetime energy and letting PVOutput calculate power) so that the system will show correctly in Live Outputs
+* If an energy sensor is specified in the PVOutput extended data fields, the value sent to PVOutput will be the power value over the status interval for consistency with other PVOutput uploads
+* The entity id can now be used to specify PVOutput extended data fields (sensor class name can still be used)
+* Upgraded dependencies:
+  * psutil: 7.1.0 → 7.1.1
+
+### What's New?
+
+* PVOutput now supports battery data (for donators only), so status updates will now automatically include Battery Power, SoC, Usable Capacity, and Lifetime Charge/Discharge
+
+
 ## 2025.10.12
 
 ### What's Fixed
