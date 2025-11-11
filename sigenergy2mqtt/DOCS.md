@@ -43,17 +43,22 @@ The Sigenergy Modbus Host and the Device IDs for Inverters, AC Chargers, and DC 
 
 | Option | Condition | Description |
 |--------|-----------|-------------|
-| `Force Modbus Auto Discovery` | Optional | Enable to force the automatic discovery of Sigenergy Modbus hosts and associated Device IDs. You only need enable this if you have previously auto-discovered hosts/device IDs and your network or devices have changed. Once auto-discovery has been forced, this option will be reset to disabled. However, this may not be reflected in the Configuration User Interface. |
-| `Sigenergy Modbus Host` | Optional | The hostname or IP address of the Sigenergy device. If you do not specify the host, auto-discovery will be attempted. If a host is auto-discovered, all associated Device IDs will also be auto-discovered. Auto-discovery results are cached, so you only need to force auto-discovery if anything has changed. |
-| `Sigenergy Modbus Port` | Optional | The Sigenergy device Modbus port number. The default is **502** |
-| `Sigenergy Inverter Device ID` | Optional | The Sigenergy Inverter Modbus Device ID. This defaults to **1** if not specified, *OR* it will be determined automatically during auto-discovery. |
-| `Sigenergy AC-Charger Device ID` | Optional | The Sigenergy AC Charger Modbus Device ID. Auto-discovery will identify AC Charger devices. |
-| `Sigenergy DC-Charger Device ID` | Optional | The Sigenergy DC Charger Modbus Device ID. Auto-discovery will identify DC Charger devices. |
-| `Scan Interval (Near Realtime Frequency)` | Optional | The scan interval in seconds for Modbus registers that are to be scanned in near-real time. Default is 5 (seconds), and the minimum value is 1. |
-| `Scan Interval (High Frequency)` | Optional | The scan interval in seconds for Modbus registers that are to be scanned at a high frequency. Default is 10 (seconds), and the minimum value is 5. |
-| `Scan Interval (Medium Frequency)` | Optional | The scan interval in seconds for Modbus registers that are to be scanned at a medium frequency. Default is 60 (seconds), and the minimum value is 30. |
-| `Scan Interval (Low Frequency)` | Optional | The scan interval in seconds for Modbus registers that are to be scanned at a low frequency. Default is 600 (seconds), and the minimum value is 300. |
-| `Sanity Check Default kW` | Optional | The default value in kW used for sanity checks to validate the maximum and minimum values for actual value of power sensors and the delta value of energy sensors. The default value is 100 kW per second, meaning readings outside the range ±100 are ignored. |
+| `Force Modbus Auto-Discovery` | Optional | Enable to force the automatic discovery of Sigenergy Modbus hosts and associated Device IDs. You only need enable this if you have previously auto-discovered hosts/device IDs and your network or devices have changed. Once auto-discovery has been forced, this option will be reset to disabled. However, this may _not_ be reflected in the Configuration User Interface. |
+| `Auto-Discovery Ping Timeout` | Optional | The ping timeout, in seconds, to use when performing auto-discovery of Sigenergy devices on the network. The default is **0.5** (seconds). |
+| `Auto-Discovery Modbus Timeout` | Optional | The Modbus timeout, in seconds, to use when performing auto-discovery of Sigenergy devices on the network. The default is **0.25** (seconds). |
+| `Auto-Discovery Modbus Retries` | Optional | The maximum retry count to use when performing auto-discovery of Sigenergy devices on the network. The default is **0**.
+| `Modbus Host` | Optional | The hostname or IP address of the Sigenergy device. If you do not specify the host, auto-discovery will be attempted. If a host is auto-discovered, all associated Device IDs will also be auto-discovered. Auto-discovery results are cached, so you only need to force auto-discovery if anything has changed. |
+| `Modbus Port` | Optional | The Sigenergy device Modbus port number. The default is **502** |
+| `Inverter Device ID` | Optional | The Sigenergy Inverter Modbus Device ID. This defaults to **1** if not specified, *OR* it will be determined automatically during auto-discovery. |
+| `AC-Charger Device ID` | Optional | The Sigenergy AC Charger Modbus Device ID. Auto-discovery will identify AC Charger devices. |
+| `DC-Charger Device ID` | Optional | The Sigenergy DC Charger Modbus Device ID. Auto-discovery will identify DC Charger devices. |
+| `Read Only` | Optional | Enable to only read data from the Sigenergy device. Disable to allow writing data to the Sigenergy device. |
+| `No Remote EMS` | Optional | Enable to hide all read/write sensors used for remote Energy Management System (EMS) integration. This may be applicable if, for example, you are part of a VPP which manages the battery. Ignored if 'Modbus Read Only' is enabled. |
+| `Scan Interval (Near Realtime Frequency)` | Optional | The scan interval in seconds for Modbus registers that are to be scanned in near-real time. Default is **5** (seconds), and the minimum value is 1. |
+| `Scan Interval (High Frequency)` | Optional | The scan interval in seconds for Modbus registers that are to be scanned at a high frequency. Default is **10** (seconds), and the minimum value is 1. |
+| `Scan Interval (Medium Frequency)` | Optional | The scan interval in seconds for Modbus registers that are to be scanned at a medium frequency. Default is **60** (seconds), and the minimum value is 1. |
+| `Scan Interval (Low Frequency)` | Optional | The scan interval in seconds for Modbus registers that are to be scanned at a low frequency. Default is **600** (seconds), and the minimum value is 1. |
+| `Sanity Check Default kW` | Optional | The default value in kW used for sanity checks to validate the maximum and minimum values for actual value of power sensors and the delta value of energy sensors. The default value is **100** kW per second, meaning readings outside the range ±100 are ignored. |
 | `Modbus Logging Level` | Optional | Set the pymodbus logging level. |
 
 #### PVOutput Configuration

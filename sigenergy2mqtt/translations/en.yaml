@@ -6,29 +6,38 @@ configuration:
     name: Sensor to Debug
     description: Specify a sensor to be debugged using either the full entity id, a partial entity id, the full sensor class name, or a partial sensor class name. For example, specifying 'daily' would match all sensors with daily in their entity name. If specified, 'Logging Level' is also forced to DEBUG.
   modbus_force_auto_discovery:
-    name: Force Modbus Auto Discovery
+    name: Force Modbus Auto-Discovery
     description: Enable to force the automatic discovery of Sigenergy Modbus hosts and associated Device IDs. You only need enable this if you have previously auto-discovered hosts/device IDs and your network or devices have changed.
+  modbus_auto_discovery_ping_timeout:
+    name: Auto-Discovery Ping Timeout
+    description: The ping timeout, in seconds, to use when performing auto-discovery of Sigenergy devices on the network. The default is 0.5 seconds.
+  modbus_auto_discovery_timeout:
+    name: Auto-Discovery Modbus Timeout
+    description: The Modbus timeout, in seconds, to use when performing auto-discovery of Sigenergy devices on the network. The default is 0.25 seconds.
+  modbus_auto_discovery_retries:
+    name: Auto-Discovery Modbus Retries
+    description: The maximum retry count to use when performing auto-discovery of Sigenergy devices on the network. The default is 0.
   modbus_host:
-    name: Sigenergy Modbus Host
+    name: Modbus Host
     description: The hostname or IP address of the Sigenergy device. Leave blank to auto-discover Sigenergy devices on your network.
   modbus_port:
-    name: Sigenergy Modbus Port
+    name: Modbus Port
     description: The Sigenergy device Modbus port number.
   modbus_slave:
-    name: Sigenergy Inverter Device ID
+    name: Inverter Device ID
     description: The Sigenergy Inverter Modbus Device ID. If you have multiple inverters, you can specify a space-separated list of IDs. Ignored if no Modbus Host specified. Otherwise, auto-discovery can identify inverter devices.
   modbus_accharger_slave:
-    name: Sigenergy AC-Charger Device ID
+    name: AC-Charger Device ID
     description: The Sigenergy AC Charger Modbus Device ID. Ignored if no Modbus Host specified. Otherwise, auto-discovery can identify AC Charger devices.
   modbus_dccharger_slave:
-    name: Sigenergy DC-Charger Device ID
+    name: DC-Charger Device ID
     description: The Sigenergy DC Charger Modbus Device ID. Ignored if no Modbus Host specified. Otherwise, auto-discovery can identify DC Charger devices.
   modbus_read_only:
-    name: Modbus Read Only
+    name: Read Only
     description: Enable to only read data from the Sigenergy device. Disable to allow writing data to the Sigenergy device.
   modbus_no_remote_ems:
-    name: Modbus No Remote EMS
-    description: Enable to hide all read/write sensors used for remote Energy Management System (EMS) integration. This may be applicable if, for example, you are part of a VPP which manages the battery. Ignored if 'Modbus Read Only' is enabled.
+    name: No Remote EMS
+    description: Enable to hide all read/write sensors used for remote Energy Management System (EMS) integration. Ignored if 'Modbus Read Only' is enabled.
   scan_interval_realtime:
     name: Scan Interval (Near Realtime Frequency)
     description: The scan interval in seconds for Modbus registers that are to be scanned in near-real time. Default is 5 (seconds), and the minimum value is 1.

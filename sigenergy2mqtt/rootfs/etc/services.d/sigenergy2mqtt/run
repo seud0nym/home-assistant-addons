@@ -85,6 +85,11 @@ else
     CMD_PARAMETERS+=(--modbus-dccharger-device-id ${id//,/ })
   fi
 fi
+if echo "${CMD_PARAMETERS[@]}" | grep -qe '--modbus-auto-discovery='; then
+  bashio::config.has_value 'modbus_auto_discovery_ping_timeout' && CMD_PARAMETERS+=(--modbus-auto-discovery-ping-timeout="$(bashio::config 'modbus_auto_discovery_ping_timeout')")
+  bashio::config.has_value 'modbus_auto_discovery_timeout'      && CMD_PARAMETERS+=(--modbus-auto-discovery-timeout="$(bashio::config 'modbus_auto_discovery_timeout')")
+  bashio::config.has_value 'modbus_auto_discovery_retries'      && CMD_PARAMETERS+=(--modbus-auto-discovery-retries="$(bashio::config 'modbus_auto_discovery_retries')")
+fi
 bashio::config.has_value 'modbus_port'               && CMD_PARAMETERS+=(--modbus-port="$(bashio::config 'modbus_port')")
 bashio::config.has_value 'modbus_log_level'          && CMD_PARAMETERS+=(--modbus-log-level="$(bashio::config 'modbus_log_level')")
 bashio::config.has_value 'modbus_read_only'          && MODBUS_READ_ONLY="$(bashio::config 'modbus_read_only')"

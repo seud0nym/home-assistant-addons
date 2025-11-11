@@ -1,5 +1,24 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 2025.11.11
+
+### What's Fixed
+
+* Fixed missing device class that caused enumeration values to not be available in Home Assistant (https://whrl.pl/RgRDwB)
+* Fixed missing data type in derived sensors that caused `sigenergy2mqtt` to crash on start when they were used as PVOutput extended data ([#59](https://github.com/seud0nym/sigenergy2mqtt/issues/59))
+
+### What's Changed
+
+* Modified verification of end-of-day PVOutput updates to try and work around issue where PVOutput will silently ignore uploads
+* Upgraded dependencies:
+  * psutil: 7.1.1 → 7.1.3
+  * ruamel-yaml: 0.18.15 → 0.18.16 
+
+### What's New?
+
+* Added new optional configuration options that control ping timeouts, and Modbus timeouts and retries, during auto-discovery
+
+
 ## 2025.10.21
 
 ### What's Fixed
