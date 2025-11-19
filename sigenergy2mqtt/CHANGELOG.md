@@ -1,5 +1,17 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 2025.11.19
+
+### What's Fixed
+
+* Fixed handling of decimal places on PVOutput extended data ([#59](https://github.com/seud0nym/sigenergy2mqtt/issues/59))
+* Modified Inverter Power Factor error handling so that when an invalid value (such as 64536) is read from the Modbus interface, the actual Power Factor will be calculated from Active Power and Reactive Power and then published, rather than just ignoring the invalid value
+
+### What's New?
+
+* You can now define time periods (which must match the tariff time periods defined in PVOutput) for uploading exports and imports in the correct tariff slot (peak, off-peak, shoulder and high-shoulder)
+
+
 ## 2025.11.11
 
 ### What's Fixed

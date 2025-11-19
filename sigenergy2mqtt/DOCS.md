@@ -14,7 +14,7 @@ There are two ways to configure the add-on. You can provide basic configuration 
 
 ### Configuration File
 
-You can upload a [configuration file](https://github.com/seud0nym/sigenergy2mqtt/blob/main/sigenergy2mqtt.yaml) to the addon_configs directory on your Home Assistant server for more advanced configuration options. The file _must_ be named `sigenergy2mqtt.yaml`, and placed inside the directory under addon_configs that ends with `sigenergy2mqtt`.
+You can upload a [configuration file](https://github.com/seud0nym/sigenergy2mqtt/blob/main/sigenergy2mqtt.yaml) to the addon_configs directory on your Home Assistant server for more advanced configuration options. The file _must_ be named `sigenergy2mqtt.yaml`, and placed inside the `addon_configs/4cee8162_sigenergy2mqtt` directory.
 
 **NOTE:** If you provide _both_ an advanced configuration file _and_ enter options into the Configuration tab, the Configuration tab will **override** any identical settings in the configuration file. If you are using the Mosquitto Broker addon, the MQTT host, port, username and password will _always_ override what is the configuration file. 
 
@@ -89,6 +89,78 @@ If you enable status updates to PVOutput, you must enter both the ***API Key*** 
 ##### PVOutput Battery Data
 
 If your donation status is current, the Battery Power, SoC, Usable Capacity, and Lifetime Charge/Discharge will be automatically uploaded with each status update.
+
+##### PVOutput Tariff Time Periods
+
+You can define time periods so that `sigenergy2mqtt` can upload exports and imports into their correct tariff time slot (peak, off-peak, shoulder and high-shoulder).
+
+Unfortunately, the relative complexity of the data makes it unsuitable for defining through the Home Assistant Add-on Configuration screen. Therefore, you must define these time periods in the configuration file.
+
+Create (or update) your configuration file, which must be called `sigenergy2mqtt.yaml` and must be located in the `addon_configs/4cee8162_sigenergy2mqtt` directory. The following is a basic example of the file contents:
+
+```yaml
+home-assistant:
+  enabled: true
+pvoutput:
+  enabled: true
+  time-periods:
+  - plan: Zero Hero
+    to-date: 2026-05-31
+    periods:
+      - type: off-peak
+        start: 11:00
+        end: 14:00
+      - type: peak
+        start: 15:00
+        end: 21:00
+  - plan: Four Free
+    from-date: 2026-06-01
+    default: peak
+    periods:
+      - type: off-peak
+        start: 10:00
+        end: 14:00
+```
+
+The first four lines are **mandatory**. If not included in your configuration file, _neither_ Home Assistant nor PVOutput will be updated.
+
+This example configuration file defines two time periods:
+  - The first will be active until 2026-05-31, and defines off-peak and peak time ranges. At all other times, shoulder will be applied.
+  - The second takes effect from 2026.06.01, and defines only the off-peak period. At all other times, the overridden default of peak will be applied.
+
+The `time-periods` element contains an array of time periods that describe the peak, shoulder, high-shoulder and off-peak periods for a specific date range. THE TIME PERIODS SPECIFIED MUST MATCH THE TIME PERIODS CONFIGURED IN YOUR PVOUTPUT TARIFF DEFINITIONS. Multiple date ranges may be specified, and each can have the following attributes:
+
+- plan:      
+  - An optional name for the time period. Duplicates are permitted.
+- from-date: 
+  - The start date for the time period in YYYY-MM-DD format. If not specified, the time period is effective immediately.
+  - **NOTE**: When initially configuring time-periods, it is _strongly_ recommended that you configure the from-date as _tomorrows date_, so that there is no mismatch between the total exports and the sum of the off-peak/peak/shoulder/high-shoulder export figures today.
+- to-date:
+  - The end date for the time period in YYYY-MM-DD format. If not specified, the time period is effective indefinitely.
+- default:
+  - One of off-peak, peak, shoulder, or high-shoulder that will be used for all other times not specifically defined in the `periods` array (below). If not specified, the default is `shoulder`.
+- periods: 
+  - An array of time period definitions. At least one must be specified. Each period has the following attributes:
+    - type:  
+      - One of off-peak, peak, shoulder, or high-shoulder.
+    - start: 
+      - The period start time in H:MM format.
+    - end:
+      - The period end time in H:MM format. 24:00 may be specified for the end of the day.
+    - days:
+      - The optional array of days to which the period applies. The default is `[All]`. Valid values are:
+          - Mon
+          - Tue
+          - Wed
+          - Thu
+          - Fri
+          - Sat
+          - Sun
+          - Weekdays
+          - Weekends
+          - All
+                                   
+If plans or time periods overlap, the first match will be used.
 
 ##### PVOutput Temperature
 
