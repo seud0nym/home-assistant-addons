@@ -101,6 +101,9 @@ configuration:
   pvoutput_eod_update:
     name: PVOutput End-of-Day Upload 
     description: If enabled, peak generation and the daily totals for exports and imports (if enabled) are sent to PVOutput at end of day. If disabled, these values are uploaded on the same schedule as status updates.
+  pvoutput-voltage:
+    name: PVOutput Voltage Upload
+    description: The source of the voltage value to be sent to PVOutput. Use 'Phase A' for single-phase systems, 'Phase B', 'Phase C' or 'Line to Line Average' for three-phase or 'Line to Neutral Average' or 'PV Average' for either.
   pvoutput_temp_topic: 
     name: PVOutput Temperature Topic
     description: The MQTT topic to which to subscribe to obtain the current temperature data for PVOutput. If specified, the temperature will be sent to PVOutput.

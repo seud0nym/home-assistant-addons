@@ -1,6 +1,6 @@
 # https://developers.home-assistant.io/docs/add-ons/configuration#add-on-config
 name: sigenergy2mqtt
-version: "2025.11.19"
+version: "2025.11.23"
 image: "ghcr.io/seud0nym/home-assistant-addon-sigenergy2mqtt-{arch}"
 slug: sigenergy2mqtt
 description: Publish Modbus data from Sigenergy to an MQTT Broker, with optional PVOutput updating
@@ -24,6 +24,7 @@ options:
   pvoutput_exports: true
   pvoutput_imports: true
   pvoutput_eod_update: true
+  pvoutput_voltage: "Line to Neutral Average"
 schema:
   modbus_force_auto_discovery: "bool"
   modbus_auto_discovery_ping_timeout: "float(0.5,)?"
@@ -51,6 +52,7 @@ schema:
   pvoutput_eod_update: "bool?"
   pvoutput_temp_topic: "str?"
   pvoutput_log_level: "list(DEBUG|INFO|WARNING|ERROR|CRITICAL)?"
+  pvoutput_voltage: "list(Phase A|Phase B|Phase C|Line to Neutral Average|Line to Line Average|PV Average)"
   pvoutput_ext_v7: "str?"
   pvoutput_ext_v8: "str?"
   pvoutput_ext_v9: "str?"

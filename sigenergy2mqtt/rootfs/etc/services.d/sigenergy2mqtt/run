@@ -153,6 +153,14 @@ if bashio::config.has_value 'pvoutput_enabled'; then
     [[ "${PVOUTPUT_CONSUMPTION}" == "true" ]]       && CMD_PARAMETERS+=(--pvoutput-consumption)
     [[ "${PVOUTPUT_EXPORTS}" == "true" ]]           && CMD_PARAMETERS+=(--pvoutput-exports)
     [[ "${PVOUTPUT_IMPORTS}" == "true" ]]           && CMD_PARAMETERS+=(--pvoutput-imports)
+    case "$(bashio::config 'pvoutput_voltage')" in
+      "Phase A")                CMD_PARAMETERS+=(--pvoutput-voltage=phase-a);;
+      "Phase B")                CMD_PARAMETERS+=(--pvoutput-voltage=phase-b);;
+      "Phase C")                CMD_PARAMETERS+=(--pvoutput-voltage=phase-c);;
+      "Line to Line Average")   CMD_PARAMETERS+=(--pvoutput-voltage=l/l-avg);;
+      "PV Average")             CMD_PARAMETERS+=(--pvoutput-voltage=pv);;
+      *)                        CMD_PARAMETERS+=(--pvoutput-voltage=l/n-avg);;
+    esac
     [[ "${PVOUTPUT_EOD_UPDATE}" != "true" ]]        && CMD_PARAMETERS+=(--pvoutput-output-hour=-1)
     bashio::config.has_value 'pvoutput_temp_topic'  && CMD_PARAMETERS+=(--pvoutput-temp-topic="$(bashio::config 'pvoutput_temp_topic')")
     bashio::config.has_value 'pvoutput_log_level'   && CMD_PARAMETERS+=(--pvoutput-log-level="$(bashio::config 'pvoutput_log_level')")

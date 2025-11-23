@@ -1,5 +1,19 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 2025.11.23
+
+### What's Fixed
+
+* Fixed errors found during an audit of the sensors against the Modbus Protocol document:
+  * Missing sensor: InverterPowerFactorAdjustmentFeedback
+  * ACChargerChargingPower was being incorrectly decoded as an unsigned value but should be a signed value
+  * ACChargerRatedVoltage was being incorrectly decoded as a signed value but should be an unsigned value
+  * Inverter PhaseCurrent was being incorrectly decoded as an unsigned value but should be a signed value
+
+### What's New?
+
+* Added new options for specifying which Voltage value is uploaded to PVOutput ([#61](https://github.com/seud0nym/sigenergy2mqtt/issues/61))
+
 ## 2025.11.19
 
 ### What's Fixed
