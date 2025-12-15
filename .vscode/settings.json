@@ -9,6 +9,8 @@
         "Enphase",
         "hass",
         "homeassistant",
+        "HVRT",
+        "LVRT",
         "Modbus",
         "Mosquitto",
         "MQTT",
@@ -23,6 +25,7 @@
         "seud",
         "sigen",
         "sigenergy",
+        "SigenStor",
         "smartport"
     ]
 }

@@ -1,5 +1,49 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 2025.12.16
+
+### What's Fixed
+
+* Improved performance of non-contiguous multi-register scans
+* Improved write performance and subsequent read/publish of updated value
+* Fixed data points randomly missing in upload to PVOutput ([#65](https://github.com/seud0nym/sigenergy2mqtt/discussions/65))
+* Fixed issue where sum of PVOutput export/import time period values might not sum to total exports/imports
+* Fixed decimals on maximum value (was 4294967.0 but should have been 4294967.29) of these updatable Plant sensors:
+  * PV Max Power Limit
+  * Grid Max Export Limit
+  * Grid Max Import Limit
+  * PCS Max Export Limit
+  * PCS Max Import Limit
+* Fixed entity ids of DC Charger sensors that were incorrectly and inconsistently named as Plant sensors: i.e. (actual ids depend on Device ID of inverter)
+  * `sigen_0_plant_vehicle_battery_voltage` → `sigen_0_dc_charger_1_vehicle_battery_voltage`
+  * `sigen_0_plant_vehicle_charging_current` → `sigen_0_dc_charger_1_vehicle_charging_current`
+  * `sigen_0_plant_dc_charger_output_power` → `sigen_0_dc_charger_1__output_power`
+  * `sigen_0_plant_vehicle_soc` → `sigen_0_dc_charger_1_vehicle_soc`
+  * `sigen_0_plant_dc_charger_current_charging_capacity` → `sigen_0_dc_charger_1_current_charging_capacity`
+  * `sigen_0_plant_dc_charger_current_charging_duration` → `sigen_0_dc_charger_1_current_charging_duration`
+* Fixed Max Charge Limit, Max Discharge Limit, and PV Max Power Limit controls that should only be available if the relevant Remote EMS mode (e.g. Command Charging or Command Discharging) is active
+* Fixed controls for values associated with Independent Phase Power Control that should only be available when Independent Phase Power Control was enabled 
+
+### What's Changed?
+
+* All sensors are now Modbus Protocol version aware, and are only scanned and published if the firmware supports the protocol version
+* Write operations are now validated before committing, and failed validations will be logged
+* Upgraded dependencies:
+  * pymodbus: 3.11.3 → 3.11.4
+
+### What's New?
+
+* Implemented Sigenergy Modbus Protocol V2.8 (2025-11-20), although sensor changes will not be published until the appropriate firmware has been installed:
+  * New Sigenergy Plant Grid Code device to manage HVRT, LVRT, and Over/Under-frequency settings
+  * Plant-level alarm sensors
+  * Plant General/Total Load Power sensors
+  * Plant Grid Sensor phase current and phase voltage sensors
+  * Plant Active Power Regulation Gradient control
+  * DC Charger Running State
+  * Added support for new inverter models that can have up to 36 PV strings
+  * Removed sensors that are not available to some specific inverter models (does not affect SigenStor or Sigen Hybrid)
+
+
 ## 2025.11.23
 
 ### What's Fixed

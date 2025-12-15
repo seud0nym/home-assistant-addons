@@ -4,7 +4,7 @@
 # s6-overlay docs: https://github.com/just-containers/s6-overlay
 # ==============================================================================
 
-# Get supervisor configuration:
+bashio::log.info "Version $(bashio::addon.version)"
 bashio::log.info "Configuring..."
 
 # Remove obsolete options
@@ -12,7 +12,7 @@ if bashio::config.exists 'pvoutput_interval'; then
   bashio::log.info "Removing obsolete option 'pvoutput_interval' from configuration"
   bashio::addon.option 'pvoutput_interval'
 fi
-  
+
 # Define config options to use:
 CMD_PARAMETERS=()
 
@@ -146,7 +146,6 @@ if bashio::config.has_value 'pvoutput_enabled'; then
     bashio::config.has_value 'pvoutput_exports'     && PVOUTPUT_EXPORTS=$(bashio::config 'pvoutput_exports')
     bashio::config.has_value 'pvoutput_imports'     && PVOUTPUT_IMPORTS=$(bashio::config 'pvoutput_imports')
     bashio::config.has_value 'pvoutput_eod_update'  && PVOUTPUT_EOD_UPDATE=$(bashio::config 'pvoutput_eod_update')
-    [[ "${PVOUTPUT_CONSUMPTION}" == "true" && ("${PVOUTPUT_EXPORTS}" == "true" || "${PVOUTPUT_IMPORTS}" == "true") ]] && bashio::log.warning "PVOutput upload of Consumption AND Exports and/or Imports enabled: PVOutput may ignore uploaded Exports/Imports"  
     CMD_PARAMETERS+=(--pvoutput-enabled)
     CMD_PARAMETERS+=(--pvoutput-api-key="${PVOUTPUT_API_KEY}")
     CMD_PARAMETERS+=(--pvoutput-system-id="${PVOUTPUT_SYSTEM_ID}")
