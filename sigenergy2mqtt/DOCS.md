@@ -51,7 +51,7 @@ The Sigenergy Modbus Host and the Device IDs for Inverters, AC Chargers, and DC 
 | `Modbus Port` | Optional | The Sigenergy device Modbus port number. The default is **502** |
 | `Inverter Device ID` | Optional | The Sigenergy Inverter Modbus Device ID. This defaults to **1** if not specified, *OR* it will be determined automatically during auto-discovery. |
 | `AC-Charger Device ID` | Optional | The Sigenergy AC Charger Modbus Device ID. Auto-discovery will identify AC Charger devices. |
-| `DC-Charger Device ID` | Optional | The Sigenergy DC Charger Modbus Device ID. Auto-discovery will identify DC Charger devices. |
+| `DC-Charger Device ID` | Optional | The Sigenergy DC Charger Modbus Device ID. Auto-discovery will identify DC Charger devices. The `DC-Charger Device ID` is normally the same as the `Inverter Device ID`. |
 | `Read Only` | Optional | Enable to only read data from the Sigenergy device. Disable to allow writing data to the Sigenergy device. |
 | `No Remote EMS` | Optional | Enable to hide all read/write sensors used for remote Energy Management System (EMS) integration. This may be applicable if, for example, you are part of a VPP which manages the battery. Ignored if 'Modbus Read Only' is enabled. |
 | `Scan Interval (Near Realtime Frequency)` | Optional | The scan interval in seconds for Modbus registers that are to be scanned in near-real time. Default is **5** (seconds), and the minimum value is 1. |

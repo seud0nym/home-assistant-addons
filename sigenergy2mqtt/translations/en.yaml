@@ -31,7 +31,7 @@ configuration:
     description: The Sigenergy AC Charger Modbus Device ID. Ignored if no Modbus Host specified. Otherwise, auto-discovery can identify AC Charger devices.
   modbus_dccharger_slave:
     name: DC-Charger Device ID
-    description: The Sigenergy DC Charger Modbus Device ID. Ignored if no Modbus Host specified. Otherwise, auto-discovery can identify DC Charger devices.
+    description: The Sigenergy DC Charger Modbus Device ID (usually same as Inverter Device ID). Ignored if no Modbus Host specified. Otherwise, auto-discovery can identify DC Charger devices.
   modbus_read_only:
     name: Read Only
     description: Enable to only read data from the Sigenergy device. Disable to allow writing data to the Sigenergy device.

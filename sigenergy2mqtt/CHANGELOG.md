@@ -1,5 +1,13 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 2025.12.18
+
+### What's Fixed
+
+* Fixed bug that prevented switch sensors (e.g. Remote EMS) from being toggled
+* Fixed bug in register count calculation for non-contiguous read optimisation plus minor adjustments to contiguous read optimisation
+
+
 ## 2025.12.16
 
 ### What's Fixed
