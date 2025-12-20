@@ -38,6 +38,9 @@ configuration:
   modbus_no_remote_ems:
     name: No Remote EMS
     description: Enable to hide all read/write sensors used for remote Energy Management System (EMS) integration. Ignored if 'Modbus Read Only' is enabled.
+  consumption_method:
+    name: Consumption Method
+    description: The method of calculating the `Plant Consumed Power` sensor. The default is `Calculated`. This option is _ignored_ on firmware earlier than that supporting Modbus Protocol V2.8.
   scan_interval_realtime:
     name: Scan Interval (Near Realtime Frequency)
     description: The scan interval in seconds for Modbus registers that are to be scanned in near-real time. Default is 5 (seconds), and the minimum value is 1.

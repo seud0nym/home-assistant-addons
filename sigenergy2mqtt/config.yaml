@@ -1,6 +1,6 @@
 # https://developers.home-assistant.io/docs/add-ons/configuration#add-on-config
 name: sigenergy2mqtt
-version: "2025.12.18"
+version: "2025.12.20"
 image: "ghcr.io/seud0nym/home-assistant-addon-sigenergy2mqtt-{arch}"
 slug: sigenergy2mqtt
 description: Publish Modbus data from Sigenergy to an MQTT Broker, with optional PVOutput updating
@@ -37,6 +37,7 @@ schema:
   modbus_dccharger_slave: "match(^[0-9 ,]*$)?"
   modbus_read_only: "bool?"
   modbus_no_remote_ems: "bool?"
+  consumption_method: "list(Calculated|Total Load|General Load)?"
   scan_interval_low: "int(300,)?"
   scan_interval_medium: "int(30,)?"
   scan_interval_high: "int(1,)?"

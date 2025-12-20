@@ -1,5 +1,24 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 2025.12.20
+
+### What's Fixed
+
+* DC-Charger power was not included in consumption calculation after the entity id was renamed in 2025.12.16 ([#74](https://github.com/seud0nym/sigenergy2mqtt/issues/74))
+* Fixed UnboundLocalError during initialisation when second inverter found
+
+### What's Changed
+
+* Modified handling of sensors defined in the protocol that fail with ILLEGAL DATA ADDRESS errors in case they are available on some devices (previously they were permanently marked as unpublishable)
+* Upgraded dependencies:
+  * ruamel-yaml: 0.18.16 → 0.18.17
+
+### What's New?
+
+* Added an option to use either of the new V2.8 Total/General Load Power sensors as the source for the Plant Consumed Power sensor, instead of calculating consumption from multiple inputs
+* Added cache hits percentage metric
+
+
 ## 2025.12.18
 
 ### What's Fixed
@@ -25,7 +44,7 @@
 * Fixed entity ids of DC Charger sensors that were incorrectly and inconsistently named as Plant sensors: i.e. (actual ids depend on Device ID of inverter)
   * `sigen_0_plant_vehicle_battery_voltage` → `sigen_0_dc_charger_1_vehicle_battery_voltage`
   * `sigen_0_plant_vehicle_charging_current` → `sigen_0_dc_charger_1_vehicle_charging_current`
-  * `sigen_0_plant_dc_charger_output_power` → `sigen_0_dc_charger_1__output_power`
+  * `sigen_0_plant_dc_charger_output_power` → `sigen_0_dc_charger_1_output_power`
   * `sigen_0_plant_vehicle_soc` → `sigen_0_dc_charger_1_vehicle_soc`
   * `sigen_0_plant_dc_charger_current_charging_capacity` → `sigen_0_dc_charger_1_current_charging_capacity`
   * `sigen_0_plant_dc_charger_current_charging_duration` → `sigen_0_dc_charger_1_current_charging_duration`
