@@ -1,5 +1,23 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 2025.12.23
+
+### What's Fixed
+
+* Removed clean of devices on upgrade as it caused associated statistics helper entities to get removed ([#77](https://github.com/seud0nym/sigenergy2mqtt/discussions/77))
+* Do not start sensor scan group task if all sensors unpublishable ([#79](https://github.com/seud0nym/sigenergy2mqtt/discussions/79))
+* Fixed handling of systems that do not have battery modules attached ([#80](https://github.com/seud0nym/sigenergy2mqtt/issues/80))
+
+### What's Changed
+
+* More optimisation of Modbus register pre-reads during sensor scanning
+* Refactored code to remove unnecessary properties
+
+### What's New?
+
+* New option to allow percentage sliders to be replaced with number edit boxes
+
+
 ## 2025.12.20
 
 ### What's Fixed

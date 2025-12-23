@@ -5,6 +5,9 @@ configuration:
   debug_sensor:
     name: Sensor to Debug
     description: Specify a sensor to be debugged using either the full entity id, a partial entity id, the full sensor class name, or a partial sensor class name. For example, specifying 'daily' would match all sensors with daily in their entity name. If specified, 'Logging Level' is also forced to DEBUG.
+  edit_pct_box:
+    name: Percentage Box Editor
+    description: Enable to use a numeric entry box to change the value of percentage sensors or leave disabled to use a slider to change the value.
   modbus_force_auto_discovery:
     name: Force Modbus Auto-Discovery
     description: Enable to force the automatic discovery of Sigenergy Modbus hosts and associated Device IDs. You only need enable this if you have previously auto-discovered hosts/device IDs and your network or devices have changed.

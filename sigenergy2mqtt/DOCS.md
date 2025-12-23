@@ -36,6 +36,7 @@ home-assistant:
 | `sigenergy2mqtt Logging Level` | Optional | Use to set the `sigenergy2mqtt` log level. By default, only WARNING messages are logged. |
 | `Enable sigenergy2mqtt Metrics` | Optional | Enable the publication of sigenergy2mqtt metrics to Home Assistant. |
 | `Sensor to Debug` | Optional | Specify a sensor to be debugged using either the full entity id, a partial entity id, the full sensor class name, or a partial sensor class name. For example, specifying 'daily' would match all sensors with daily in their entity name. If specified, 'Logging Level' is also forced to DEBUG. |
+| `Percentage Box Editor` | Optional | Enable to use a numeric entry box to change the value of percentage sensors or leave disabled to use a slider to change the value. |
 
 #### Sigenergy Modbus Interface Configuration
 

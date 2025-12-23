@@ -26,6 +26,18 @@ else
   HAS_CONFIG=0
 fi
 
+# Get Home Assistant parameters from the configuration
+bashio::config.has_value 'discovery_prefix'         && CMD_PARAMETERS+=(--hass-discovery-prefix="$(bashio::config 'discovery_prefix')")
+bashio::config.has_value 'entity_id_prefix'         && CMD_PARAMETERS+=(--hass-entity-id-prefix="$(bashio::config 'entity_id_prefix')")
+bashio::config.has_value 'unique_id_prefix'         && CMD_PARAMETERS+=(--hass-unique-id-prefix="$(bashio::config 'unique_id_prefix')")
+bashio::config.has_value 'device_name_prefix'       && CMD_PARAMETERS+=(--hass-device-name-prefix="$(bashio::config 'device_name_prefix')")
+
+bashio::config.has_value 'edit_pct_box' && [[ "$(bashio::config 'edit_pct_box')" == "true" ]] && CMD_PARAMETERS+=(--hass-edit-pct-box)
+
+# Get logging and debugging parameters from the configuration
+bashio::config.has_value 'log_level'                && CMD_PARAMETERS+=(--log-level="$(bashio::config 'log_level')")
+bashio::config.has_value 'debug_sensor'             && CMD_PARAMETERS+=(--debug-sensor="$(bashio::config 'debug_sensor')")
+
 # Get MQTT parameters from the MQTT add-on
 MQTT_HOST=""
 MQTT_PASSWORD=""
@@ -178,16 +190,6 @@ if bashio::config.has_value 'pvoutput_enabled'; then
     bashio::config.has_value 'pvoutput_ext_v12'     && CMD_PARAMETERS+=(--pvoutput-ext-v12="$(bashio::config 'pvoutput_ext_v12')")
   fi
 fi
-
-# Get Home Assistant parameters from the configuration
-bashio::config.has_value 'discovery_prefix'         && CMD_PARAMETERS+=(--hass-discovery-prefix="$(bashio::config 'discovery_prefix')")
-bashio::config.has_value 'entity_id_prefix'         && CMD_PARAMETERS+=(--hass-entity-id-prefix="$(bashio::config 'entity_id_prefix')")
-bashio::config.has_value 'unique_id_prefix'         && CMD_PARAMETERS+=(--hass-unique-id-prefix="$(bashio::config 'unique_id_prefix')")
-bashio::config.has_value 'device_name_prefix'       && CMD_PARAMETERS+=(--hass-device-name-prefix="$(bashio::config 'device_name_prefix')")
-
-# Get logging and debugging parameters from the configuration
-bashio::config.has_value 'log_level'                && CMD_PARAMETERS+=(--log-level="$(bashio::config 'log_level')")
-bashio::config.has_value 'debug_sensor'             && CMD_PARAMETERS+=(--debug-sensor="$(bashio::config 'debug_sensor')")
 
 # Get the scanning interval frequencies from the configuration
 bashio::config.has_value 'scan_interval_low'        && CMD_PARAMETERS+=(--scan-interval-low="$(bashio::config 'scan_interval_low')")
