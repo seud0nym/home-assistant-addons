@@ -1,5 +1,20 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 2025.12.25🎄
+
+### What's Fixed
+
+* Fixed some issues with minimum/maximum validation
+* Fixed error 'expected float for dictionary value @ data['min']' when processing MQTT discovery message topic ([#81](https://github.com/seud0nym/sigenergy2mqtt/issues/81))
+* Fixed potential issue with creating battery sensors if both Hybrid and PV inverter installed in same Plant
+
+### What's Changed
+
+* Changed maximum allowed value of LVRT Negative Sequence Reactive Power Compensation Factor, which appears to be at least 20.0 rather than 10.0 as documented ([#80](https://github.com/seud0nym/sigenergy2mqtt/issues/80#issuecomment-3689277867))
+* Upgraded dependencies:
+  * psutil: 7.1.3 → 7.2.0
+
+
 ## 2025.12.23
 
 ### What's Fixed
