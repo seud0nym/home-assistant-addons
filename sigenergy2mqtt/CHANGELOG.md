@@ -1,5 +1,13 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 2025.12.27
+
+### What's Fixed
+
+* Write-only controls (AC/DC-Charger Start/Stop, and Plant/Inverter Power On/Off) were not working ([#83](https://github.com/seud0nym/sigenergy2mqtt/issues/83))
+* AC-Charger Total Energy Consumed state class should be TOTAL_INCREASING ([#83](https://github.com/seud0nym/sigenergy2mqtt/issues/83))
+
+
 ## 2025.12.25🎄
 
 ### What's Fixed

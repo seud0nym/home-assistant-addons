@@ -60,7 +60,7 @@ The Sigenergy Modbus Host and the Device IDs for Inverters, AC Chargers, and DC 
 | `Scan Interval (High Frequency)` | Optional | The scan interval in seconds for Modbus registers that are to be scanned at a high frequency. Default is **10** (seconds), and the minimum value is 1. |
 | `Scan Interval (Medium Frequency)` | Optional | The scan interval in seconds for Modbus registers that are to be scanned at a medium frequency. Default is **60** (seconds), and the minimum value is 1. |
 | `Scan Interval (Low Frequency)` | Optional | The scan interval in seconds for Modbus registers that are to be scanned at a low frequency. Default is **600** (seconds), and the minimum value is 1. |
-| `Sanity Check Default kW` | Optional | The default value in kW used for sanity checks to validate the maximum and minimum values for actual value of power sensors and the delta value of energy sensors. The default value is **100** kW per second, meaning readings outside the range ±100 are ignored. |
+| `Sanity Check Default kW` | Optional | The default value in kW used for sanity checks to validate the maximum and minimum values for actual value of power sensors and the delta value of energy sensors. The default value is **500** kW per second, meaning readings outside the range ±100 are ignored. |
 | `Modbus Logging Level` | Optional | Set the pymodbus logging level. |
 
 #### PVOutput Configuration
