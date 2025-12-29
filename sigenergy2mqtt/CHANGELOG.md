@@ -1,5 +1,19 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 2025.12.29
+
+### What's Fixed
+
+* Fixed RuntimeWarning about coroutines not being awaited that broke PVOutput uploads and setting sensor values ([#84](https://github.com/seud0nym/sigenergy2mqtt/issues/84))
+* Fixed sanity check on power sensors that did not have gain=1000 ([#85](https://github.com/seud0nym/sigenergy2mqtt/issues/85))
+* Fixed variable access outside of scope error message that occurred occasionally when handling a PVOutput upload failure ([#84](https://github.com/seud0nym/sigenergy2mqtt/issues/84))
+* Maximum number of Modbus registers read in a single scan should be 124, not 125
+
+### What's Changed
+
+* Removed Grid Phase Current/Voltage sensors that were in the pre-release V2.8 protocol, but not in the final release (these sensors were never available because their registers always returned ILLEGAL DATA ADDRESS)
+
+
 ## 2025.12.27
 
 ### What's Fixed
