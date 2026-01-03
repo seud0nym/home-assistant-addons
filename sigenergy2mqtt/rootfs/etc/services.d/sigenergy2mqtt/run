@@ -49,12 +49,10 @@ if bashio::services.available "mqtt"; then
   MQTT_USERNAME="$(bashio::services "mqtt" "username")"
   MQTT_PASSWORD="$(bashio::services "mqtt" "password")"
   bashio::log.info "MQTT service available, using host: ${MQTT_HOST}, port: ${MQTT_PORT}, username: ${MQTT_USERNAME}, password: [REDACTED: ${#MQTT_PASSWORD} chars]"
-else
-  bashio::log.warning "MQTT service not available, MQTT parameters will be configured from the add-on configuration and/or config file if specified."
 fi
 # Override the default MQTT parameters if the user has provided values
 bashio::log.info "Checking for MQTT overrides in the add-on configuration..."
-bashio::config.has_value 'mqtt_host'      && { MQTT_HOST="$(bashio::config 'mqtt_host')"; bashio::log.info "Overriding MQTT host: '${MQTT_HOST}'"; }
+bashio::config.has_value 'mqtt_broker'    && { MQTT_HOST="$(bashio::config 'mqtt_broker')"; bashio::log.info "Overriding MQTT broker: '${MQTT_HOST}'"; }
 bashio::config.has_value 'mqtt_port'      && { MQTT_PORT="$(bashio::config 'mqtt_port')"; bashio::log.info "Overriding MQTT port: '${MQTT_PORT}'"; }
 bashio::config.has_value 'mqtt_username'  && { MQTT_USERNAME="$(bashio::config 'mqtt_username')"; bashio::log.info "Overriding MQTT username: '${MQTT_USERNAME}'"; }
 bashio::config.has_value 'mqtt_password'  && { MQTT_PASSWORD="$(bashio::config 'mqtt_password')"; bashio::log.info "Overriding MQTT password: [REDACTED: ${#MQTT_PASSWORD} chars]"; }
