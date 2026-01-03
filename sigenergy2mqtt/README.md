@@ -5,7 +5,7 @@
 ![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fghcr-badge.elias.eu.org%2Fapi%2Fseud0nym%2Fhome-assistant-addons%2Fhome-assistant-addon-sigenergy2mqtt-amd64&query=downloadCount&label=amd64%20downloads&color=green&link=https%3A%2F%2Fgithub.com%2Fseud0nym%2Fhome-assistant-addons%2Fpkgs%2Fcontainer%2Fhome-assistant-addon-sigenergy2mqtt-amd64)
 ![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fghcr-badge.elias.eu.org%2Fapi%2Fseud0nym%2Fhome-assistant-addons%2Fhome-assistant-addon-sigenergy2mqtt-aarch64&query=downloadCount&label=aarch64%20downloads&color=green&link=https%3A%2F%2Fgithub.com%2Fseud0nym%2Fhome-assistant-addons%2Fpkgs%2Fcontainer%2Fhome-assistant-addon-sigenergy2mqtt-aarch64)
 ![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/seud0nym/sigenergy2mqtt?link=https%3A%2F%2Fgithub.com%2Fseud0nym%2Fsigenergy2mqtt%2Fissues)
-![Maintenance](https://img.shields.io/maintenance/yes/2025)  
+![Maintenance](https://img.shields.io/maintenance/yes/2026)  
 
 [sigenergy2mqtt](https://github.com/seud0nym/sigenergy2mqtt) is a bridge between the Modbus interface of the Sigenergy energy system and the MQTT lightweight publish/subscribe messaging protocol.
 
