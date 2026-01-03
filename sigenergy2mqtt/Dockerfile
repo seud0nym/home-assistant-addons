@@ -5,5 +5,5 @@ FROM $BUILD_FROM
 COPY rootfs /
 RUN chmod +x /etc/services.d/sigenergy2mqtt/*
 
-RUN apk add pipx && pipx install /dist/sigenergy2mqtt-2025.12.29-py3-none-any.whl
+RUN apk add pipx && pipx install /dist/sigenergy2mqtt-2026.1.3-py3-none-any.whl
 

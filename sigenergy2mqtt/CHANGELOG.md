@@ -1,5 +1,22 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 2026.1.3
+
+### What's Fixed
+
+* Fixed bug that caused external MQTT broker configuration to always default to 127.0.0.1 and therefore failed to connect ([#88](https://github.com/seud0nym/sigenergy2mqtt/issues/88))
+* Fixed minor bugs revealed by new integration and unit tests
+
+### What's Changed
+
+* Minor code changes to support integration and unit testing
+* Removed unused classes
+* Upgraded dependencies:
+  * psutil: 7.2.0 → 7.2.1
+  * scapy: 2.6.1 → 2.7.0
+  * ruamel-yaml: 0.18.17 → 0.19.1
+
+
 ## 2025.12.29
 
 ### What's Fixed

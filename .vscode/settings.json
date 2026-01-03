@@ -27,5 +27,9 @@
         "sigenergy",
         "SigenStor",
         "smartport"
-    ]
+    ],
+    "files.exclude": {
+    "**/.git": false,
+    "**/.git/{branches,info,objects,logs,refs,index,config,COMMIT_EDITMSG,description,*HEAD,packed-refs}": true
+    }
 }
