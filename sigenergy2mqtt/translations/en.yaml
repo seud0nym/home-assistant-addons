@@ -1,169 +1,170 @@
+---
 configuration:
-  log_level:
-    name: sigenergy2mqtt Logging Level
-    description: Set the sigenergy2mqtt log level.
-  debug_sensor:
-    name: Sensor to Debug
-    description: Specify a sensor to be debugged using either the full entity id, a partial entity id, the full sensor class name, or a partial sensor class name. For example, specifying 'daily' would match all sensors with daily in their entity name. If specified, 'Logging Level' is also forced to DEBUG.
-  edit_pct_box:
-    name: Percentage Box Editor
-    description: Enable to use a numeric entry box to change the value of percentage sensors or leave disabled to use a slider to change the value.
-  modbus_force_auto_discovery:
-    name: Force Modbus Auto-Discovery
-    description: Enable to force the automatic discovery of Sigenergy Modbus hosts and associated Device IDs. You only need enable this if you have previously auto-discovered hosts/device IDs and your network or devices have changed.
-  modbus_auto_discovery_ping_timeout:
-    name: Auto-Discovery Ping Timeout
-    description: The ping timeout, in seconds, to use when performing auto-discovery of Sigenergy devices on the network. The default is 0.5 seconds.
-  modbus_auto_discovery_timeout:
-    name: Auto-Discovery Modbus Timeout
-    description: The Modbus timeout, in seconds, to use when performing auto-discovery of Sigenergy devices on the network. The default is 0.25 seconds.
-  modbus_auto_discovery_retries:
-    name: Auto-Discovery Modbus Retries
-    description: The maximum retry count to use when performing auto-discovery of Sigenergy devices on the network. The default is 0.
-  modbus_host:
-    name: Modbus Host
-    description: The hostname or IP address of the Sigenergy device. Leave blank to auto-discover Sigenergy devices on your network.
-  modbus_port:
-    name: Modbus Port
-    description: The Sigenergy device Modbus port number.
-  modbus_slave:
-    name: Inverter Device ID
-    description: The Sigenergy Inverter Modbus Device ID. If you have multiple inverters, you can specify a space-separated list of IDs. Ignored if no Modbus Host specified. Otherwise, auto-discovery can identify inverter devices.
-  modbus_accharger_slave:
-    name: AC-Charger Device ID
-    description: The Sigenergy AC Charger Modbus Device ID. Ignored if no Modbus Host specified. Otherwise, auto-discovery can identify AC Charger devices.
-  modbus_dccharger_slave:
-    name: DC-Charger Device ID
-    description: The Sigenergy DC Charger Modbus Device ID (usually same as Inverter Device ID). Ignored if no Modbus Host specified. Otherwise, auto-discovery can identify DC Charger devices.
-  modbus_read_only:
-    name: Read Only
-    description: Enable to only read data from the Sigenergy device. Disable to allow writing data to the Sigenergy device.
-  modbus_no_remote_ems:
-    name: No Remote EMS
-    description: Enable to hide all read/write sensors used for remote Energy Management System (EMS) integration. Ignored if 'Modbus Read Only' is enabled.
   consumption_method:
-    name: Consumption Method
     description: The method of calculating the `Plant Consumed Power` sensor. The default is `Calculated`. This option is _ignored_ on firmware earlier than that supporting Modbus Protocol V2.8.
-  scan_interval_realtime:
-    name: Scan Interval (Near Realtime Frequency)
-    description: The scan interval in seconds for Modbus registers that are to be scanned in near-real time. Default is 5 (seconds), and the minimum value is 1.
-  scan_interval_high:
-    name: Scan Interval (High Frequency)
-    description: The scan interval in seconds for Modbus registers that are to be scanned at a high frequency. Default is 10 (seconds), and the minimum value is 1.
-  scan_interval_medium:
-    name: Scan Interval (Medium Frequency)
-    description: The scan interval in seconds for Modbus registers that are to be scanned at a medium frequency. Default is 60 (seconds), and the minimum value is 30.
-  scan_interval_low:
-    name: Scan Interval (Low Frequency)
-    description: The scan interval in seconds for Modbus registers that are to be scanned at a low frequency. Default is 600 (seconds), and the minimum value is 300.
-  sanity_check_default_kw:
-    name: Sanity Check Default kW
-    description: The default value in kW used for sanity checks to validate the maximum and minimum values for actual value of power sensors and the delta value of energy sensors. The default value is 500 kW per second, meaning readings outside the range ±100 are ignored.
-  modbus_log_level:
-    name: Modbus Logging Level
-    description: Set the pymodbus logging level.
-  smartport_enabled:
-    name: Smart-Port Enabled
-    description: Enable integration of a third-party device for production data.
-  smartport_module_name:
-    name: Smart-Port Module Name
-    description: The name of the module which will be used to obtain third-party device production data.
-  smartport_host:
-    name: Smart-Port Host
-    description: The IP address or hostname of the third-party device.
-  smartport_username:
-    name: Smart-Port User Name
-    description: The user name to authenticate to the third-party device.
-  smartport_password:
-    name: Smart-Port Password
-    description: The password to authenticate to the third-party device.
-  smartport_pv_power:
-    name: Smart-Port PV power
-    description: The sensor class to hold the production data obtained from the third-party device.
-  smartport_mqtt_topic:
-    name: Smart-Port MQTT topic
-    description: The MQTT topic to which to subscribe to obtain the production data for the third-party device.
-  smartport_mqtt_gain:
-    name: Smart-Port MQTT gain
-    description: The gain to be applied to the production data for the third-party device obtained from the MQTT topic. (e.g. 1000 if the data is in kW) Default is 1 (Watts).
-  pvoutput_enabled:
-    name: PVOutput Enabled
-    description: Enable status updates to PVOutput.
-  pvoutput_api_key:
-    name: PVOutput API Key
-    description: The API Key for PVOutput
-  pvoutput_system_id:
-    name: PVOutput System ID
-    description: The PVOutput System ID
-  pvoutput_consumption:
-    name: PVOutput Consumption
-    description: Enable sending consumption status to PVOutput.
-  pvoutput_exports:
-    name: PVOutput Exports
-    description: Enable sending export data to PVOutput.
-  pvoutput_imports:
-    name: PVOutput Imports
-    description: Enable sending import data to PVOutput.
-  pvoutput_eod_update:
-    name: PVOutput End-of-Day Upload 
-    description: If enabled, peak generation and the daily totals for exports and imports (if enabled) are sent to PVOutput at end of day. If disabled, these values are uploaded on the same schedule as status updates.
-  pvoutput-voltage:
-    name: PVOutput Voltage Upload
-    description: The source of the voltage value to be sent to PVOutput. Use 'Phase A' for single-phase systems, 'Phase B', 'Phase C' or 'Line to Line Average' for three-phase or 'Line to Neutral Average' or 'PV Average' for either.
-  pvoutput_temp_topic: 
-    name: PVOutput Temperature Topic
-    description: The MQTT topic to which to subscribe to obtain the current temperature data for PVOutput. If specified, the temperature will be sent to PVOutput.
-  pvoutput_ext_v7:
-    name: PVOutput Extended Data v7
-    description:  A sensor class name that will be used to populate the v7 extended data field in PVOutput. If not specified, OR your donation status is not current, this field will not be sent to PVOutput. You can use any sensor with a numeric value. |
-  pvoutput_ext_v8:
-    name: PVOutput Extended Data v8
-    description:  A sensor class name that will be used to populate the v8 extended data field in PVOutput. If not specified, OR your donation status is not current, this field will not be sent to PVOutput. You can use any sensor with a numeric value. |
-  pvoutput_ext_v9:
-    name: PVOutput Extended Data v9
-    description:  A sensor class name that will be used to populate the v9 extended data field in PVOutput. If not specified, OR your donation status is not current, this field will not be sent to PVOutput. You can use any sensor with a numeric value. |
-  pvoutput_ext_v10:
-    name: PVOutput Extended Data v10
-    description:  A sensor class name that will be used to populate the v10 extended data field in PVOutput. If not specified, OR your donation status is not current, this field will not be sent to PVOutput. You can use any sensor with a numeric value. |
-  pvoutput_ext_v11:
-    name: PVOutput Extended Data v11
-    description:  A sensor class name that will be used to populate the v11 extended data field in PVOutput. If not specified, OR your donation status is not current, this field will not be sent to PVOutput. You can use any sensor with a numeric value. |
-  pvoutput_ext_v12:
-    name: PVOutput Extended Data v12
-    description:  A sensor class name that will be used to populate the v12 extended data field in PVOutput. If not specified, OR your donation status is not current, this field will not be sent to PVOutput. You can use any sensor with a numeric value. |
-  pvoutput_log_level:
-    name: PVOutput Logging Level
-    description: Set the PVOutput logging level.
-  mqtt_broker:
-    name: MQTT Broker
-    description: The hostname or IP address of your MQTT broker.
-  mqtt_port:
-    name: MQTT Port
-    description: The listening port of the MQTT broker. The default is 1883, unless MQTT TLS Communication is enabled, in which case the default is 8883.
-  mqtt_tls:
-    name: MQTT TLS Communication Enabled
-    description: Enable secure communication to MQTT broker over TLS/SSL (if the broker supports it).
-  mqtt_username:
-    name: MQTT User Name
-    description: A valid user name for the MQTT broker.
-  mqtt_password:
-    name: MQTT Password
-    description: A valid password for the MQTT broker username.
-  mqtt_log_level:
-    name: MQTT Logging Level
-    description: Set the paho.mqtt logging level.
-  discovery_prefix:
-    name: Home Assistant Discovery Prefix
-    description: Override the Home Assistant MQTT Discovery topic prefix to use. Only change this if you have already changed it in the MQTT settings in Home Assistant. The default is 'homeassistant'.
-  entity_id_prefix:
-    name: Home Assistant Entity ID Prefix
-    description: The prefix to use for Home Assistant entity IDs. e.g. A prefix of 'prefix' will prepend 'prefix_' to entity IDs. If you don't specify a prefix, the entity ID will be prefixed with 'sigen'.  
-  unique_id_prefix:
-    name: Home Assistant Unique ID Prefix
-    description: The prefix to use for Home Assistant unique IDs. e.g. A prefix of 'prefix' will prepend 'prefix_' to unique IDs. Once you have set this, you should NEVER change it, as it will break existing entities in Home Assistant. If you don't specify a prefix, the entity ID will be prefixed with 'sigen'.
+    name: Consumption Method
+  debug_sensor:
+    description: Specify a sensor to be debugged using either the full entity id, a partial entity id, the full sensor class name, or a partial sensor class name. For example, specifying 'daily' would match all sensors with daily in their entity name. If specified, 'Logging Level' is also forced to DEBUG.
+    name: Sensor to Debug
   device_name_prefix:
-    name: Home Assistant Device Name Prefix
     description: The prefix to use for Home Assistant entity names. e.g. A prefix of 'prefix' will prepend 'prefix ' to entity names. The default is no prefix.
+    name: Home Assistant Device Name Prefix
+  discovery_prefix:
+    description: Override the Home Assistant MQTT Discovery topic prefix to use. Only change this if you have already changed it in the MQTT settings in Home Assistant. The default is 'homeassistant'.
+    name: Home Assistant Discovery Prefix
+  edit_pct_box:
+    description: Enable to use a numeric entry box to change the value of percentage sensors or leave disabled to use a slider to change the value.
+    name: Percentage Box Editor
+  entity_id_prefix:
+    description: The prefix to use for Home Assistant entity IDs. e.g. A prefix of 'prefix' will prepend 'prefix_' to entity IDs. If you don't specify a prefix, the entity ID will be prefixed with 'sigen'.
+    name: Home Assistant Entity ID Prefix
+  log_level:
+    description: Set the sigenergy2mqtt log level.
+    name: sigenergy2mqtt Logging Level
   metrics_enabled:
-    name: Enable sigenergy2mqtt Metrics
     description: Enable the publication of sigenergy2mqtt metrics to Home Assistant.
+    name: Enable sigenergy2mqtt Metrics
+  modbus_accharger_slave:
+    description: The Sigenergy AC Charger Modbus Device ID. Ignored if no Modbus Host specified. Otherwise, auto-discovery can identify AC Charger devices.
+    name: AC-Charger Device ID
+  modbus_auto_discovery_ping_timeout:
+    description: The ping timeout, in seconds, to use when performing auto-discovery of Sigenergy devices on the network. The default is 0.5 seconds.
+    name: Auto-Discovery Ping Timeout
+  modbus_auto_discovery_retries:
+    description: The maximum retry count to use when performing auto-discovery of Sigenergy devices on the network. The default is 0.
+    name: Auto-Discovery Modbus Retries
+  modbus_auto_discovery_timeout:
+    description: The Modbus timeout, in seconds, to use when performing auto-discovery of Sigenergy devices on the network. The default is 0.25 seconds.
+    name: Auto-Discovery Modbus Timeout
+  modbus_dccharger_slave:
+    description: The Sigenergy DC Charger Modbus Device ID (usually same as Inverter Device ID). Ignored if no Modbus Host specified. Otherwise, auto-discovery can identify DC Charger devices.
+    name: DC-Charger Device ID
+  modbus_force_auto_discovery:
+    description: Enable to force the automatic discovery of Sigenergy Modbus hosts and associated Device IDs. You only need enable this if you have previously auto-discovered hosts/device IDs and your network or devices have changed.
+    name: Force Modbus Auto-Discovery
+  modbus_host:
+    description: The hostname or IP address of the Sigenergy device. Leave blank to auto-discover Sigenergy devices on your network.
+    name: Modbus Host
+  modbus_log_level:
+    description: Set the pymodbus logging level.
+    name: Modbus Logging Level
+  modbus_no_remote_ems:
+    description: Enable to hide all read/write sensors used for remote Energy Management System (EMS) integration. Ignored if 'Modbus Read Only' is enabled.
+    name: No Remote EMS
+  modbus_port:
+    description: The Sigenergy device Modbus port number.
+    name: Modbus Port
+  modbus_read_only:
+    description: Enable to only read data from the Sigenergy device. Disable to allow writing data to the Sigenergy device.
+    name: Read Only
+  modbus_slave:
+    description: The Sigenergy Inverter Modbus Device ID. If you have multiple inverters, you can specify a space-separated list of IDs. Ignored if no Modbus Host specified. Otherwise, auto-discovery can identify inverter devices.
+    name: Inverter Device ID
+  mqtt_broker:
+    description: The hostname or IP address of your MQTT broker.
+    name: MQTT Broker
+  mqtt_log_level:
+    description: Set the paho.mqtt logging level.
+    name: MQTT Logging Level
+  mqtt_password:
+    description: A valid password for the MQTT broker username.
+    name: MQTT Password
+  mqtt_port:
+    description: The listening port of the MQTT broker. The default is 1883, unless MQTT TLS Communication is enabled, in which case the default is 8883.
+    name: MQTT Port
+  mqtt_tls:
+    description: Enable secure communication to MQTT broker over TLS/SSL (if the broker supports it).
+    name: MQTT TLS Communication Enabled
+  mqtt_username:
+    description: A valid user name for the MQTT broker.
+    name: MQTT User Name
+  pvoutput_api_key:
+    description: The API Key for PVOutput
+    name: PVOutput API Key
+  pvoutput_consumption:
+    description: Enable sending consumption status to PVOutput.
+    name: PVOutput Consumption
+  pvoutput_enabled:
+    description: Enable status updates to PVOutput.
+    name: PVOutput Enabled
+  pvoutput_eod_update:
+    description: If enabled, peak generation and the daily totals for exports and imports (if enabled) are sent to PVOutput at end of day. If disabled, these values are uploaded on the same schedule as status updates.
+    name: PVOutput End-of-Day Upload
+  pvoutput_exports:
+    description: Enable sending export data to PVOutput.
+    name: PVOutput Exports
+  pvoutput_ext_v10:
+    description: A sensor class name that will be used to populate the v10 extended data field in PVOutput. If not specified, OR your donation status is not current, this field will not be sent to PVOutput. You can use any sensor with a numeric value. |
+    name: PVOutput Extended Data v10
+  pvoutput_ext_v11:
+    description: A sensor class name that will be used to populate the v11 extended data field in PVOutput. If not specified, OR your donation status is not current, this field will not be sent to PVOutput. You can use any sensor with a numeric value. |
+    name: PVOutput Extended Data v11
+  pvoutput_ext_v12:
+    description: A sensor class name that will be used to populate the v12 extended data field in PVOutput. If not specified, OR your donation status is not current, this field will not be sent to PVOutput. You can use any sensor with a numeric value. |
+    name: PVOutput Extended Data v12
+  pvoutput_ext_v7:
+    description: A sensor class name that will be used to populate the v7 extended data field in PVOutput. If not specified, OR your donation status is not current, this field will not be sent to PVOutput. You can use any sensor with a numeric value. |
+    name: PVOutput Extended Data v7
+  pvoutput_ext_v8:
+    description: A sensor class name that will be used to populate the v8 extended data field in PVOutput. If not specified, OR your donation status is not current, this field will not be sent to PVOutput. You can use any sensor with a numeric value. |
+    name: PVOutput Extended Data v8
+  pvoutput_ext_v9:
+    description: A sensor class name that will be used to populate the v9 extended data field in PVOutput. If not specified, OR your donation status is not current, this field will not be sent to PVOutput. You can use any sensor with a numeric value. |
+    name: PVOutput Extended Data v9
+  pvoutput_imports:
+    description: Enable sending import data to PVOutput.
+    name: PVOutput Imports
+  pvoutput_log_level:
+    description: Set the PVOutput logging level.
+    name: PVOutput Logging Level
+  pvoutput_system_id:
+    description: The PVOutput System ID
+    name: PVOutput System ID
+  pvoutput_temp_topic:
+    description: The MQTT topic to which to subscribe to obtain the current temperature data for PVOutput. If specified, the temperature will be sent to PVOutput.
+    name: PVOutput Temperature Topic
+  pvoutput_voltage:
+    description: The source of the voltage value to be sent to PVOutput. Use 'Phase A' for single-phase systems, 'Phase B', 'Phase C' or 'Line to Line Average' for three-phase or 'Line to Neutral Average' or 'PV Average' for either.
+    name: PVOutput Voltage Upload
+  sanity_check_default_kw:
+    description: The default value in kW used for sanity checks to validate the maximum and minimum values for actual value of power sensors and the delta value of energy sensors. The default value is 500 kW per second, meaning readings outside the range ±100 are ignored.
+    name: Sanity Check Default kW
+  scan_interval_high:
+    description: The scan interval in seconds for Modbus registers that are to be scanned at a high frequency. Default is 10 (seconds), and the minimum value is 1.
+    name: Scan Interval (High Frequency)
+  scan_interval_low:
+    description: The scan interval in seconds for Modbus registers that are to be scanned at a low frequency. Default is 600 (seconds), and the minimum value is 300.
+    name: Scan Interval (Low Frequency)
+  scan_interval_medium:
+    description: The scan interval in seconds for Modbus registers that are to be scanned at a medium frequency. Default is 60 (seconds), and the minimum value is 30.
+    name: Scan Interval (Medium Frequency)
+  scan_interval_realtime:
+    description: The scan interval in seconds for Modbus registers that are to be scanned in near-real time. Default is 5 (seconds), and the minimum value is 1.
+    name: Scan Interval (Near Realtime Frequency)
+  smartport_enabled:
+    description: Enable integration of a third-party device for production data.
+    name: Smart-Port Enabled
+  smartport_host:
+    description: The IP address or hostname of the third-party device.
+    name: Smart-Port Host
+  smartport_module_name:
+    description: The name of the module which will be used to obtain third-party device production data.
+    name: Smart-Port Module Name
+  smartport_mqtt_gain:
+    description: The gain to be applied to the production data for the third-party device obtained from the MQTT topic. (e.g. 1000 if the data is in kW) Default is 1 (Watts).
+    name: Smart-Port MQTT gain
+  smartport_mqtt_topic:
+    description: The MQTT topic to which to subscribe to obtain the production data for the third-party device.
+    name: Smart-Port MQTT topic
+  smartport_password:
+    description: The password to authenticate to the third-party device.
+    name: Smart-Port Password
+  smartport_pv_power:
+    description: The sensor class to hold the production data obtained from the third-party device.
+    name: Smart-Port PV power
+  smartport_username:
+    description: The user name to authenticate to the third-party device.
+    name: Smart-Port User Name
+  unique_id_prefix:
+    description: The prefix to use for Home Assistant unique IDs. e.g. A prefix of 'prefix' will prepend 'prefix_' to unique IDs. Once you have set this, you should NEVER change it, as it will break existing entities in Home Assistant. If you don't specify a prefix, the entity ID will be prefixed with 'sigen'.
+    name: Home Assistant Unique ID Prefix
