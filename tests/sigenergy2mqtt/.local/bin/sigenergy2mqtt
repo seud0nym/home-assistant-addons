@@ -1,0 +1,58 @@
+#!/bin/bash
+
+declare -A SIGENERGY2MQTT_PARAMETERS    # associative array for options
+declare -A LIST_OPTS                    # options that accept multiple values
+
+LIST_OPTS["modbus-inverter-device-id"]=1
+LIST_OPTS["modbus-accharger-device-id"]=1
+LIST_OPTS["modbus-dccharger-device-id"]=1
+
+while [[ $# -gt 0 ]]; do
+    arg="$1"
+
+    case "$arg" in
+        --*=*)  
+            # --option=value
+            key="${arg%%=*}"
+            key="${key#--}"
+            value="${arg#*=}"
+            SIGENERGY2MQTT_PARAMETERS["$key"]="$value"
+            shift
+            ;;
+
+        --*)
+            # --option or --option value(s)
+            key="${arg#--}"
+            shift
+
+            # If next token is another option or nothing, treat as boolean flag
+            if [[ $# -eq 0 || "$1" == --* ]]; then
+                SIGENERGY2MQTT_PARAMETERS["$key"]=true
+                continue
+            fi
+
+            # If this option accepts multiple values, collect until next --option
+            if [[ -n "${LIST_OPTS[$key]}" ]]; then
+                values=()
+                while [[ $# -gt 0 && "$1" != --* ]]; do
+                    values+=("$1")
+                    shift
+                done
+                SIGENERGY2MQTT_PARAMETERS["$key"]="${values[*]}"
+            else
+                # Single value
+                SIGENERGY2MQTT_PARAMETERS["$key"]="$1"
+                shift
+            fi
+            ;;
+
+        *)
+            echo "Unknown argument: $arg"
+            shift
+            ;;
+    esac
+done
+
+# Validate parsed options against expected assertions
+source ../functions.sh
+validate_params_against_assertions
