@@ -1,6 +1,6 @@
 # https://developers.home-assistant.io/docs/add-ons/configuration#add-on-config
 name: sigenergy2mqtt
-version: "2026.1.3"
+version: "2026.1.20"
 image: "ghcr.io/seud0nym/home-assistant-addon-sigenergy2mqtt-{arch}"
 slug: sigenergy2mqtt
 description: Publish Modbus data from Sigenergy to an MQTT Broker, with optional PVOutput updating
@@ -13,74 +13,156 @@ map:
   - addon_config
 host_network: true
 options:
-  modbus_force_auto_discovery: false
-  modbus_host: ""
-  modbus_slave: ""
-  modbus_read_only: false 
-  pvoutput_enabled: false
-  pvoutput_api_key: ""
-  pvoutput_system_id: ""
-  pvoutput_consumption: false
-  pvoutput_exports: true
-  pvoutput_imports: true
-  pvoutput_eod_update: true
-  pvoutput_voltage: "Line to Neutral Average"
+  auto_discovery: {
+    force_auto_discovery: false,
+  }
+  manual_config: {
+    host: "",
+    plant_device_id: "",
+    accharger_device_id: "",
+    dccharger_device_id: "",
+  }
+  scan_interval: {}
+  pvoutput: {
+    enabled: false,
+    api_key: "",
+    system_id: "",
+    consumption: false,
+    exports: true,
+    imports: true,
+    eod_update: true,
+    voltage: "Line to Neutral Average",
+  }
+  mqtt: {}
+  advanced: {
+    read_only: false,
+    no_remote_ems: false,
+  }
+  logging: {}
+  smartport: {}
 schema:
-  modbus_force_auto_discovery: "bool"
-  modbus_auto_discovery_ping_timeout: "float(0.5,)?"
-  modbus_auto_discovery_timeout: "float(0.25,)?"
-  modbus_auto_discovery_retries: "int(0,)?"
-  modbus_host: "str?"
-  modbus_port: "port?"
-  modbus_slave: "match(^[0-9 ,]*$)?"
-  modbus_accharger_slave: "match(^[0-9 ,]*$)?"
-  modbus_dccharger_slave: "match(^[0-9 ,]*$)?"
-  modbus_read_only: "bool?"
-  modbus_no_remote_ems: "bool?"
-  edit_pct_box: "bool?"
+  auto_discovery:
+    force: "bool?"
+    ping_timeout: "float(0.5,)?"
+    timeout: "float(0.25,)?"
+    retries: "int(0,)?"
+  manual_config:
+    host: "str?"
+    port: "port?"
+    inverter_device_id: "match(^[0-9 ,]*$)?"
+    accharger_device_id: "match(^[0-9 ,]*$)?"
+    dccharger_device_id: "match(^[0-9 ,]*$)?"
+  scan_interval:
+    low: "int(1,)?"
+    medium: "int(1,)?"
+    high: "int(1,)?"
+    realtime: "int(1,)?"
+  pvoutput:
+    enabled: "bool?"
+    api_key: "str?"
+    system_id: "str?"
+    consumption: "bool?"
+    exports: "bool?"
+    imports: "bool?"
+    eod_update: "bool?"
+    voltage: "list(Phase A|Phase B|Phase C|Line to Neutral Average|Line to Line Average|PV Average)?"
+    ext_v7: "str?"
+    ext_v8: "str?"
+    ext_v9: "str?"
+    ext_v10: "str?"
+    ext_v11: "str?"
+    ext_v12: "str?"
+    temp_topic: "str?"
+  mqtt:
+    broker: "str?"
+    port: "port?"
+    tls: "bool?"
+    username: "str?"
+    password: "password?"
+  advanced:
+    consumption_method: "list(Calculated|Total Load|General Load)?"
+    read_only: "bool?"
+    no_remote_ems: "bool?"
+    no_remote_ems_check: "bool?"
+    edit_pct_box: "bool?"
+    metrics_enabled: "bool?"
+    sanity_check_default_kw: "int(1,)?"
+    device_name_prefix: "str?"
+    entity_id_prefix: "str?"
+    unique_id_prefix: "str?"
+    discovery_prefix: "str?"
+  logging:
+    debug_sensor: "str?"
+    sigenergy2mqtt: "list(DEBUG|INFO|WARNING|ERROR)?"
+    modbus: "list(DEBUG|INFO|WARNING|ERROR|CRITICAL)?"
+    pvoutput: "list(DEBUG|INFO|WARNING|ERROR|CRITICAL)?"
+    mqtt: "list(DEBUG|INFO|WARNING|ERROR|CRITICAL)?"
+  smartport:
+    enabled: "bool?"
+    module_name: "str?"
+    host: "str?"
+    username: "str?"
+    password: "password?"
+    pv_power: "str?"
+    mqtt_topic: "str?"
+    mqtt_gain: "int?"
+  # Deprecated options left in for backward compatibility. The run script will migrate them to their replacements if found.
   consumption_method: "list(Calculated|Total Load|General Load)?"
-  scan_interval_low: "int(300,)?"
-  scan_interval_medium: "int(30,)?"
-  scan_interval_high: "int(1,)?"
-  scan_interval_realtime: "int(1,)?"
-  sanity_check_default_kw: "int(1,)?" 
+  debug_sensor: "str?"
+  device_name_prefix: "str?"
+  discovery_prefix: "str?"
+  edit_pct_box: "bool?"
+  entity_id_prefix: "str?"
+  log_level: "list(DEBUG|INFO|WARNING|ERROR)?"
+  metrics_enabled: "bool?"
+  modbus_accharger_slave: "match(^[0-9 ,]*$)?"
+  modbus_auto_discovery_ping_timeout: "float(0.5,)?"
+  modbus_auto_discovery_retries: "int(0,)?"
+  modbus_auto_discovery_timeout: "float(0.25,)?"
+  modbus_dccharger_slave: "match(^[0-9 ,]*$)?"
+  modbus_force_auto_discovery: "bool?"
+  modbus_host: "str?"
   modbus_log_level: "list(DEBUG|INFO|WARNING|ERROR|CRITICAL)?"
-  pvoutput_enabled: "bool?"
-  pvoutput_api_key: "str?"
-  pvoutput_system_id: "str?"
-  pvoutput_consumption: "bool?"
-  pvoutput_exports: "bool?"
-  pvoutput_imports: "bool?"
-  pvoutput_eod_update: "bool?"
-  pvoutput_temp_topic: "str?"
-  pvoutput_log_level: "list(DEBUG|INFO|WARNING|ERROR|CRITICAL)?"
-  pvoutput_voltage: "list(Phase A|Phase B|Phase C|Line to Neutral Average|Line to Line Average|PV Average)"
-  pvoutput_ext_v7: "str?"
-  pvoutput_ext_v8: "str?"
-  pvoutput_ext_v9: "str?"
-  pvoutput_ext_v10: "str?"
-  pvoutput_ext_v11: "str?"
-  pvoutput_ext_v12: "str?"
+  modbus_no_remote_ems: "bool?"
+  modbus_port: "port?"
+  modbus_read_only: "bool?"
+  modbus_slave: "match(^[0-9 ,]*$)?"
   mqtt_broker: "str?"
+  mqtt_log_level: "list(DEBUG|INFO|WARNING|ERROR|CRITICAL)?"
+  mqtt_password: "password?"
   mqtt_port: "port?"
   mqtt_tls: "bool?"
   mqtt_username: "str?"
-  mqtt_password: "password?"
-  mqtt_log_level: "list(DEBUG|INFO|WARNING|ERROR|CRITICAL)?"
-  metrics_enabled: "bool?"
-  log_level: "list(DEBUG|INFO|WARNING|ERROR)?"
-  debug_sensor: "str?"
-  discovery_prefix: "str?"
-  entity_id_prefix: "str?"
-  unique_id_prefix: "str?"
-  device_name_prefix: "str?"
+  no_remote_ems_check: "bool?"
+  pvoutput_api_key: "str?"
+  pvoutput_consumption: "bool?"
+  pvoutput_enabled: "bool?"
+  pvoutput_eod_update: "bool?"
+  pvoutput_exports: "bool?"
+  pvoutput_ext_v10: "str?"
+  pvoutput_ext_v11: "str?"
+  pvoutput_ext_v12: "str?"
+  pvoutput_ext_v7: "str?"
+  pvoutput_ext_v8: "str?"
+  pvoutput_ext_v9: "str?"
+  pvoutput_imports: "bool?"
+  pvoutput_log_level: "list(DEBUG|INFO|WARNING|ERROR|CRITICAL)?"
+  pvoutput_system_id: "str?"
+  pvoutput_temp_topic: "str?"
+  pvoutput_voltage: "list(Phase A|Phase B|Phase C|Line to Neutral Average|Line to Line Average|PV Average)?"
+  sanity_check_default_kw: "int(1,)?"
+  scan_interval_high: "int(1,)?"
+  scan_interval_low: "int(1,)?"
+  scan_interval_medium: "int(1,)?"
+  scan_interval_realtime: "int(1,)?"
   smartport_enabled: "bool?"
-  smartport_module_name: "str?"
   smartport_host: "str?"
-  smartport_username: "str?"
+  smartport_module_name: "str?"
+  smartport_mqtt_gain: "int?"
+  smartport_mqtt_topic: "str?"
   smartport_password: "password?"
   smartport_pv_power: "str?"
-  smartport_mqtt_topic: "str?"
-  smartport_mqtt_gain: "int?"
+  smartport_username: "str?"
+  unique_id_prefix: "str?"
 services:
   - "mqtt:want"

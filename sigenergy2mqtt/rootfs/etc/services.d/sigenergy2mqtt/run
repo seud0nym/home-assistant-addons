@@ -4,16 +4,89 @@
 # s6-overlay docs: https://github.com/just-containers/s6-overlay
 # ==============================================================================
 
-bashio::log.info "Version $(bashio::addon.version)"
-bashio::log.info "Configuring..."
+# https://github.com/seud0nym/sigenergy2mqtt/issues/92
+__BASHIO_LOG_TIMESTAMP="%Y-%m-%d %H:%M:%S"
 
+bashio::log.info "Version $(bashio::addon.version)"
+
+bashio::log.info "Checking options..."
+# Migrate legacy options to grouped layout
+declare -A OPTIONS=(
+  ["modbus_force_auto_discovery"]="auto_discovery.force"
+  ["modbus_auto_discovery_ping_timeout"]="auto_discovery.ping_timeout"
+  ["modbus_auto_discovery_retries"]="auto_discovery.retries"
+  ["modbus_auto_discovery_timeout"]="auto_discovery.timeout"
+  ["modbus_host"]="manual_config.host"
+  ["modbus_port"]="manual_config.port"
+  ["modbus_slave"]="manual_config.inverter_device_id"
+  ["modbus_accharger_slave"]="manual_config.accharger_device_id"
+  ["modbus_dccharger_slave"]="manual_config.dccharger_device_id"
+  ["scan_interval_low"]="scan_interval.low"
+  ["scan_interval_medium"]="scan_interval.medium"
+  ["scan_interval_high"]="scan_interval.high"
+  ["scan_interval_realtime"]="scan_interval.realtime"
+  ["pvoutput_enabled"]="pvoutput.enabled"
+  ["pvoutput_api_key"]="pvoutput.api_key"
+  ["pvoutput_system_id"]="pvoutput.system_id"
+  ["pvoutput_consumption"]="pvoutput.consumption"
+  ["pvoutput_exports"]="pvoutput.exports"
+  ["pvoutput_imports"]="pvoutput.imports"
+  ["pvoutput_eod_update"]="pvoutput.eod_update"
+  ["pvoutput_voltage"]="pvoutput.voltage"
+  ["pvoutput_ext_v7"]="pvoutput.ext_v7"
+  ["pvoutput_ext_v8"]="pvoutput.ext_v8"
+  ["pvoutput_ext_v9"]="pvoutput.ext_v9"
+  ["pvoutput_ext_v10"]="pvoutput.ext_v10"
+  ["pvoutput_ext_v11"]="pvoutput.ext_v11"
+  ["pvoutput_ext_v12"]="pvoutput.ext_v12"
+  ["pvoutput_temp_topic"]="pvoutput.temp_topic"
+  ["mqtt_broker"]="mqtt.broker"
+  ["mqtt_port"]="mqtt.port"
+  ["mqtt_tls"]="mqtt.tls"
+  ["mqtt_username"]="mqtt.username"
+  ["mqtt_password"]="mqtt.password"
+  ["modbus_read_only"]="advanced.read_only"
+  ["modbus_no_remote_ems"]="advanced.no_remote_ems"
+  ["no_remote_ems_check"]="advanced.no_remote_ems_check"
+  ["consumption_method"]="advanced.consumption_method"
+  ["edit_pct_box"]="advanced.edit_pct_box"
+  ["sanity_check_default_kw"]="advanced.sanity_check_default_kw"
+  ["metrics_enabled"]="advanced.metrics_enabled"
+  ["device_name_prefix"]="advanced.device_name_prefix"
+  ["entity_id_prefix"]="advanced.entity_id_prefix"
+  ["unique_id_prefix"]="advanced.unique_id_prefix"
+  ["discovery_prefix"]="advanced.discovery_prefix"
+  ["debug_sensor"]="logging.debug_sensor"
+  ["log_level"]="logging.sigenergy2mqtt"
+  ["modbus_log_level"]="logging.modbus"
+  ["pvoutput_log_level"]="logging.pvoutput"
+  ["mqtt_log_level"]="logging.mqtt"
+  ["smartport_enabled"]="smartport.enabled"
+  ["smartport_module_name"]="smartport.module_name"
+  ["smartport_host"]="smartport.host"
+  ["smartport_username"]="smartport.username"
+  ["smartport_password"]="smartport.password"
+  ["smartport_pv_power"]="smartport.pv_power"
+  ["smartport_mqtt_topic"]="smartport.mqtt_topic"
+  ["smartport_mqtt_gain"]="smartport.mqtt_gain"
+)
+for legacy_option in "${!OPTIONS[@]}"; do
+  grouped_option="${OPTIONS[$legacy_option]}"
+  if bashio::config.has_value "${legacy_option}"; then
+    value="$(bashio::config "${legacy_option}")"
+    [[ "${value}" == "null" || -z "${value}" ]] && continue
+    bashio::log.info " → Migrating legacy option '${legacy_option}' to grouped option '${grouped_option}' with value '${value}'"
+    bashio::addon.option "${legacy_option}"
+    bashio::addon.option "${grouped_option}" "${value}"
+  fi
+done
 # Remove obsolete options
 if bashio::config.exists 'pvoutput_interval'; then
-  bashio::log.info "Removing obsolete option 'pvoutput_interval' from configuration"
+  bashio::log.info " → Removing obsolete option 'pvoutput_interval' from configuration"
   bashio::addon.option 'pvoutput_interval'
 fi
 
-# Define config options to use:
+bashio::log.info "Configuring sigenergy2mqtt service options..."
 CMD_PARAMETERS=()
 
 if [[ -e /config/sigenergy2mqtt.yaml ]]; then
@@ -26,54 +99,52 @@ else
   HAS_CONFIG=0
 fi
 
-# Get Home Assistant parameters from the configuration
-bashio::config.has_value 'discovery_prefix'         && CMD_PARAMETERS+=(--hass-discovery-prefix="$(bashio::config 'discovery_prefix')")
-bashio::config.has_value 'entity_id_prefix'         && CMD_PARAMETERS+=(--hass-entity-id-prefix="$(bashio::config 'entity_id_prefix')")
-bashio::config.has_value 'unique_id_prefix'         && CMD_PARAMETERS+=(--hass-unique-id-prefix="$(bashio::config 'unique_id_prefix')")
-bashio::config.has_value 'device_name_prefix'       && CMD_PARAMETERS+=(--hass-device-name-prefix="$(bashio::config 'device_name_prefix')")
-
-bashio::config.has_value 'edit_pct_box' && [[ "$(bashio::config 'edit_pct_box')" == "true" ]] && CMD_PARAMETERS+=(--hass-edit-pct-box)
-
 # Get logging and debugging parameters from the configuration
-bashio::config.has_value 'log_level'                && CMD_PARAMETERS+=(--log-level="$(bashio::config 'log_level')")
-bashio::config.has_value 'debug_sensor'             && CMD_PARAMETERS+=(--debug-sensor="$(bashio::config 'debug_sensor')")
+bashio::config.has_value 'logging.sigenergy2mqtt' && CMD_PARAMETERS+=(--log-level="$(bashio::config 'logging.sigenergy2mqtt')")
+bashio::config.has_value 'logging.debug_sensor' && CMD_PARAMETERS+=(--debug-sensor="$(bashio::config 'logging.debug_sensor')")
+
+# Get Home Assistant parameters from the configuration
+bashio::config.has_value 'advanced.discovery_prefix' && CMD_PARAMETERS+=(--hass-discovery-prefix="$(bashio::config 'advanced.discovery_prefix')")
+bashio::config.has_value 'advanced.entity_id_prefix' && CMD_PARAMETERS+=(--hass-entity-id-prefix="$(bashio::config 'advanced.entity_id_prefix')")
+bashio::config.has_value 'advanced.unique_id_prefix' && CMD_PARAMETERS+=(--hass-unique-id-prefix="$(bashio::config 'advanced.unique_id_prefix')")
+bashio::config.has_value 'advanced.device_name_prefix' && CMD_PARAMETERS+=(--hass-device-name-prefix="$(bashio::config 'advanced.device_name_prefix')")
+bashio::config.has_value 'advanced.edit_pct_box' && [[ "$(bashio::config 'advanced.edit_pct_box')" == "true" ]] && CMD_PARAMETERS+=(--hass-edit-pct-box)
 
 # Get MQTT parameters from the MQTT add-on
-MQTT_HOST=""
+MQTT_BROKER=""
 MQTT_PASSWORD=""
 MQTT_PORT=1883
 MQTT_USERNAME=""
 if bashio::services.available "mqtt"; then
-  MQTT_HOST="$(bashio::services "mqtt" "host")"
+  MQTT_BROKER="$(bashio::services "mqtt" "host")"
   MQTT_PORT="$(bashio::services "mqtt" "port")"
   MQTT_USERNAME="$(bashio::services "mqtt" "username")"
   MQTT_PASSWORD="$(bashio::services "mqtt" "password")"
-  bashio::log.info "MQTT service available, using host: ${MQTT_HOST}, port: ${MQTT_PORT}, username: ${MQTT_USERNAME}, password: [REDACTED: ${#MQTT_PASSWORD} chars]"
+  bashio::log.info "MQTT service available, using broker: ${MQTT_BROKER}, port: ${MQTT_PORT}, username: ${MQTT_USERNAME}, password: [REDACTED: ${#MQTT_PASSWORD} chars]"
 fi
 # Override the default MQTT parameters if the user has provided values
 bashio::log.info "Checking for MQTT overrides in the add-on configuration..."
-bashio::config.has_value 'mqtt_broker'    && { MQTT_HOST="$(bashio::config 'mqtt_broker')"; bashio::log.info "Overriding MQTT broker: '${MQTT_HOST}'"; }
-bashio::config.has_value 'mqtt_port'      && { MQTT_PORT="$(bashio::config 'mqtt_port')"; bashio::log.info "Overriding MQTT port: '${MQTT_PORT}'"; }
-bashio::config.has_value 'mqtt_username'  && { MQTT_USERNAME="$(bashio::config 'mqtt_username')"; bashio::log.info "Overriding MQTT username: '${MQTT_USERNAME}'"; }
-bashio::config.has_value 'mqtt_password'  && { MQTT_PASSWORD="$(bashio::config 'mqtt_password')"; bashio::log.info "Overriding MQTT password: [REDACTED: ${#MQTT_PASSWORD} chars]"; }
-bashio::config.has_value 'mqtt_tls'       && { MQTT_TLS="$(bashio::config 'mqtt_tls')"; bashio::log.info "MQTT TLS Communication enabled: '${MQTT_TLS}'"; } || MQTT_TLS="false"
-bashio::config.has_value 'mqtt_log_level' && CMD_PARAMETERS+=(--mqtt-log-level="$(bashio::config 'mqtt_log_level')")
-[[ ! -z "${MQTT_HOST}" ]]                 && CMD_PARAMETERS+=(--mqtt-broker="${MQTT_HOST}")
-[[ ! -z "${MQTT_PORT}" ]]                 && CMD_PARAMETERS+=(--mqtt-port="${MQTT_PORT}")
-[[ "${MQTT_TLS}" == "true" ]]             && CMD_PARAMETERS+=(--mqtt-tls)
-[[ ! -z "${MQTT_USERNAME}" ]]             && CMD_PARAMETERS+=(--mqtt-username="${MQTT_USERNAME}")
-[[ ! -z "${MQTT_PASSWORD}" ]]             && CMD_PARAMETERS+=(--mqtt-password="${MQTT_PASSWORD}")
-[[ -z "${MQTT_USERNAME}${MQTT_PASSWORD}"  && $HAS_CONFIG == 0 ]] && CMD_PARAMETERS+=(--mqtt-anonymous)
+bashio::config.has_value 'mqtt.broker' && { MQTT_BROKER="$(bashio::config 'mqtt.broker')"; bashio::log.info "Overriding MQTT broker: '${MQTT_BROKER}'"; }
+bashio::config.has_value 'mqtt.port' && { MQTT_PORT="$(bashio::config 'mqtt.port')"; bashio::log.info "Overriding MQTT port: '${MQTT_PORT}'"; }
+bashio::config.has_value 'mqtt.username' && { MQTT_USERNAME="$(bashio::config 'mqtt.username')"; bashio::log.info "Overriding MQTT username: '${MQTT_USERNAME}'"; }
+bashio::config.has_value 'mqtt.password' && { MQTT_PASSWORD="$(bashio::config 'mqtt.password')"; bashio::log.info "Overriding MQTT password: [REDACTED: ${#MQTT_PASSWORD} chars]"; }
+bashio::config.has_value 'mqtt.tls' && { MQTT_TLS="$(bashio::config 'mqtt.tls')"; bashio::log.info "MQTT TLS Communication enabled: '${MQTT_TLS}'"; } || MQTT_TLS="false"
+bashio::config.has_value 'logging.mqtt' && CMD_PARAMETERS+=(--mqtt-log-level="$(bashio::config 'logging.mqtt')")
+[[ ! -z "${MQTT_BROKER}" ]] && CMD_PARAMETERS+=(--mqtt-broker="${MQTT_BROKER}")
+[[ ! -z "${MQTT_PORT}" ]] && CMD_PARAMETERS+=(--mqtt-port="${MQTT_PORT}")
+[[ "${MQTT_TLS}" == "true" ]] && CMD_PARAMETERS+=(--mqtt-tls)
+[[ ! -z "${MQTT_USERNAME}" ]] && CMD_PARAMETERS+=(--mqtt-username="${MQTT_USERNAME}")
+[[ ! -z "${MQTT_PASSWORD}" ]] && CMD_PARAMETERS+=(--mqtt-password="${MQTT_PASSWORD}")
+[[ -z "${MQTT_USERNAME}${MQTT_PASSWORD}" && $HAS_CONFIG == 0 ]] && CMD_PARAMETERS+=(--mqtt-anonymous)
 
 # Get Modbus parameters from the configuration
-bashio::config.has_value 'modbus_force_auto_discovery' && MODBUS_AUTO_DISCOVERY="$(bashio::config 'modbus_force_auto_discovery')" || MODBUS_AUTO_DISCOVERY='false'
-bashio::config.has_value 'modbus_host'                 && MODBUS_HOST="$(bashio::config 'modbus_host')" || MODBUS_HOST=""
-if [[ "${MODBUS_AUTO_DISCOVERY}" == "true" ]]; then
+bashio::config.has_value 'auto_discovery.force' && MODBUS_AUTO_DISCOVERY="$(bashio::config 'auto_discovery.force')" || MODBUS_AUTO_DISCOVERY='false'
+bashio::config.has_value 'manual_config.host' && MODBUS_HOST="$(bashio::config 'manual_config.host')" || MODBUS_HOST=""
+if [[ "$MODBUS_HOST" == "" && "${MODBUS_AUTO_DISCOVERY}" == "true" ]]; then
   bashio::log.info "Forcing Modbus auto-discovery"
   CMD_PARAMETERS+=(--modbus-auto-discovery=force)
-  bashio::log.info "Resetting 'modbus_force_auto_discovery' to 'false'"
-  bashio::addon.option 'modbus_force_auto_discovery' 'false'
-  bashio::log.info "modbus_force_auto_discovery=$(bashio::config 'modbus_force_auto_discovery')"
+  bashio::addon.option 'auto_discovery.force' 'false'
+  bashio::log.info "Reset auto_discovery.force=$(bashio::config 'auto_discovery.force')"
 elif [[ "$MODBUS_HOST" == "" && -e /data/sigenergy2mqtt/auto-discovery.yaml ]]; then
   bashio::log.info "Enabling Modbus auto-discovery because auto-discovery cache file exists and no host specified"
   CMD_PARAMETERS+=(--modbus-auto-discovery=once)
@@ -81,95 +152,87 @@ elif [[ "$MODBUS_HOST" == "" ]]; then
   bashio::log.info "Enabling Modbus auto-discovery because no Modbus host specified"
   CMD_PARAMETERS+=(--modbus-auto-discovery=once)
 else
+  if [[ "${MODBUS_AUTO_DISCOVERY}" == "true" ]]; then
+    bashio::log.warning "IGNORED forced Modbus auto-discovery, because a Modbus host is specified (${MODBUS_HOST})."
+    bashio::addon.option 'auto_discovery.force' 'false'
+    bashio::log.info "Reset auto_discovery.force=$(bashio::config 'auto_discovery.force')"
+  fi
   CMD_PARAMETERS+=(--modbus-host="${MODBUS_HOST}")
-  if bashio::config.has_value 'modbus_slave'; then
-    id=$(bashio::config 'modbus_slave')
+  if bashio::config.has_value 'manual_config.inverter_device_id'; then
+    id=$(bashio::config 'manual_config.inverter_device_id')
     CMD_PARAMETERS+=(--modbus-inverter-device-id ${id//,/ })
   fi
-  if bashio::config.has_value 'modbus_accharger_slave'; then
-    id=$(bashio::config 'modbus_accharger_slave')
+  if bashio::config.has_value 'manual_config.accharger_device_id'; then
+    id=$(bashio::config 'manual_config.accharger_device_id')
     CMD_PARAMETERS+=(--modbus-accharger-device-id ${id//,/ })
   fi
-  if bashio::config.has_value 'modbus_dccharger_slave'; then
-    id=$(bashio::config 'modbus_dccharger_slave')
+  if bashio::config.has_value 'manual_config.dccharger_device_id'; then
+    id=$(bashio::config 'manual_config.dccharger_device_id')
     CMD_PARAMETERS+=(--modbus-dccharger-device-id ${id//,/ })
   fi
 fi
 if echo "${CMD_PARAMETERS[@]}" | grep -qe '--modbus-auto-discovery='; then
-  bashio::config.has_value 'modbus_auto_discovery_ping_timeout' && CMD_PARAMETERS+=(--modbus-auto-discovery-ping-timeout="$(bashio::config 'modbus_auto_discovery_ping_timeout')")
-  bashio::config.has_value 'modbus_auto_discovery_timeout'      && CMD_PARAMETERS+=(--modbus-auto-discovery-timeout="$(bashio::config 'modbus_auto_discovery_timeout')")
-  bashio::config.has_value 'modbus_auto_discovery_retries'      && CMD_PARAMETERS+=(--modbus-auto-discovery-retries="$(bashio::config 'modbus_auto_discovery_retries')")
+  bashio::config.has_value 'auto_discovery.ping_timeout' && CMD_PARAMETERS+=(--modbus-auto-discovery-ping-timeout="$(bashio::config 'auto_discovery.ping_timeout')")
+  bashio::config.has_value 'auto_discovery.timeout' && CMD_PARAMETERS+=(--modbus-auto-discovery-timeout="$(bashio::config 'auto_discovery.timeout')")
+  bashio::config.has_value 'auto_discovery.retries' && CMD_PARAMETERS+=(--modbus-auto-discovery-retries="$(bashio::config 'auto_discovery.retries')")
 fi
-bashio::config.has_value 'modbus_port'               && CMD_PARAMETERS+=(--modbus-port="$(bashio::config 'modbus_port')")
-bashio::config.has_value 'modbus_log_level'          && CMD_PARAMETERS+=(--modbus-log-level="$(bashio::config 'modbus_log_level')")
-bashio::config.has_value 'modbus_read_only'          && MODBUS_READ_ONLY="$(bashio::config 'modbus_read_only')"
+bashio::config.has_value 'manual_config.port' && CMD_PARAMETERS+=(--modbus-port="$(bashio::config 'manual_config.port')")
+bashio::config.has_value 'logging.modbus' && CMD_PARAMETERS+=(--modbus-log-level="$(bashio::config 'logging.modbus')")
+bashio::config.has_value 'advanced.read_only' && MODBUS_READ_ONLY="$(bashio::config 'advanced.read_only')"
 if [[ "${MODBUS_READ_ONLY}" == "true" ]]; then
   CMD_PARAMETERS+=(--modbus-readonly) 
-  bashio::log.info "Read-only mode enabled, no write operations can be performed."
+  bashio::log.warning "Read-only mode enabled: No write operations can be performed."
 else
-  bashio::log.info "Read-write mode enabled, write operations can be performed."
-  if bashio::config.has_value 'modbus_no_remote_ems'; then
-    if [[ "$(bashio::config 'modbus_no_remote_ems')" == "true" ]]; then
-      CMD_PARAMETERS+=(--modbus-no-remote-ems) 
-      bashio::log.info "Remote EMS mode disabled, no remote EMS related sensors will be published."
+  if bashio::config.has_value 'advanced.no_remote_ems' && [[ "$(bashio::config 'advanced.no_remote_ems')" == "true" ]]; then
+    CMD_PARAMETERS+=(--modbus-no-remote-ems) 
+    bashio::log.warning "Remote EMS mode disabled: No Remote EMS related sensors will be published."
+  else
+    if bashio::config.has_value 'advanced.no_remote_ems_check' && [[ "$(bashio::config 'advanced.no_remote_ems_check')" == "true" ]]; then
+      CMD_PARAMETERS+=(--no-remote-ems-check)
+      bashio::log.warning "Remote EMS checks disabled! ESS Max Charging/Discharging and PV Max Power limits will NOT be disabled when Remote EMS Control Mode is not Command Charging/Discharging."
     fi
   fi
 fi
 
+# Get the scanning interval frequencies from the configuration
+bashio::config.has_value 'scan_interval.low' && CMD_PARAMETERS+=(--scan-interval-low="$(bashio::config 'scan_interval.low')")
+bashio::config.has_value 'scan_interval.medium' && CMD_PARAMETERS+=(--scan-interval-medium="$(bashio::config 'scan_interval.medium')")
+bashio::config.has_value 'scan_interval.high' && CMD_PARAMETERS+=(--scan-interval-high="$(bashio::config 'scan_interval.high')")
+bashio::config.has_value 'scan_interval.realtime' && CMD_PARAMETERS+=(--scan-interval-realtime="$(bashio::config 'scan_interval.realtime')")
+
+# Get the sanity check default kW value from the configuration
+bashio::config.has_value 'advanced.sanity_check_default_kw' && CMD_PARAMETERS+=(--sanity-check-default-kw="$(bashio::config 'advanced.sanity_check_default_kw')")
+
 # Handle consumption method option
-case "$(bashio::config 'consumption_method')" in
+case "$(bashio::config 'advanced.consumption_method')" in
   "Total Load")             CMD_PARAMETERS+=(--consumption=total);;
   "General Load")           CMD_PARAMETERS+=(--consumption=general);;
   *)                        CMD_PARAMETERS+=(--consumption=calculated);;
 esac  
 
-# Get smart-port parameters from the configuration
-if bashio::config.has_value 'smartport_enabled'; then
-  SMARTPORT_ENABLED="$(bashio::config 'smartport_enabled')"
-  if [[ "${SMARTPORT_ENABLED}" == "true" ]]; then
-    SMARTPORT_MODULE="$(bashio::config 'smartport_module_name')"
-    SMARTPORT_MQTT_TOPIC="$(bashio::config 'smartport_mqtt_topic')"
-    if [[ -z "${SMARTPORT_MODULE}" && -z "${SMARTPORT_MQTT_TOPIC}" ]]; then
-      bashio::log.fatal "Smart-Port enabled, but neither module name or MQTT topic found; cannot continue."
-      exit 1
-    else
-      bashio::log.info "Smart-Port enabled, using module name: ${SMARTPORT_MODULE} / MQTT topic: ${SMARTPORT_MQTT_TOPIC}"
-    fi
-    CMD_PARAMETERS+=(--smartport-enabled)
-    bashio::config.has_value 'smartport_module_name' && CMD_PARAMETERS+=(--smartport-module-name="${SMARTPORT_MODULE}")
-    bashio::config.has_value 'smartport_host'        && CMD_PARAMETERS+=(--smartport-host="$(bashio::config 'smartport_host')")
-    bashio::config.has_value 'smartport_username'    && CMD_PARAMETERS+=(--smartport-username="$(bashio::config 'smartport_username')")
-    bashio::config.has_value 'smartport_password'    && CMD_PARAMETERS+=(--smartport-password="$(bashio::config 'smartport_password')")
-    bashio::config.has_value 'smartport_pv_power'    && CMD_PARAMETERS+=(--smartport-pv-power="$(bashio::config 'smartport_pv_power')")
-    bashio::config.has_value 'smartport_mqtt_topic'  && CMD_PARAMETERS+=(--smartport-mqtt-topic="${SMARTPORT_MQTT_TOPIC}")
-    bashio::config.has_value 'smartport_mqtt_gain'   && CMD_PARAMETERS+=(--smartport-mqtt-gain="$(bashio::config 'smartport_mqtt_gain')")
-  fi
-fi
-
 # Get PVOutput parameters from the configuration
-if bashio::config.has_value 'pvoutput_enabled'; then
-  PVOUTPUT_ENABLED="$(bashio::config 'pvoutput_enabled')"
+if bashio::config.has_value 'pvoutput.enabled'; then
+  PVOUTPUT_ENABLED="$(bashio::config 'pvoutput.enabled')"
   if [[ "${PVOUTPUT_ENABLED}" == "true" ]]; then
     PVOUTPUT_API_KEY=""
     PVOUTPUT_SYSTEM_ID=""
-    bashio::config.has_value 'pvoutput_api_key'     && PVOUTPUT_API_KEY="$(bashio::config 'pvoutput_api_key')"
-    bashio::config.has_value 'pvoutput_system_id'   && PVOUTPUT_SYSTEM_ID="$(bashio::config 'pvoutput_system_id')"
+    bashio::config.has_value 'pvoutput.api_key' && PVOUTPUT_API_KEY="$(bashio::config 'pvoutput.api_key')"
+    bashio::config.has_value 'pvoutput.system_id' && PVOUTPUT_SYSTEM_ID="$(bashio::config 'pvoutput.system_id')"
     if [[ -z "${PVOUTPUT_API_KEY}" || -z "${PVOUTPUT_SYSTEM_ID}" ]]; then
       bashio::log.fatal "PVOutput enabled, but API Key and/or System ID not found; cannot continue."
       exit 1
     fi
-    bashio::log.info "PVOutput enabled, using API Key: [REDACTED: ${#PVOUTPUT_API_KEY} chars] System ID: ${PVOUTPUT_SYSTEM_ID}"  
-    bashio::config.has_value 'pvoutput_consumption' && PVOUTPUT_CONSUMPTION=$(bashio::config 'pvoutput_consumption')
-    bashio::config.has_value 'pvoutput_exports'     && PVOUTPUT_EXPORTS=$(bashio::config 'pvoutput_exports')
-    bashio::config.has_value 'pvoutput_imports'     && PVOUTPUT_IMPORTS=$(bashio::config 'pvoutput_imports')
-    bashio::config.has_value 'pvoutput_eod_update'  && PVOUTPUT_EOD_UPDATE=$(bashio::config 'pvoutput_eod_update')
+    bashio::config.has_value 'pvoutput.consumption' && PVOUTPUT_CONSUMPTION=$(bashio::config 'pvoutput.consumption')
+    bashio::config.has_value 'pvoutput.exports' && PVOUTPUT_EXPORTS=$(bashio::config 'pvoutput.exports')
+    bashio::config.has_value 'pvoutput.imports' && PVOUTPUT_IMPORTS=$(bashio::config 'pvoutput.imports')
+    bashio::config.has_value 'pvoutput.eod_update' && PVOUTPUT_EOD_UPDATE=$(bashio::config 'pvoutput.eod_update')
     CMD_PARAMETERS+=(--pvoutput-enabled)
     CMD_PARAMETERS+=(--pvoutput-api-key="${PVOUTPUT_API_KEY}")
     CMD_PARAMETERS+=(--pvoutput-system-id="${PVOUTPUT_SYSTEM_ID}")
-    [[ "${PVOUTPUT_CONSUMPTION}" == "true" ]]       && CMD_PARAMETERS+=(--pvoutput-consumption)
-    [[ "${PVOUTPUT_EXPORTS}" == "true" ]]           && CMD_PARAMETERS+=(--pvoutput-exports)
-    [[ "${PVOUTPUT_IMPORTS}" == "true" ]]           && CMD_PARAMETERS+=(--pvoutput-imports)
-    case "$(bashio::config 'pvoutput_voltage')" in
+    [[ "${PVOUTPUT_CONSUMPTION}" == "true" ]] && CMD_PARAMETERS+=(--pvoutput-consumption)
+    [[ "${PVOUTPUT_EXPORTS}" == "true" ]] && CMD_PARAMETERS+=(--pvoutput-exports)
+    [[ "${PVOUTPUT_IMPORTS}" == "true" ]] && CMD_PARAMETERS+=(--pvoutput-imports)
+    case "$(bashio::config 'pvoutput.voltage')" in
       "Phase A")                CMD_PARAMETERS+=(--pvoutput-voltage=phase-a);;
       "Phase B")                CMD_PARAMETERS+=(--pvoutput-voltage=phase-b);;
       "Phase C")                CMD_PARAMETERS+=(--pvoutput-voltage=phase-c);;
@@ -177,47 +240,52 @@ if bashio::config.has_value 'pvoutput_enabled'; then
       "PV Average")             CMD_PARAMETERS+=(--pvoutput-voltage=pv);;
       *)                        CMD_PARAMETERS+=(--pvoutput-voltage=l/n-avg);;
     esac
-    [[ "${PVOUTPUT_EOD_UPDATE}" != "true" ]]        && CMD_PARAMETERS+=(--pvoutput-output-hour=-1)
-    bashio::config.has_value 'pvoutput_temp_topic'  && CMD_PARAMETERS+=(--pvoutput-temp-topic="$(bashio::config 'pvoutput_temp_topic')")
-    bashio::config.has_value 'pvoutput_log_level'   && CMD_PARAMETERS+=(--pvoutput-log-level="$(bashio::config 'pvoutput_log_level')")
-    bashio::config.has_value 'pvoutput_ext_v7'      && CMD_PARAMETERS+=(--pvoutput-ext-v7="$(bashio::config 'pvoutput_ext_v7')")
-    bashio::config.has_value 'pvoutput_ext_v8'      && CMD_PARAMETERS+=(--pvoutput-ext-v8="$(bashio::config 'pvoutput_ext_v8')")
-    bashio::config.has_value 'pvoutput_ext_v9'      && CMD_PARAMETERS+=(--pvoutput-ext-v9="$(bashio::config 'pvoutput_ext_v9')")
-    bashio::config.has_value 'pvoutput_ext_v10'     && CMD_PARAMETERS+=(--pvoutput-ext-v10="$(bashio::config 'pvoutput_ext_v10')")
-    bashio::config.has_value 'pvoutput_ext_v11'     && CMD_PARAMETERS+=(--pvoutput-ext-v11="$(bashio::config 'pvoutput_ext_v11')")
-    bashio::config.has_value 'pvoutput_ext_v12'     && CMD_PARAMETERS+=(--pvoutput-ext-v12="$(bashio::config 'pvoutput_ext_v12')")
+    [[ "${PVOUTPUT_EOD_UPDATE}" != "true" ]] && CMD_PARAMETERS+=(--pvoutput-output-hour=-1)
+    bashio::config.has_value 'pvoutput.ext_v7' && CMD_PARAMETERS+=(--pvoutput-ext-v7="$(bashio::config 'pvoutput.ext_v7')")
+    bashio::config.has_value 'pvoutput.ext_v8' && CMD_PARAMETERS+=(--pvoutput-ext-v8="$(bashio::config 'pvoutput.ext_v8')")
+    bashio::config.has_value 'pvoutput.ext_v9' && CMD_PARAMETERS+=(--pvoutput-ext-v9="$(bashio::config 'pvoutput.ext_v9')")
+    bashio::config.has_value 'pvoutput.ext_v10' && CMD_PARAMETERS+=(--pvoutput-ext-v10="$(bashio::config 'pvoutput.ext_v10')")
+    bashio::config.has_value 'pvoutput.ext_v11' && CMD_PARAMETERS+=(--pvoutput-ext-v11="$(bashio::config 'pvoutput.ext_v11')")
+    bashio::config.has_value 'pvoutput.ext_v12' && CMD_PARAMETERS+=(--pvoutput-ext-v12="$(bashio::config 'pvoutput.ext_v12')")
+    bashio::config.has_value 'pvoutput.temp_topic' && CMD_PARAMETERS+=(--pvoutput-temp-topic="$(bashio::config 'pvoutput.temp_topic')")
+    bashio::config.has_value 'logging.pvoutput' && CMD_PARAMETERS+=(--pvoutput-log-level="$(bashio::config 'logging.pvoutput')")
   fi
 fi
 
-# Get the scanning interval frequencies from the configuration
-bashio::config.has_value 'scan_interval_low'        && CMD_PARAMETERS+=(--scan-interval-low="$(bashio::config 'scan_interval_low')")
-bashio::config.has_value 'scan_interval_medium'     && CMD_PARAMETERS+=(--scan-interval-medium="$(bashio::config 'scan_interval_medium')")
-bashio::config.has_value 'scan_interval_high'       && CMD_PARAMETERS+=(--scan-interval-high="$(bashio::config 'scan_interval_high')")
-bashio::config.has_value 'scan_interval_realtime'   && CMD_PARAMETERS+=(--scan-interval-realtime="$(bashio::config 'scan_interval_realtime')")
-
-# Get the sanity check default kW value from the configuration
-bashio::config.has_value 'sanity_check_default_kw'  && CMD_PARAMETERS+=(--sanity-check-default-kw="$(bashio::config 'sanity_check_default_kw')")
-
 # Get the metrics enabled parameter from the configuration
-if bashio::config.has_value 'metrics_enabled'; then
-  METRICS_ENABLED="$(bashio::config 'metrics_enabled')"
-else
-  METRICS_ENABLED="false"
-fi
+bashio::config.has_value 'advanced.metrics_enabled' && METRICS_ENABLED="$(bashio::config 'advanced.metrics_enabled')" || METRICS_ENABLED="false"
 if [[ "${METRICS_ENABLED}" != "true" ]]; then
   CMD_PARAMETERS+=(--no-metrics)
-  bashio::log.info "Metrics disabled, not publishing metrics to Home Assistant."
-else
-  bashio::log.info "Metrics enabled, publishing metrics to Home Assistant."
+fi
+
+# Get smart-port parameters from the configuration
+if bashio::config.has_value 'smartport.enabled'; then
+  SMARTPORT_ENABLED="$(bashio::config 'smartport.enabled')"
+  if [[ "${SMARTPORT_ENABLED}" == "true" ]]; then
+    SMARTPORT_MODULE="$(bashio::config 'smartport.module_name')"
+    SMARTPORT_MQTT_TOPIC="$(bashio::config 'smartport.mqtt_topic')"
+    if [[ -z "${SMARTPORT_MODULE}" && -z "${SMARTPORT_MQTT_TOPIC}" ]]; then
+      bashio::log.fatal "Smart-Port enabled, but neither module name or MQTT topic found; cannot continue."
+      exit 1
+    fi
+    CMD_PARAMETERS+=(--smartport-enabled)
+    bashio::config.has_value 'smartport.module_name' && CMD_PARAMETERS+=(--smartport-module-name="${SMARTPORT_MODULE}")
+    bashio::config.has_value 'smartport.host' && CMD_PARAMETERS+=(--smartport-host="$(bashio::config 'smartport.host')")
+    bashio::config.has_value 'smartport.username' && CMD_PARAMETERS+=(--smartport-username="$(bashio::config 'smartport.username')")
+    bashio::config.has_value 'smartport.password' && CMD_PARAMETERS+=(--smartport-password="$(bashio::config 'smartport.password')")
+    bashio::config.has_value 'smartport.pv_power' && CMD_PARAMETERS+=(--smartport-pv-power="$(bashio::config 'smartport.pv_power')")
+    bashio::config.has_value 'smartport.mqtt_topic' && CMD_PARAMETERS+=(--smartport-mqtt-topic="${SMARTPORT_MQTT_TOPIC}")
+    bashio::config.has_value 'smartport.mqtt_gain' && CMD_PARAMETERS+=(--smartport-mqtt-gain="$(bashio::config 'smartport.mqtt_gain')")
+  fi
 fi
 
 # Boot up
 bashio::log.info "Starting sigenergy2mqtt service..."
 for PARAM in "${CMD_PARAMETERS[@]}"; do
   if [[ "$PARAM" == *"password"* || "$PARAM" == *"api-key"* ]]; then
-    bashio::log.info " -> Parameter: "${PARAM%%=*}=[REDACTED]""
+    bashio::log.info " → Parameter: "${PARAM%%=*}=[REDACTED]""
   else
-    bashio::log.info " -> Parameter: ${PARAM}"
+    bashio::log.info " → Parameter: ${PARAM}"
   fi
 done
 exec ~/.local/bin/sigenergy2mqtt \

@@ -1,5 +1,38 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 2026.1.20
+
+### What's Fixed
+
+* Fixed maximum number of PV strings assertion that caused issues on new inverter models supporting up to 36 PV Strings
+* Fixed Unit of Measurement for Plant Max Apparent Power (Protocol specifies kVar but Apparent Power should be kVA) 
+* Fixed bug in auto-discovery that could assume a server exists in edge cases
+* Fixed auto-discovery logic to prevent premature exit when a serial number retrieval fails, ensuring all device types (DC chargers, Inverters, AC chargers) are correctly checked
+* Fixed automatic disabling of future publishing of an updatable Sensor if the write fails, and always force publishing of the sensor after update even if the update fails
+* Fixed bug that could cause metrics to be published even if they were disabled
+* Fixed bug that allowed Derived Sensors to be added to a device when their protocol version (or the protocol version of any of the source sensors) was greater than the protocol version of the device
+* Fixed various issues relating to running against older firmware than expected ([#96](https://github.com/seud0nym/sigenergy2mqtt/issues/96))
+* Documentation correctly stated that minimum of all scan intervals was 1 second, but Configuration User Interface still had old minimums configured ([#93](https://github.com/seud0nym/sigenergy2mqtt/issues/93))
+
+### What's Changed
+
+* The Configuration options have been completely reorganised into groups to make finding options easier (existing configuration will be automatically migrated to the new structure on first run after upgrading). The deprecated options will remain in "unused optional configuration options" at the moment to support the migration, but they should not be used and they will be removed in a future release.
+* The default source for Consumed Power is now "Total Load" on firmware supporting Modbus Protocol V2.8 (previous firmware will continue to use the "Calculated" method)
+* Implemented enhancement request to consistently format timestamps in log lines ([#92](https://github.com/seud0nym/sigenergy2mqtt/issues/92))
+* Added undocumented EMSWorkMode for VPP Scheduling (https://github.com/TypQxQ/Sigenergy-Local-Modbus/pull/289)
+* Increased size of Modbus pre-reads to improve performance and reduce Modbus requests
+* Minimum Python version is now 3.12
+* Refactored Sensor class hierarchy and applied typing rules to improve code quality and robustness
+* Refactored Metrics service to use standard Sensor instances 
+* Refactored common classes to reduce incidence of cyclical imports
+* Increased code testing coverage to over 90%
+
+### What's New?
+
+* Added a new option to turn off the validation that disables ESS Max Charging/Discharging and PV Max Power limits when Remote EMS is enabled and Remote EMS Control Mode is not Command Charging/Discharging (this setting does not comply with the Sigenergy Modbus Protocol documentation, and may lead to changes not being applied in some instances) ([#78](https://github.com/seud0nym/sigenergy2mqtt/discussions/78))
+* Added new Monitor service that runs when debugging enabled to verify MQTT publishes
+
+
 ## 2026.1.3
 
 ### What's Fixed

@@ -1,170 +1,373 @@
----
 configuration:
+  auto_discovery:
+    name: Sigenergy Device Auto-Discovery
+    description: Configuration for automatically discovering your Sigenergy devices
+    fields:
+      force:
+        name: Force Auto-Discovery
+        description: Enable to force the automatic discovery of Sigenergy Modbus hosts and associated Device IDs. You only need enable this if you have previously auto-discovered hosts/device IDs and your network or devices have changed.
+      ping_timeout:
+        name: Ping Timeout
+        description: The ping timeout, in seconds, to use when performing auto-discovery of Sigenergy devices on the network. The default is 0.5 seconds.
+      retries:
+        name: Maximum Retries
+        description: The maximum retry count to use when performing auto-discovery of Sigenergy devices on the network. The default is 0.
+      timeout:
+        name: Modbus Timeout
+        description: The Modbus timeout, in seconds, to use when performing auto-discovery of Sigenergy devices on the network. The default is 0.25 seconds.
+  manual_config:
+    name: Manual Sigenergy Device Configuration
+    description: Configuration for manually specifying your Sigenergy device connection details
+    fields:
+      host:
+        name: Host Address
+        description: The hostname or IP address of the Sigenergy device. Leave blank to auto-discover Sigenergy devices on your network.
+      port:
+        name: Modbus Port
+        description: The Sigenergy device Modbus port number.
+      inverter_device_id:
+        name: Inverter Device ID
+        description: The Sigenergy Inverter Modbus Device ID. If you have multiple inverters, you can specify a space-separated list of IDs. Ignored if no Modbus Host specified. Otherwise, auto-discovery can identify inverter devices.
+      accharger_device_id:
+        name: AC-Charger Device ID
+        description: The Sigenergy AC Charger Modbus Device ID. Ignored if no Modbus Host specified. Otherwise, auto-discovery can identify AC Charger devices.
+      dccharger_device_id:
+        name: DC-Charger Device ID
+        description: The Sigenergy DC Charger Modbus Device ID (usually same as Inverter Device ID). Ignored if no Modbus Host specified. Otherwise, auto-discovery can identify DC Charger devices.
+  scan_interval:
+    name: Sensor Scan Intervals
+    description: Configuration for the scan intervals for different classes of sensors
+    fields:
+      low:
+        name: Low Frequency
+        description: The scan interval in seconds for sensors that are to be scanned at a low frequency. Default is 600 (seconds), and the minimum value is 1.
+      medium:
+        name: Medium Frequency
+        description: The scan interval in seconds for sensors that are to be scanned at a medium frequency. Default is 60 (seconds), and the minimum value is 1.
+      high:
+        name: High Frequency
+        description: The scan interval in seconds for sensors that are to be scanned at a high frequency. Default is 10 (seconds), and the minimum value is 1.
+      realtime:
+        name: Near Realtime Frequency
+        description: The scan interval in seconds for sensors that are to be scanned in near-real time. Default is 5 (seconds), and the minimum value is 1.
+  pvoutput:
+    name: PVOutput.org Integration
+    description: Configuration for integrating with PVOutput.org to upload generation and consumption data
+    fields:
+      enabled:
+        name: Enable Uploading
+        description: Enable status updates to PVOutput.
+      api_key:
+        name: API Key
+        description: The API Key for PVOutput
+      system_id:
+        name: System ID
+        description: The PVOutput System ID
+      consumption:
+        name: Enable Consumption Uploads
+        description: Enable sending consumption status to PVOutput.
+      exports:
+        name: Enable Exports Uploads
+        description: Enable sending export data to PVOutput.
+      imports:
+        name: Enable Imports Uploads
+        description: Enable sending import data to PVOutput.
+      eod_update:
+        name: Enable End-of-Day Upload
+        description: If enabled, peak generation and the daily totals for exports and imports (if enabled) are sent to PVOutput at end of day. If disabled, these values are uploaded on the same schedule as status updates.
+      voltage:
+        name: Voltage Source
+        description: The source of the voltage value to be sent to PVOutput. Use 'Phase A' for single-phase systems, 'Phase B', 'Phase C' or 'Line to Line Average' for three-phase or 'Line to Neutral Average' or 'PV Average' for either.
+      ext_v7:
+        name: Extended Data v7
+        description: A sensor class name that will be used to populate the v7 extended data field in PVOutput. If not specified, OR your donation status is not current, this field will not be sent to PVOutput. You can use any sensor with a numeric value. |
+      ext_v8:
+        name: Extended Data v8
+        description: A sensor class name that will be used to populate the v8 extended data field in PVOutput. If not specified, OR your donation status is not current, this field will not be sent to PVOutput. You can use any sensor with a numeric value. |
+      ext_v9:
+        name: Extended Data v9
+        description: A sensor class name that will be used to populate the v9 extended data field in PVOutput. If not specified, OR your donation status is not current, this field will not be sent to PVOutput. You can use any sensor with a numeric value. |
+      ext_v10:
+        name: Extended Data v10
+        description: A sensor class name that will be used to populate the v10 extended data field in PVOutput. If not specified, OR your donation status is not current, this field will not be sent to PVOutput. You can use any sensor with a numeric value. |
+      ext_v11:
+        name: Extended Data v11
+        description: A sensor class name that will be used to populate the v11 extended data field in PVOutput. If not specified, OR your donation status is not current, this field will not be sent to PVOutput. You can use any sensor with a numeric value. |
+      ext_v12:
+        name: Extended Data v12
+        description: A sensor class name that will be used to populate the v12 extended data field in PVOutput. If not specified, OR your donation status is not current, this field will not be sent to PVOutput. You can use any sensor with a numeric value. |
+      temp_topic:
+        name: Temperature Topic
+        description: The MQTT topic to which to subscribe to obtain the current temperature data for PVOutput. If specified, the temperature will be sent to PVOutput.
+  mqtt:
+    name: MQTT Configuration
+    description: Configuration for connecting to your MQTT broker. You do not need to configure this section if you are using the Home Assistant MQTT add-on.
+    fields:  
+      broker:
+        name: Broker Address
+        description: The hostname or IP address of your MQTT broker.
+      port:
+        name: MQTT Port
+        description: The listening port of the MQTT broker. The default is 1883, unless MQTT TLS Communication is enabled, in which case the default is 8883.
+      tls:
+        name: Enable TLS Communication
+        description: Enable secure communication to MQTT broker over TLS/SSL (if the broker supports it).
+      username:
+        name: User Name
+        description: A valid user name for the MQTT broker.
+      password:
+        name: Password
+        description: A valid password for the MQTT broker username.
+  advanced:
+    name: Advanced Settings
+    description: Advanced configuration settings for sigenergy2mqtt
+    fields:
+      consumption_method:
+        name: Consumption Method
+        description: The method of calculating the `Plant Consumed Power` sensor. On firmware earlier than that supporting Modbus Protocol V2.8, the only option available is 'Calculated', and all other values are _ignored_. For V2.8 firmware, the default is 'Total Load'.
+      read_only:
+        name: Enable Read Only
+        description: Enable to only read data from the Sigenergy device. Disable to allow writing data to the Sigenergy device.
+      no_remote_ems:
+        name: Disable Remote EMS
+        description: Enable to hide all read/write sensors used for remote Energy Management System (EMS) integration. Ignored if 'Modbus Read Only' is enabled.
+      no_remote_ems_check:
+        name: Disable Remote EMS Checks
+        description: Enable to turn OFF the validation that disables ESS Max Charging/Discharging and PV Max Power limits when Remote EMS Control Mode is not Command Charging/Discharging. Ignored if 'No Remote EMS' is enabled. (Advanced setting - use with caution)
+      edit_pct_box:
+        name: Enable Percentage Box Editor
+        description: Enable to use a numeric entry box to change the value of percentage sensors or leave disabled to use a slider to change the value.
+      metrics_enabled:
+        name: Enable Metrics
+        description: Enable the publication of sigenergy2mqtt metrics to Home Assistant.
+      sanity_check_default_kw:
+        name: Sanity Check Default kW
+        description: The default value in kW used for sanity checks to validate the maximum and minimum values for actual value of power sensors and the delta value of energy sensors. The default value is 500 kW per second, meaning readings outside the range ±500 are ignored.
+      device_name_prefix:
+        name: Device Name Prefix
+        description: The prefix to use for Home Assistant entity names. e.g. A prefix of 'prefix' will prepend 'prefix ' to entity names. The default is no prefix.
+      entity_id_prefix:
+        name: Entity ID Prefix
+        description: The prefix to use for Home Assistant entity IDs. e.g. A prefix of 'prefix' will prepend 'prefix_' to entity IDs. If you don't specify a prefix, the entity ID will be prefixed with 'sigen'.
+      unique_id_prefix:
+        description: The prefix to use for Home Assistant unique IDs. e.g. A prefix of 'prefix' will prepend 'prefix_' to unique IDs. Once you have set this, you should NEVER change it, as it will break existing entities in Home Assistant. If you don't specify a prefix, the entity ID will be prefixed with 'sigen'.
+        name: Unique ID Prefix
+      discovery_prefix:
+        name: Discovery Prefix
+        description: Override the Home Assistant MQTT Discovery topic prefix to use. Only change this if you have already changed it in the MQTT settings in Home Assistant. The default is 'homeassistant'.
+  logging:
+    name: Logging Configuration
+    description: Configuration for logging levels of various components
+    fields:
+      debug_sensor:
+        name: Sensor to Debug
+        description: Specify a sensor to be debugged using either the full entity id, a partial entity id, the full sensor class name, or a partial sensor class name. For example, specifying 'daily' would match all sensors with daily in their entity name. If specified, sigenergy2mqtt logging is also forced to DEBUG.
+      sigenergy2mqtt:
+        name: sigenergy2mqtt
+        description: Set the sigenergy2mqtt log level.
+      modbus:
+        name: Modbus
+        description: Set the pymodbus logging level. WARNING! Setting this to DEBUG will produce very verbose output.
+      pvoutput:
+        name: PVOutput
+        description: Set the PVOutput logging level.
+      mqtt:
+        name: MQTT
+        description: Set the paho.mqtt logging level. WARNING! Setting this to DEBUG will produce very verbose output.
+  smartport:
+    name: Third-Party Inverter Integration
+    description: Configuration for integrating a third-party inverter via Smart-Port to obtain production data
+    fields:
+      enabled:
+        name: Enable
+        description: Enable integration of a third-party inverter for production data.
+      module_name:
+        name: Module Name
+        description: The name of the module which will be used to obtain third-party inverter production data. (Currently only 'enphase' is supported.)
+      host:
+        name: Host Address
+        description: The IP address or hostname of the third-party inverter.
+      username:
+        name: User Name
+        description: The user name to authenticate to the third-party inverter.
+      password:
+        name: Password
+        description: The password to authenticate to the third-party inverter.
+      pv_power:
+        name: PV power
+        description: The sensor class to hold the production data obtained from the third-party inverter. (Currently only 'EnphasePVPower' is supported.)
+      mqtt_topic:
+        name: MQTT topic
+        description: The MQTT topic to which to subscribe to obtain the production data for the third-party inverter. This is an alternative to using module/host/username/password to connect directly to the inverter.
+      mqtt_gain:
+        name: MQTT gain
+        description: The gain to be applied to the production data for the third-party inverter obtained from the MQTT topic. (e.g. 1000 if the data is in kW) Default is 1 (Watts).
+  # Deprecated options left in for backward compatibility. The run script will migrate them to their replacements if found.
   consumption_method:
-    description: The method of calculating the `Plant Consumed Power` sensor. The default is `Calculated`. This option is _ignored_ on firmware earlier than that supporting Modbus Protocol V2.8.
-    name: Consumption Method
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: Consumption Method - DEPRECATED
   debug_sensor:
-    description: Specify a sensor to be debugged using either the full entity id, a partial entity id, the full sensor class name, or a partial sensor class name. For example, specifying 'daily' would match all sensors with daily in their entity name. If specified, 'Logging Level' is also forced to DEBUG.
-    name: Sensor to Debug
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: Sensor to Debug - DEPRECATED
   device_name_prefix:
-    description: The prefix to use for Home Assistant entity names. e.g. A prefix of 'prefix' will prepend 'prefix ' to entity names. The default is no prefix.
-    name: Home Assistant Device Name Prefix
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: Home Assistant Device Name Prefix - DEPRECATED
   discovery_prefix:
-    description: Override the Home Assistant MQTT Discovery topic prefix to use. Only change this if you have already changed it in the MQTT settings in Home Assistant. The default is 'homeassistant'.
-    name: Home Assistant Discovery Prefix
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: Home Assistant Discovery Prefix - DEPRECATED
   edit_pct_box:
-    description: Enable to use a numeric entry box to change the value of percentage sensors or leave disabled to use a slider to change the value.
-    name: Percentage Box Editor
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: Percentage Box Editor - DEPRECATED
   entity_id_prefix:
-    description: The prefix to use for Home Assistant entity IDs. e.g. A prefix of 'prefix' will prepend 'prefix_' to entity IDs. If you don't specify a prefix, the entity ID will be prefixed with 'sigen'.
-    name: Home Assistant Entity ID Prefix
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: Home Assistant Entity ID Prefix - DEPRECATED
   log_level:
-    description: Set the sigenergy2mqtt log level.
-    name: sigenergy2mqtt Logging Level
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: sigenergy2mqtt Logging Level - DEPRECATED
   metrics_enabled:
-    description: Enable the publication of sigenergy2mqtt metrics to Home Assistant.
-    name: Enable sigenergy2mqtt Metrics
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: Enable sigenergy2mqtt Metrics - DEPRECATED
   modbus_accharger_slave:
-    description: The Sigenergy AC Charger Modbus Device ID. Ignored if no Modbus Host specified. Otherwise, auto-discovery can identify AC Charger devices.
-    name: AC-Charger Device ID
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: AC-Charger Device ID - DEPRECATED
   modbus_auto_discovery_ping_timeout:
-    description: The ping timeout, in seconds, to use when performing auto-discovery of Sigenergy devices on the network. The default is 0.5 seconds.
-    name: Auto-Discovery Ping Timeout
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: Auto-Discovery Ping Timeout - DEPRECATED
   modbus_auto_discovery_retries:
-    description: The maximum retry count to use when performing auto-discovery of Sigenergy devices on the network. The default is 0.
-    name: Auto-Discovery Modbus Retries
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: Auto-Discovery Modbus Retries - DEPRECATED
   modbus_auto_discovery_timeout:
-    description: The Modbus timeout, in seconds, to use when performing auto-discovery of Sigenergy devices on the network. The default is 0.25 seconds.
-    name: Auto-Discovery Modbus Timeout
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: Auto-Discovery Modbus Timeout - DEPRECATED
   modbus_dccharger_slave:
-    description: The Sigenergy DC Charger Modbus Device ID (usually same as Inverter Device ID). Ignored if no Modbus Host specified. Otherwise, auto-discovery can identify DC Charger devices.
-    name: DC-Charger Device ID
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: DC-Charger Device ID - DEPRECATED
   modbus_force_auto_discovery:
-    description: Enable to force the automatic discovery of Sigenergy Modbus hosts and associated Device IDs. You only need enable this if you have previously auto-discovered hosts/device IDs and your network or devices have changed.
-    name: Force Modbus Auto-Discovery
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: Force Modbus Auto-Discovery - DEPRECATED
   modbus_host:
-    description: The hostname or IP address of the Sigenergy device. Leave blank to auto-discover Sigenergy devices on your network.
-    name: Modbus Host
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: Modbus Host - DEPRECATED
   modbus_log_level:
-    description: Set the pymodbus logging level.
-    name: Modbus Logging Level
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: Modbus Logging Level - DEPRECATED
   modbus_no_remote_ems:
-    description: Enable to hide all read/write sensors used for remote Energy Management System (EMS) integration. Ignored if 'Modbus Read Only' is enabled.
-    name: No Remote EMS
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: No Remote EMS - DEPRECATED
   modbus_port:
-    description: The Sigenergy device Modbus port number.
-    name: Modbus Port
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: Modbus Port - DEPRECATED
   modbus_read_only:
-    description: Enable to only read data from the Sigenergy device. Disable to allow writing data to the Sigenergy device.
-    name: Read Only
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: Read Only - DEPRECATED
   modbus_slave:
-    description: The Sigenergy Inverter Modbus Device ID. If you have multiple inverters, you can specify a space-separated list of IDs. Ignored if no Modbus Host specified. Otherwise, auto-discovery can identify inverter devices.
-    name: Inverter Device ID
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: Inverter Device ID - DEPRECATED
   mqtt_broker:
-    description: The hostname or IP address of your MQTT broker.
-    name: MQTT Broker
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: MQTT Broker - DEPRECATED
   mqtt_log_level:
-    description: Set the paho.mqtt logging level.
-    name: MQTT Logging Level
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: MQTT Logging Level - DEPRECATED
   mqtt_password:
-    description: A valid password for the MQTT broker username.
-    name: MQTT Password
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: MQTT Password - DEPRECATED
   mqtt_port:
-    description: The listening port of the MQTT broker. The default is 1883, unless MQTT TLS Communication is enabled, in which case the default is 8883.
-    name: MQTT Port
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: MQTT Port - DEPRECATED
   mqtt_tls:
-    description: Enable secure communication to MQTT broker over TLS/SSL (if the broker supports it).
-    name: MQTT TLS Communication Enabled
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: MQTT TLS Communication Enabled - DEPRECATED
   mqtt_username:
-    description: A valid user name for the MQTT broker.
-    name: MQTT User Name
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: MQTT User Name - DEPRECATED
   pvoutput_api_key:
-    description: The API Key for PVOutput
-    name: PVOutput API Key
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: PVOutput API Key - DEPRECATED
   pvoutput_consumption:
-    description: Enable sending consumption status to PVOutput.
-    name: PVOutput Consumption
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: PVOutput Consumption - DEPRECATED
   pvoutput_enabled:
-    description: Enable status updates to PVOutput.
-    name: PVOutput Enabled
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: PVOutput Enabled - DEPRECATED
   pvoutput_eod_update:
-    description: If enabled, peak generation and the daily totals for exports and imports (if enabled) are sent to PVOutput at end of day. If disabled, these values are uploaded on the same schedule as status updates.
-    name: PVOutput End-of-Day Upload
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: PVOutput End-of-Day Upload - DEPRECATED
   pvoutput_exports:
-    description: Enable sending export data to PVOutput.
-    name: PVOutput Exports
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: PVOutput Exports - DEPRECATED
   pvoutput_ext_v10:
-    description: A sensor class name that will be used to populate the v10 extended data field in PVOutput. If not specified, OR your donation status is not current, this field will not be sent to PVOutput. You can use any sensor with a numeric value. |
-    name: PVOutput Extended Data v10
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: PVOutput Extended Data v10 - DEPRECATED
   pvoutput_ext_v11:
-    description: A sensor class name that will be used to populate the v11 extended data field in PVOutput. If not specified, OR your donation status is not current, this field will not be sent to PVOutput. You can use any sensor with a numeric value. |
-    name: PVOutput Extended Data v11
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: PVOutput Extended Data v11 - DEPRECATED
   pvoutput_ext_v12:
-    description: A sensor class name that will be used to populate the v12 extended data field in PVOutput. If not specified, OR your donation status is not current, this field will not be sent to PVOutput. You can use any sensor with a numeric value. |
-    name: PVOutput Extended Data v12
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: PVOutput Extended Data v12 - DEPRECATED
   pvoutput_ext_v7:
-    description: A sensor class name that will be used to populate the v7 extended data field in PVOutput. If not specified, OR your donation status is not current, this field will not be sent to PVOutput. You can use any sensor with a numeric value. |
-    name: PVOutput Extended Data v7
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: PVOutput Extended Data v7 - DEPRECATED
   pvoutput_ext_v8:
-    description: A sensor class name that will be used to populate the v8 extended data field in PVOutput. If not specified, OR your donation status is not current, this field will not be sent to PVOutput. You can use any sensor with a numeric value. |
-    name: PVOutput Extended Data v8
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: PVOutput Extended Data v8 - DEPRECATED
   pvoutput_ext_v9:
-    description: A sensor class name that will be used to populate the v9 extended data field in PVOutput. If not specified, OR your donation status is not current, this field will not be sent to PVOutput. You can use any sensor with a numeric value. |
-    name: PVOutput Extended Data v9
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: PVOutput Extended Data v9 - DEPRECATED
   pvoutput_imports:
-    description: Enable sending import data to PVOutput.
-    name: PVOutput Imports
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: PVOutput Imports - DEPRECATED
   pvoutput_log_level:
-    description: Set the PVOutput logging level.
-    name: PVOutput Logging Level
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: PVOutput Logging Level - DEPRECATED
   pvoutput_system_id:
-    description: The PVOutput System ID
-    name: PVOutput System ID
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: PVOutput System ID - DEPRECATED
   pvoutput_temp_topic:
-    description: The MQTT topic to which to subscribe to obtain the current temperature data for PVOutput. If specified, the temperature will be sent to PVOutput.
-    name: PVOutput Temperature Topic
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: PVOutput Temperature Topic - DEPRECATED
   pvoutput_voltage:
-    description: The source of the voltage value to be sent to PVOutput. Use 'Phase A' for single-phase systems, 'Phase B', 'Phase C' or 'Line to Line Average' for three-phase or 'Line to Neutral Average' or 'PV Average' for either.
-    name: PVOutput Voltage Upload
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: PVOutput Voltage Upload - DEPRECATED
   sanity_check_default_kw:
-    description: The default value in kW used for sanity checks to validate the maximum and minimum values for actual value of power sensors and the delta value of energy sensors. The default value is 500 kW per second, meaning readings outside the range ±100 are ignored.
-    name: Sanity Check Default kW
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: Sanity Check Default kW - DEPRECATED
   scan_interval_high:
-    description: The scan interval in seconds for Modbus registers that are to be scanned at a high frequency. Default is 10 (seconds), and the minimum value is 1.
-    name: Scan Interval (High Frequency)
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: Scan Interval (High Frequency) - DEPRECATED
   scan_interval_low:
-    description: The scan interval in seconds for Modbus registers that are to be scanned at a low frequency. Default is 600 (seconds), and the minimum value is 300.
-    name: Scan Interval (Low Frequency)
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: Scan Interval (Low Frequency) - DEPRECATED
   scan_interval_medium:
-    description: The scan interval in seconds for Modbus registers that are to be scanned at a medium frequency. Default is 60 (seconds), and the minimum value is 30.
-    name: Scan Interval (Medium Frequency)
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: Scan Interval (Medium Frequency) - DEPRECATED
   scan_interval_realtime:
-    description: The scan interval in seconds for Modbus registers that are to be scanned in near-real time. Default is 5 (seconds), and the minimum value is 1.
-    name: Scan Interval (Near Realtime Frequency)
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: Scan Interval (Near Realtime Frequency) - DEPRECATED
   smartport_enabled:
-    description: Enable integration of a third-party device for production data.
-    name: Smart-Port Enabled
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: Smart-Port Enabled - DEPRECATED
   smartport_host:
-    description: The IP address or hostname of the third-party device.
-    name: Smart-Port Host
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: Smart-Port Host - DEPRECATED
   smartport_module_name:
-    description: The name of the module which will be used to obtain third-party device production data.
-    name: Smart-Port Module Name
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: Smart-Port Module Name - DEPRECATED
   smartport_mqtt_gain:
-    description: The gain to be applied to the production data for the third-party device obtained from the MQTT topic. (e.g. 1000 if the data is in kW) Default is 1 (Watts).
-    name: Smart-Port MQTT gain
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: Smart-Port MQTT gain - DEPRECATED
   smartport_mqtt_topic:
-    description: The MQTT topic to which to subscribe to obtain the production data for the third-party device.
-    name: Smart-Port MQTT topic
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: Smart-Port MQTT topic - DEPRECATED
   smartport_password:
-    description: The password to authenticate to the third-party device.
-    name: Smart-Port Password
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: Smart-Port Password - DEPRECATED
   smartport_pv_power:
-    description: The sensor class to hold the production data obtained from the third-party device.
-    name: Smart-Port PV power
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: Smart-Port PV power - DEPRECATED
   smartport_username:
-    description: The user name to authenticate to the third-party device.
-    name: Smart-Port User Name
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: Smart-Port User Name - DEPRECATED
   unique_id_prefix:
-    description: The prefix to use for Home Assistant unique IDs. e.g. A prefix of 'prefix' will prepend 'prefix_' to unique IDs. Once you have set this, you should NEVER change it, as it will break existing entities in Home Assistant. If you don't specify a prefix, the entity ID will be prefixed with 'sigen'.
-    name: Home Assistant Unique ID Prefix
+    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    name: Home Assistant Unique ID Prefix - DEPRECATED
