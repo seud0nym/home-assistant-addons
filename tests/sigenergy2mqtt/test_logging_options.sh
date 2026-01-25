@@ -22,7 +22,7 @@ logging:
   sigenergy2mqtt: DEBUG
   modbus: INFO
   mqtt: ERROR
-  pvoutput: CRIT
+  pvoutput: CRITICAL
   debug_sensor: sensor.my_debug_sensor
 # Enable pvoutput so we can test its logging flag
 pvoutput:
@@ -33,6 +33,7 @@ $BASE_CONFIG
 EOF
 
 declare -A ASSERTIONS=(
+    ["locale"]="en"
     ["hass-enabled"]="true"
     ["mqtt-broker"]="127.0.0.1"
     ["mqtt-port"]="1883"
@@ -45,7 +46,7 @@ declare -A ASSERTIONS=(
     ["log-level"]="DEBUG"
     ["modbus-log-level"]="INFO"
     ["mqtt-log-level"]="ERROR"
-    ["pvoutput-log-level"]="CRIT"
+    ["pvoutput-log-level"]="CRITICAL"
     ["debug-sensor"]="sensor.my_debug_sensor"
     # PVOutput required assertions because we enabled it
     ["pvoutput-enabled"]="true"
@@ -79,6 +80,7 @@ EOF
 
 unset ASSERTIONS
 declare -A ASSERTIONS=(
+    ["locale"]="en"
     ["hass-enabled"]="true"
     ["mqtt-broker"]="127.0.0.1"
     ["mqtt-port"]="1883"
@@ -99,26 +101,63 @@ if [ $RESULT -ne 0 ]; then
 fi
 
 # Manual check that no logging flags are present
-if grep -q "\-\-log-level" $LOG_PATH; then
+if grep -q "Parameter: \-\-log-level" $LOG_PATH; then
     echo "Scenario 2 Failed: Found --log-level"
     exit 1
 fi
-if grep -q "\-\-modbus-log-level" $LOG_PATH; then
+if grep -q "Parameter: \-\-modbus-log-level" $LOG_PATH; then
     echo "Scenario 2 Failed: Found --modbus-log-level"
     exit 1
 fi
-if grep -q "\-\-mqtt-log-level" $LOG_PATH; then
+if grep -q "Parameter: \-\-mqtt-log-level" $LOG_PATH; then
     echo "Scenario 2 Failed: Found --mqtt-log-level"
     exit 1
 fi
-if grep -q "\-\-pvoutput-log-level" $LOG_PATH; then
+if grep -q "Parameter: \-\-pvoutput-log-level" $LOG_PATH; then
     echo "Scenario 2 Failed: Found --pvoutput-log-level"
     exit 1
 fi
-if grep -q "\-\-debug-sensor" $LOG_PATH; then
+if grep -q "Parameter: \-\-debug-sensor" $LOG_PATH; then
     echo "Scenario 2 Failed: Found --debug-sensor"
     exit 1
 fi
 #endregion
+
+
+#region Scenario 3: Verify UNSET logging option
+cat << EOF > $MOCK_OPTIONS_PATH
+logging:
+  sigenergy2mqtt: UNSET
+  modbus: INFO
+$BASE_CONFIG
+EOF
+
+declare -A ASSERTIONS=(
+    ["locale"]="en"
+    ["hass-enabled"]="true"
+    ["mqtt-broker"]="127.0.0.1"
+    ["mqtt-port"]="1883"
+    ["mqtt-username"]="mock_mqtt_user"
+    ["mqtt-password"]="super_secret_mock_password"
+    ["modbus-host"]="127.0.0.1"
+    ["consumption"]="calculated"
+    ["no-metrics"]="true"
+    # Logging assertions
+    ["modbus-log-level"]="INFO"
+)
+
+cd $HOME
+source "../mock_bashio.sh"
+source "../functions.sh"
+export_assertions
+( source ../../sigenergy2mqtt/rootfs/etc/services.d/sigenergy2mqtt/run ) > $LOG_PATH 2>&1
+RESULT=$?
+if [ $RESULT -ne 0 ]; then
+    echo "Scenario 3 failed with result $RESULT"
+    cat $LOG_PATH
+    exit $RESULT
+fi
+#endregion
+
 
 exit 0

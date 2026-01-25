@@ -30,6 +30,7 @@ EOF
 #region Prepare expected assertions
 # Note: Defaults from mock_bashio/run script are matched here
 declare -A ASSERTIONS=(
+    ["locale"]="en"
     ["hass-enabled"]="true"
     ["mqtt-broker"]="127.0.0.1"
     ["mqtt-port"]="1883"
@@ -79,6 +80,7 @@ EOF
 
 unset ASSERTIONS
 declare -A ASSERTIONS=(
+    ["locale"]="en"
     ["hass-enabled"]="true"
     ["mqtt-broker"]="127.0.0.1"
     ["mqtt-port"]="1883"
@@ -124,6 +126,7 @@ EOF
 
 unset ASSERTIONS
 declare -A ASSERTIONS=(
+    ["locale"]="en"
     ["hass-enabled"]="true"
     ["mqtt-broker"]="127.0.0.1"
     ["mqtt-port"]="1883"
@@ -169,6 +172,7 @@ EOF
 
 unset ASSERTIONS
 declare -A ASSERTIONS=(
+    ["locale"]="en"
     ["hass-enabled"]="true"
     ["mqtt-broker"]="127.0.0.1"
     ["mqtt-port"]="1883"
@@ -214,6 +218,7 @@ EOF
 
 unset ASSERTIONS
 declare -A ASSERTIONS=(
+    ["locale"]="en"
     ["hass-enabled"]="true"
     ["mqtt-broker"]="127.0.0.1"
     ["mqtt-port"]="1883"
@@ -259,6 +264,7 @@ EOF
 
 unset ASSERTIONS
 declare -A ASSERTIONS=(
+    ["locale"]="en"
     ["hass-enabled"]="true"
     ["mqtt-broker"]="127.0.0.1"
     ["mqtt-port"]="1883"

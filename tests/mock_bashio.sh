@@ -1,5 +1,8 @@
 #!/bin/bash
 
+set -u
+export SUPERVISOR_TOKEN="mock_supervisor_token"
+
 # --------------------------------------------------------
 # Mock bashio:: Functions (using yq v4 syntax)
 # --------------------------------------------------------

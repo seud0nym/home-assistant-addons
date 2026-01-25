@@ -7,6 +7,11 @@ LIST_OPTS["modbus-inverter-device-id"]=1
 LIST_OPTS["modbus-accharger-device-id"]=1
 LIST_OPTS["modbus-dccharger-device-id"]=1
 
+# Logging for clean-option test
+if [ -n "$TEST_NAME" ]; then
+  echo "SIGENERGY2MQTT_CALL: $@" >> /tmp/${TEST_NAME}_calls.log
+fi
+
 while [[ $# -gt 0 ]]; do
     arg="$1"
 
@@ -54,5 +59,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Validate parsed options against expected assertions
-source ../functions.sh
-validate_params_against_assertions
+if [[ -n "${ASSERTIONS_SERIALIZED}" ]]; then
+    source ../functions.sh
+    validate_params_against_assertions
+fi

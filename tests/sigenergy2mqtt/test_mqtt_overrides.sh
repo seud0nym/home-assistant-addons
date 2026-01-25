@@ -26,6 +26,7 @@ $BASE_CONFIG
 EOF
 
 declare -A ASSERTIONS=(
+    ["locale"]="en"
     ["hass-enabled"]="true"
     ["mqtt-broker"]="127.0.0.1"
     ["mqtt-port"]="1883"
@@ -68,6 +69,7 @@ EOF
 
 unset ASSERTIONS
 declare -A ASSERTIONS=(
+    ["locale"]="en"
     ["hass-enabled"]="true"
     ["mqtt-broker"]="192.168.1.100"
     ["mqtt-port"]="9999"
@@ -98,6 +100,7 @@ EOF
 
 unset ASSERTIONS
 declare -A ASSERTIONS=(
+    ["locale"]="en"
     ["hass-enabled"]="true"
     ["mqtt-broker"]="127.0.0.1" # Inherited
     ["mqtt-port"]="1883" # Inherited

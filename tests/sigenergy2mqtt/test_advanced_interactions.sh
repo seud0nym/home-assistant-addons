@@ -29,6 +29,7 @@ $BASE_CONFIG
 EOF
 
 declare -A ASSERTIONS=(
+    ["locale"]="en"
     ["hass-enabled"]="true"
     ["mqtt-broker"]="127.0.0.1"
     ["mqtt-port"]="1883"
@@ -54,11 +55,11 @@ if [ $RESULT -ne 0 ]; then
 fi
 
 # Manual check for absence of other flags
-if grep -q "\-\-modbus-no-remote-ems" $LOG_PATH; then
+if grep -q "Parameter: \-\-modbus-no-remote-ems" $LOG_PATH; then
     echo "Scenario 1 Failed: Found --modbus-no-remote-ems when read_only is true"
     exit 1
 fi
-if grep -q "\-\-no-remote-ems-check" $LOG_PATH; then
+if grep -q "Parameter: \-\-no-remote-ems-check" $LOG_PATH; then
     echo "Scenario 1 Failed: Found --no-remote-ems-check when read_only is true"
     exit 1
 fi
@@ -76,6 +77,7 @@ EOF
 
 unset ASSERTIONS
 declare -A ASSERTIONS=(
+    ["locale"]="en"
     ["hass-enabled"]="true"
     ["mqtt-broker"]="127.0.0.1"
     ["mqtt-port"]="1883"
@@ -96,11 +98,11 @@ if [ $RESULT -ne 0 ]; then
 fi
 
 # Manual check for absence
-if grep -q "\-\-modbus-readonly" $LOG_PATH; then
+if grep -q "Parameter: \-\-modbus-readonly" $LOG_PATH; then
     echo "Scenario 2 Failed: Found --modbus-readonly"
     exit 1
 fi
-if grep -q "\-\-no-remote-ems-check" $LOG_PATH; then
+if grep -q "Parameter: \-\-no-remote-ems-check" $LOG_PATH; then
     echo "Scenario 2 Failed: Found --no-remote-ems-check when no_remote_ems is true"
     exit 1
 fi
@@ -117,6 +119,7 @@ EOF
 
 unset ASSERTIONS
 declare -A ASSERTIONS=(
+    ["locale"]="en"
     ["hass-enabled"]="true"
     ["mqtt-broker"]="127.0.0.1"
     ["mqtt-port"]="1883"
@@ -136,11 +139,11 @@ if [ $RESULT -ne 0 ]; then
     exit $RESULT
 fi
 
-if grep -q "\-\-modbus-readonly" $LOG_PATH; then
+if grep -q "Parameter: \-\-modbus-readonly" $LOG_PATH; then
     echo "Scenario 3 Failed: Found --modbus-readonly"
     exit 1
 fi
-if grep -q "\-\-modbus-no-remote-ems" $LOG_PATH; then
+if grep -q "Parameter: \-\-modbus-no-remote-ems" $LOG_PATH; then
     echo "Scenario 3 Failed: Found --modbus-no-remote-ems"
     exit 1
 fi
@@ -157,6 +160,7 @@ EOF
 
 unset ASSERTIONS
 declare -A ASSERTIONS=(
+    ["locale"]="en"
     ["hass-enabled"]="true"
     ["mqtt-broker"]="127.0.0.1"
     ["mqtt-port"]="1883"
@@ -175,15 +179,15 @@ if [ $RESULT -ne 0 ]; then
     exit $RESULT
 fi
 
-if grep -q "\-\-modbus-readonly" $LOG_PATH; then
+if grep -q "Parameter: \-\-modbus-readonly" $LOG_PATH; then
     echo "Scenario 4 Failed: Found --modbus-readonly"
     exit 1
 fi
-if grep -q "\-\-modbus-no-remote-ems" $LOG_PATH; then
+if grep -q "Parameter: \-\-modbus-no-remote-ems" $LOG_PATH; then
     echo "Scenario 4 Failed: Found --modbus-no-remote-ems"
     exit 1
 fi
-if grep -q "\-\-no-remote-ems-check" $LOG_PATH; then
+if grep -q "Parameter: \-\-no-remote-ems-check" $LOG_PATH; then
     echo "Scenario 4 Failed: Found --no-remote-ems-check"
     exit 1
 fi

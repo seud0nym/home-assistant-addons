@@ -19,6 +19,7 @@ EOF
 
 #region Prepare expected assertions
 declare -A ASSERTIONS=(
+    ["locale"]="en"
     ["mqtt-broker"]="127.0.0.1" # Default
     ["mqtt-port"]="1883" # Default
     ["mqtt-username"]="mock_mqtt_user" # Default

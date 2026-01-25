@@ -27,7 +27,7 @@ modbus_no_remote_ems: true
 modbus_port: 502
 modbus_read_only: true
 modbus_slave: "1 3"
-mqtt_broker: http://ha-mqtt-test.duckdns.org/
+mqtt_broker: localhost
 mqtt_log_level: WARNING
 mqtt_password: test_mqtt_password
 mqtt_port: 8883
@@ -69,6 +69,7 @@ EOF
 
 # region Prepare expected assertions
 declare -A ASSERTIONS=(
+    ["locale"]="en"
     ["consumption"]="calculated"
     ["debug-sensor"]="any"
     ["hass-device-name-prefix"]="device"
@@ -85,7 +86,7 @@ declare -A ASSERTIONS=(
     ["modbus-log-level"]="WARNING"
     ["modbus-port"]="502"
     ["modbus-readonly"]="true"
-    ["mqtt-broker"]="http://ha-mqtt-test.duckdns.org/"
+    ["mqtt-broker"]="localhost"
     ["mqtt-log-level"]="WARNING"
     ["mqtt-password"]="test_mqtt_password"
     ["mqtt-port"]="8883"

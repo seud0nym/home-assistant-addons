@@ -20,6 +20,7 @@ EOF
 
 #region Prepare expected assertions
 declare -A ASSERTIONS=(
+    ["locale"]="en"
     ["hass-enabled"]="true" # Default
     ["mqtt-broker"]="127.0.0.1" # Default
     ["mqtt-port"]="1883" # Default
