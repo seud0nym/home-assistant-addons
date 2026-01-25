@@ -1,0 +1,210 @@
+configuration:
+  auto_discovery:
+    name: Rilevamento automatico dispositivi Sigenergy
+    description: Configurazione per rilevare automaticamente i dispositivi Sigenergy
+    fields:
+      force:
+        name: Forza rilevamento automatico
+        description: Attiva per forzare il rilevamento automatico degli host Modbus Sigenergy e degli ID dispositivo associati.
+      ping_timeout:
+        name: Timeout ping
+        description: Timeout ping in secondi per il rilevamento automatico. Predefinito 0,5 secondi.
+      retries:
+        name: Tentativi massimi
+        description: Numero massimo di tentativi per il rilevamento automatico. Predefinito 0.
+      timeout:
+        name: Timeout Modbus
+        description: Timeout Modbus in secondi per il rilevamento automatico. Predefinito 0,25 secondi.
+  manual_config:
+    name: Configurazione manuale dispositivo Sigenergy
+    description: Configurazione per specificare manualmente i dettagli di connessione
+    fields:
+      host:
+        name: Indirizzo host
+        description: Nome host o indirizzo IP del dispositivo Sigenergy. Lascia vuoto per il rilevamento automatico.
+      port:
+        name: Porta Modbus
+        description: Numero porta Modbus del dispositivo Sigenergy.
+      inverter_device_id:
+        name: ID dispositivo inverter
+        description: ID dispositivo Modbus dell'inverter Sigenergy. Per più inverter, usa un elenco separato da spazi.
+      accharger_device_id:
+        name: ID dispositivo caricatore AC
+        description: ID dispositivo Modbus del caricatore AC Sigenergy.
+      dccharger_device_id:
+        name: ID dispositivo caricatore DC
+        description: ID dispositivo Modbus del caricatore DC Sigenergy (solitamente uguale all'ID dell'inverter).
+  scan_interval:
+    name: Intervalli di scansione sensori
+    description: Configurazione degli intervalli di scansione per diverse classi di sensori
+    fields:
+      low:
+        name: Bassa frequenza
+        description: Intervallo di scansione in secondi per sensori a bassa frequenza. Predefinito 600, minimo 1.
+      medium:
+        name: Frequenza media
+        description: Intervallo di scansione in secondi per sensori a frequenza media. Predefinito 60, minimo 1.
+      high:
+        name: Alta frequenza
+        description: Intervallo di scansione in secondi per sensori ad alta frequenza. Predefinito 10, minimo 1.
+      realtime:
+        name: Quasi tempo reale
+        description: Intervallo di scansione in secondi per sensori in tempo reale. Predefinito 5, minimo 1.
+  pvoutput:
+    name: Integrazione PVOutput.org
+    description: Configurazione per l'integrazione con PVOutput.org
+    fields:
+      enabled:
+        name: Abilita caricamento
+        description: Abilita aggiornamenti di stato su PVOutput.
+      api_key:
+        name: Chiave API
+        description: La chiave API per PVOutput
+      system_id:
+        name: ID sistema
+        description: L'ID del sistema PVOutput
+      consumption:
+        name: Abilita caricamento consumo
+        description: Invia stato consumo a PVOutput.
+      exports:
+        name: Abilita caricamento esportazione
+        description: Invia dati di esportazione a PVOutput.
+      imports:
+        name: Abilita caricamento importazione
+        description: Invia dati di importazione a PVOutput.
+      eod_update:
+        name: Abilita caricamento fine giornata
+        description: Invia picco di generazione e totali giornalieri a fine giornata.
+      voltage:
+        name: Sorgente tensione
+        description: Sorgente del valore di tensione per PVOutput. 'Phase A' per monofase, 'Phase B/C' o 'Line to Line Average' per trifase.
+      ext_v7:
+        name: Dati estesi v7
+        description: Nome classe sensore per il campo dati estesi v7 in PVOutput.
+      ext_v8:
+        name: Dati estesi v8
+        description: Nome classe sensore per il campo dati estesi v8 in PVOutput.
+      ext_v9:
+        name: Dati estesi v9
+        description: Nome classe sensore per il campo dati estesi v9 in PVOutput.
+      ext_v10:
+        name: Dati estesi v10
+        description: Nome classe sensore per il campo dati estesi v10 in PVOutput.
+      ext_v11:
+        name: Dati estesi v11
+        description: Nome classe sensore per il campo dati estesi v11 in PVOutput.
+      ext_v12:
+        name: Dati estesi v12
+        description: Nome classe sensore per il campo dati estesi v12 in PVOutput.
+      temp_topic:
+        name: Topic temperatura
+        description: Topic MQTT per i dati di temperatura correnti per PVOutput.
+  mqtt:
+    name: Configurazione MQTT
+    description: Configurazione per la connessione al broker MQTT
+    fields:
+      broker:
+        name: Indirizzo broker
+        description: Nome host o indirizzo IP del broker MQTT.
+      port:
+        name: Porta MQTT
+        description: Porta di ascolto del broker MQTT. Predefinito 1883, o 8883 con TLS.
+      tls:
+        name: Abilita comunicazione TLS
+        description: Abilita comunicazione sicura tramite TLS/SSL.
+      username:
+        name: Nome utente
+        description: Nome utente per il broker MQTT.
+      password:
+        name: Password
+        description: Password per il broker MQTT.
+  advanced:
+    name: Impostazioni avanzate
+    description: Impostazioni di configurazione avanzate per sigenergy2mqtt
+    fields:
+      clean:
+        name: Pulisci messaggi MQTT conservati
+        description: Pulisci messaggi MQTT conservati. **ATTENZIONE!** Gli helper di Home Assistant verranno rimossi.
+      consumption_method:
+        name: Metodo di consumo
+        description: Metodo di calcolo per 'Plant Consumed Power'. Predefinito 'Total Load' per V2.8.
+      read_only:
+        name: Abilita sola lettura
+        description: Solo lettura dati, nessuna scrittura.
+      no_remote_ems:
+        name: Disabilita EMS remoto
+        description: Nascondi sensori di lettura/scrittura per EMS remoto.
+      no_remote_ems_check:
+        name: Disabilita controlli EMS remoto
+        description: Disabilita validazione per limiti ESS.
+      edit_pct_box:
+        name: Abilita editor casella percentuale
+        description: Usa casella di input numerico invece di slider per sensori percentuale.
+      metrics_enabled:
+        name: Abilita metriche
+        description: Pubblica metriche di sigenergy2mqtt.
+      sanity_check_default_kw:
+        name: kW predefinito per verifica
+        description: Valore predefinito in kW per le verifiche. Predefinito 500 kW.
+      device_name_prefix:
+        name: Prefisso nome dispositivo
+        description: Prefisso per i nomi entità di Home Assistant.
+      entity_id_prefix:
+        name: Prefisso ID entità
+        description: Prefisso per gli ID entità di Home Assistant. Predefinito 'sigen'.
+      unique_id_prefix:
+        name: Prefisso ID univoco
+        description: Prefisso per gli ID univoci. MAI modificare dopo la configurazione!
+      discovery_prefix:
+        name: Prefisso discovery
+        description: Prefisso topic MQTT Discovery. Predefinito 'homeassistant'.
+  logging:
+    name: Configurazione registrazione
+    description: Configurazione dei livelli di registrazione
+    fields:
+      sigenergy2mqtt:
+        name: sigenergy2mqtt
+        description: Imposta livello di registrazione di sigenergy2mqtt.
+      debug_sensor:
+        name: Sensore da debuggare
+        description: Specifica un sensore da debuggare.
+      addon:
+        name: Script di esecuzione add-on
+        description: Livello di registrazione dello script add-on.
+      modbus:
+        name: Modbus
+        description: Livello di registrazione di pymodbus.
+      pvoutput:
+        name: PVOutput
+        description: Livello di registrazione di PVOutput.
+      mqtt:
+        name: MQTT
+        description: Livello di registrazione di paho.mqtt.
+  smartport:
+    name: Integrazione inverter di terze parti
+    description: Integrazione inverter di terze parti via Smart-Port
+    fields:
+      enabled:
+        name: Abilita
+        description: Abilita integrazione inverter di terze parti.
+      module_name:
+        name: Nome modulo
+        description: Nome modulo per dati di produzione. (Solo 'enphase' supportato.)
+      host:
+        name: Indirizzo host
+        description: Indirizzo IP o nome host dell'inverter.
+      username:
+        name: Nome utente
+        description: Nome utente per autenticazione.
+      password:
+        name: Password
+        description: Password per autenticazione.
+      pv_power:
+        name: Potenza PV
+        description: Classe sensore per dati di produzione. (Solo 'EnphasePVPower' supportato.)
+      mqtt_topic:
+        name: Topic MQTT
+        description: Topic MQTT per dati di produzione.
+      mqtt_gain:
+        name: Guadagno MQTT
+        description: Guadagno per dati di produzione. Predefinito 1 (Watt).

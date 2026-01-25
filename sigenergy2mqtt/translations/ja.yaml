@@ -1,0 +1,210 @@
+configuration:
+  auto_discovery:
+    name: Sigenergy デバイス自動検出
+    description: Sigenergy デバイスを自動的に検出するための設定
+    fields:
+      force:
+        name: 自動検出を強制
+        description: Sigenergy Modbus ホストと関連するデバイスIDの自動検出を強制するには有効にしてください。
+      ping_timeout:
+        name: Ping タイムアウト
+        description: 自動検出時のPingタイムアウト（秒）。デフォルトは0.5秒。
+      retries:
+        name: 最大リトライ回数
+        description: 自動検出時の最大リトライ回数。デフォルトは0。
+      timeout:
+        name: Modbus タイムアウト
+        description: 自動検出時のModbusタイムアウト（秒）。デフォルトは0.25秒。
+  manual_config:
+    name: Sigenergy デバイス手動設定
+    description: 接続詳細を手動で指定するための設定
+    fields:
+      host:
+        name: ホストアドレス
+        description: Sigenergy デバイスのホスト名またはIPアドレス。自動検出の場合は空欄にしてください。
+      port:
+        name: Modbus ポート
+        description: Sigenergy デバイスのModbusポート番号。
+      inverter_device_id:
+        name: インバーターデバイスID
+        description: Sigenergy インバーターのModbusデバイスID。複数のインバーターの場合は、スペース区切りのリストを使用してください。
+      accharger_device_id:
+        name: AC充電器デバイスID
+        description: Sigenergy AC充電器のModbusデバイスID。
+      dccharger_device_id:
+        name: DC充電器デバイスID
+        description: Sigenergy DC充電器のModbusデバイスID（通常はインバーターIDと同じ）。
+  scan_interval:
+    name: センサースキャン間隔
+    description: 異なるセンサークラスのスキャン間隔の設定
+    fields:
+      low:
+        name: 低頻度
+        description: 低頻度センサーのスキャン間隔（秒）。デフォルト600、最小1。
+      medium:
+        name: 中頻度
+        description: 中頻度センサーのスキャン間隔（秒）。デフォルト60、最小1。
+      high:
+        name: 高頻度
+        description: 高頻度センサーのスキャン間隔（秒）。デフォルト10、最小1。
+      realtime:
+        name: ほぼリアルタイム
+        description: リアルタイムセンサーのスキャン間隔（秒）。デフォルト5、最小1。
+  pvoutput:
+    name: PVOutput.org 連携
+    description: PVOutput.org との連携設定
+    fields:
+      enabled:
+        name: アップロードを有効化
+        description: PVOutput へのステータス更新を有効にします。
+      api_key:
+        name: APIキー
+        description: PVOutput のAPIキー
+      system_id:
+        name: システムID
+        description: PVOutput のシステムID
+      consumption:
+        name: 消費量アップロードを有効化
+        description: 消費状況を PVOutput に送信します。
+      exports:
+        name: エクスポートアップロードを有効化
+        description: エクスポートデータを PVOutput に送信します。
+      imports:
+        name: インポートアップロードを有効化
+        description: インポートデータを PVOutput に送信します。
+      eod_update:
+        name: 日終アップロードを有効化
+        description: ピーク発電量と日次合計を一日の終わりに送信します。
+      voltage:
+        name: 電圧ソース
+        description: PVOutput に送信する電圧値のソース。単相は 'Phase A'、三相は 'Phase B/C' または 'Line to Line Average'。
+      ext_v7:
+        name: 拡張データ v7
+        description: PVOutput の拡張データフィールド v7 に使用するセンサークラス名。
+      ext_v8:
+        name: 拡張データ v8
+        description: PVOutput の拡張データフィールド v8 に使用するセンサークラス名。
+      ext_v9:
+        name: 拡張データ v9
+        description: PVOutput の拡張データフィールド v9 に使用するセンサークラス名。
+      ext_v10:
+        name: 拡張データ v10
+        description: PVOutput の拡張データフィールド v10 に使用するセンサークラス名。
+      ext_v11:
+        name: 拡張データ v11
+        description: PVOutput の拡張データフィールド v11 に使用するセンサークラス名。
+      ext_v12:
+        name: 拡張データ v12
+        description: PVOutput の拡張データフィールド v12 に使用するセンサークラス名。
+      temp_topic:
+        name: 温度トピック
+        description: PVOutput 用の現在の温度データの MQTT トピック。
+  mqtt:
+    name: MQTT 設定
+    description: MQTT ブローカーへの接続設定
+    fields:
+      broker:
+        name: ブローカーアドレス
+        description: MQTT ブローカーのホスト名または IP アドレス。
+      port:
+        name: MQTT ポート
+        description: MQTT ブローカーのリスニングポート。デフォルト1883、TLS使用時は8883。
+      tls:
+        name: TLS 通信を有効化
+        description: TLS/SSL によるセキュア通信を有効にします。
+      username:
+        name: ユーザー名
+        description: MQTT ブローカーのユーザー名。
+      password:
+        name: パスワード
+        description: MQTT ブローカーのパスワード。
+  advanced:
+    name: 詳細設定
+    description: sigenergy2mqtt の詳細設定
+    fields:
+      clean:
+        name: MQTT 保持メッセージをクリア
+        description: MQTT 保持メッセージをクリアします。**注意！** Home Assistant ヘルパーは削除されます。
+      consumption_method:
+        name: 消費量計算方式
+        description: 'Plant Consumed Power' の計算方式。V2.8 ではデフォルト 'Total Load'。
+      read_only:
+        name: 読み取り専用を有効化
+        description: データの読み取りのみ、書き込みは行いません。
+      no_remote_ems:
+        name: リモート EMS を無効化
+        description: リモート EMS 用の読み書きセンサーを非表示にします。
+      no_remote_ems_check:
+        name: リモート EMS チェックを無効化
+        description: ESS 制限の検証を無効にします。
+      edit_pct_box:
+        name: パーセントボックスエディタを有効化
+        description: パーセントセンサーにスライダーではなく数値入力ボックスを使用します。
+      metrics_enabled:
+        name: メトリクスを有効化
+        description: sigenergy2mqtt メトリクスを公開します。
+      sanity_check_default_kw:
+        name: サニティチェックのデフォルト kW
+        description: サニティチェック用のデフォルト値（kW）。デフォルトは500 kW。
+      device_name_prefix:
+        name: デバイス名プレフィックス
+        description: Home Assistant エンティティ名のプレフィックス。
+      entity_id_prefix:
+        name: エンティティIDプレフィックス
+        description: Home Assistant エンティティIDのプレフィックス。デフォルトは 'sigen'。
+      unique_id_prefix:
+        name: 一意IDプレフィックス
+        description: 一意IDのプレフィックス。設定後は絶対に変更しないでください！
+      discovery_prefix:
+        name: ディスカバリープレフィックス
+        description: MQTT Discovery トピックプレフィックス。デフォルトは 'homeassistant'。
+  logging:
+    name: ログ設定
+    description: ログレベルの設定
+    fields:
+      sigenergy2mqtt:
+        name: sigenergy2mqtt
+        description: sigenergy2mqtt のログレベルを設定します。
+      debug_sensor:
+        name: デバッグするセンサー
+        description: デバッグするセンサーを指定します。
+      addon:
+        name: アドオン実行スクリプト
+        description: アドオンスクリプトのログレベル。
+      modbus:
+        name: Modbus
+        description: pymodbus のログレベル。
+      pvoutput:
+        name: PVOutput
+        description: PVOutput のログレベル。
+      mqtt:
+        name: MQTT
+        description: paho.mqtt のログレベル。
+  smartport:
+    name: サードパーティインバーター連携
+    description: Smart-Port 経由のサードパーティインバーター連携
+    fields:
+      enabled:
+        name: 有効化
+        description: サードパーティインバーター連携を有効にします。
+      module_name:
+        name: モジュール名
+        description: 発電データ用のモジュール名。（'enphase' のみサポート）
+      host:
+        name: ホストアドレス
+        description: インバーターのIPアドレスまたはホスト名。
+      username:
+        name: ユーザー名
+        description: 認証用のユーザー名。
+      password:
+        name: パスワード
+        description: 認証用のパスワード。
+      pv_power:
+        name: PV 電力
+        description: 発電データ用のセンサークラス。（'EnphasePVPower' のみサポート）
+      mqtt_topic:
+        name: MQTT トピック
+        description: 発電データ用の MQTT トピック。
+      mqtt_gain:
+        name: MQTT ゲイン
+        description: 発電データ用のゲイン。デフォルトは1（ワット）。

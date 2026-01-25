@@ -1,0 +1,210 @@
+configuration:
+  auto_discovery:
+    name: Sigenergy 기기 자동 검색
+    description: Sigenergy 기기를 자동으로 검색하기 위한 설정
+    fields:
+      force:
+        name: 자동 검색 강제
+        description: Sigenergy Modbus 호스트 및 관련 기기 ID의 자동 검색을 강제하려면 활성화하세요.
+      ping_timeout:
+        name: Ping 타임아웃
+        description: 자동 검색 시 Ping 타임아웃(초). 기본값 0.5초.
+      retries:
+        name: 최대 재시도 횟수
+        description: 자동 검색 시 최대 재시도 횟수. 기본값 0.
+      timeout:
+        name: Modbus 타임아웃
+        description: 자동 검색 시 Modbus 타임아웃(초). 기본값 0.25초.
+  manual_config:
+    name: Sigenergy 기기 수동 설정
+    description: 연결 세부 정보를 수동으로 지정하기 위한 설정
+    fields:
+      host:
+        name: 호스트 주소
+        description: Sigenergy 기기의 호스트 이름 또는 IP 주소. 자동 검색을 위해 비워두세요.
+      port:
+        name: Modbus 포트
+        description: Sigenergy 기기의 Modbus 포트 번호.
+      inverter_device_id:
+        name: 인버터 기기 ID
+        description: Sigenergy 인버터 Modbus 기기 ID. 여러 인버터의 경우 공백으로 구분된 목록을 사용하세요.
+      accharger_device_id:
+        name: AC 충전기 기기 ID
+        description: Sigenergy AC 충전기 Modbus 기기 ID.
+      dccharger_device_id:
+        name: DC 충전기 기기 ID
+        description: Sigenergy DC 충전기 Modbus 기기 ID (보통 인버터 ID와 동일).
+  scan_interval:
+    name: 센서 스캔 간격
+    description: 다양한 센서 클래스의 스캔 간격 설정
+    fields:
+      low:
+        name: 저빈도
+        description: 저빈도 센서의 스캔 간격(초). 기본값 600, 최소값 1.
+      medium:
+        name: 중빈도
+        description: 중빈도 센서의 스캔 간격(초). 기본값 60, 최소값 1.
+      high:
+        name: 고빈도
+        description: 고빈도 센서의 스캔 간격(초). 기본값 10, 최소값 1.
+      realtime:
+        name: 거의 실시간
+        description: 실시간 센서의 스캔 간격(초). 기본값 5, 최소값 1.
+  pvoutput:
+    name: PVOutput.org 통합
+    description: PVOutput.org와의 통합 설정
+    fields:
+      enabled:
+        name: 업로드 활성화
+        description: PVOutput으로 상태 업데이트 활성화.
+      api_key:
+        name: API 키
+        description: PVOutput용 API 키
+      system_id:
+        name: 시스템 ID
+        description: PVOutput 시스템 ID
+      consumption:
+        name: 소비량 업로드 활성화
+        description: PVOutput에 소비 상태 전송.
+      exports:
+        name: 내보내기 업로드 활성화
+        description: PVOutput에 내보내기 데이터 전송.
+      imports:
+        name: 가져오기 업로드 활성화
+        description: PVOutput에 가져오기 데이터 전송.
+      eod_update:
+        name: 일말 업로드 활성화
+        description: 일말에 피크 발전량과 일일 합계 전송.
+      voltage:
+        name: 전압 소스
+        description: PVOutput에 전송할 전압 값의 소스. 단상은 'Phase A', 삼상은 'Phase B/C' 또는 'Line to Line Average'.
+      ext_v7:
+        name: 확장 데이터 v7
+        description: PVOutput의 확장 데이터 필드 v7에 사용할 센서 클래스 이름.
+      ext_v8:
+        name: 확장 데이터 v8
+        description: PVOutput의 확장 데이터 필드 v8에 사용할 센서 클래스 이름.
+      ext_v9:
+        name: 확장 데이터 v9
+        description: PVOutput의 확장 데이터 필드 v9에 사용할 센서 클래스 이름.
+      ext_v10:
+        name: 확장 데이터 v10
+        description: PVOutput의 확장 데이터 필드 v10에 사용할 센서 클래스 이름.
+      ext_v11:
+        name: 확장 데이터 v11
+        description: PVOutput의 확장 데이터 필드 v11에 사용할 센서 클래스 이름.
+      ext_v12:
+        name: 확장 데이터 v12
+        description: PVOutput의 확장 데이터 필드 v12에 사용할 센서 클래스 이름.
+      temp_topic:
+        name: 온도 토픽
+        description: PVOutput용 현재 온도 데이터의 MQTT 토픽.
+  mqtt:
+    name: MQTT 설정
+    description: MQTT 브로커 연결 설정
+    fields:
+      broker:
+        name: 브로커 주소
+        description: MQTT 브로커의 호스트 이름 또는 IP 주소.
+      port:
+        name: MQTT 포트
+        description: MQTT 브로커의 리스닝 포트. 기본값 1883, TLS 사용 시 8883.
+      tls:
+        name: TLS 통신 활성화
+        description: TLS/SSL을 통한 보안 통신 활성화.
+      username:
+        name: 사용자 이름
+        description: MQTT 브로커의 사용자 이름.
+      password:
+        name: 비밀번호
+        description: MQTT 브로커의 비밀번호.
+  advanced:
+    name: 고급 설정
+    description: sigenergy2mqtt의 고급 설정
+    fields:
+      clean:
+        name: MQTT 보관 메시지 정리
+        description: MQTT 보관 메시지를 정리합니다. **주의!** Home Assistant 헬퍼가 제거됩니다.
+      consumption_method:
+        name: 소비량 계산 방식
+        description: 'Plant Consumed Power' 계산 방식. V2.8의 경우 기본값 'Total Load'.
+      read_only:
+        name: 읽기 전용 활성화
+        description: 데이터 읽기만 하고 쓰기는 하지 않습니다.
+      no_remote_ems:
+        name: 원격 EMS 비활성화
+        description: 원격 EMS용 읽기/쓰기 센서 숨기기.
+      no_remote_ems_check:
+        name: 원격 EMS 검사 비활성화
+        description: ESS 제한 검증 비활성화.
+      edit_pct_box:
+        name: 퍼센트 박스 편집기 활성화
+        description: 퍼센트 센서에 슬라이더 대신 숫자 입력 박스 사용.
+      metrics_enabled:
+        name: 메트릭 활성화
+        description: sigenergy2mqtt 메트릭 게시.
+      sanity_check_default_kw:
+        name: 검증용 기본 kW
+        description: 검증용 기본값(kW). 기본값 500 kW.
+      device_name_prefix:
+        name: 기기 이름 접두사
+        description: Home Assistant 엔티티 이름의 접두사.
+      entity_id_prefix:
+        name: 엔티티 ID 접두사
+        description: Home Assistant 엔티티 ID의 접두사. 기본값 'sigen'.
+      unique_id_prefix:
+        name: 고유 ID 접두사
+        description: 고유 ID의 접두사. 설정 후 절대 변경하지 마세요!
+      discovery_prefix:
+        name: 검색 접두사
+        description: MQTT Discovery 토픽 접두사. 기본값 'homeassistant'.
+  logging:
+    name: 로깅 설정
+    description: 로깅 레벨 설정
+    fields:
+      sigenergy2mqtt:
+        name: sigenergy2mqtt
+        description: sigenergy2mqtt 로깅 레벨 설정.
+      debug_sensor:
+        name: 디버그할 센서
+        description: 디버그할 센서 지정.
+      addon:
+        name: 애드온 실행 스크립트
+        description: 애드온 스크립트의 로깅 레벨.
+      modbus:
+        name: Modbus
+        description: pymodbus 로깅 레벨.
+      pvoutput:
+        name: PVOutput
+        description: PVOutput 로깅 레벨.
+      mqtt:
+        name: MQTT
+        description: paho.mqtt 로깅 레벨.
+  smartport:
+    name: 서드파티 인버터 통합
+    description: Smart-Port를 통한 서드파티 인버터 통합
+    fields:
+      enabled:
+        name: 활성화
+        description: 서드파티 인버터 통합 활성화.
+      module_name:
+        name: 모듈 이름
+        description: 생산 데이터용 모듈 이름. ('enphase'만 지원)
+      host:
+        name: 호스트 주소
+        description: 인버터의 IP 주소 또는 호스트 이름.
+      username:
+        name: 사용자 이름
+        description: 인증용 사용자 이름.
+      password:
+        name: 비밀번호
+        description: 인증용 비밀번호.
+      pv_power:
+        name: PV 전력
+        description: 생산 데이터용 센서 클래스. ('EnphasePVPower'만 지원)
+      mqtt_topic:
+        name: MQTT 토픽
+        description: 생산 데이터용 MQTT 토픽.
+      mqtt_gain:
+        name: MQTT 게인
+        description: 생산 데이터용 게인. 기본값 1(와트).

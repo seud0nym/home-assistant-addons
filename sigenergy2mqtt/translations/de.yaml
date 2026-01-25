@@ -1,0 +1,210 @@
+configuration:
+  auto_discovery:
+    name: Sigenergy Geräte-Auto-Erkennung
+    description: Konfiguration zur automatischen Erkennung Ihrer Sigenergy-Geräte
+    fields:
+      force:
+        name: Auto-Erkennung erzwingen
+        description: Aktivieren Sie diese Option, um die automatische Erkennung von Sigenergy Modbus-Hosts und zugehörigen Geräte-IDs zu erzwingen. Sie müssen diese Option nur aktivieren, wenn Sie zuvor Hosts/Geräte-IDs automatisch erkannt haben und sich Ihr Netzwerk oder Ihre Geräte geändert haben.
+      ping_timeout:
+        name: Ping-Zeitüberschreitung
+        description: Die Ping-Zeitüberschreitung in Sekunden bei der Auto-Erkennung. Standard ist 0,5 Sekunden.
+      retries:
+        name: Maximale Wiederholungen
+        description: Die maximale Anzahl von Wiederholungen bei der Auto-Erkennung. Standard ist 0.
+      timeout:
+        name: Modbus-Zeitüberschreitung
+        description: Die Modbus-Zeitüberschreitung in Sekunden bei der Auto-Erkennung. Standard ist 0,25 Sekunden.
+  manual_config:
+    name: Manuelle Sigenergy-Gerätekonfiguration
+    description: Konfiguration zur manuellen Angabe Ihrer Sigenergy-Geräteverbindungsdetails
+    fields:
+      host:
+        name: Host-Adresse
+        description: Der Hostname oder die IP-Adresse des Sigenergy-Geräts. Leer lassen für Auto-Erkennung.
+      port:
+        name: Modbus-Port
+        description: Die Modbus-Portnummer des Sigenergy-Geräts.
+      inverter_device_id:
+        name: Wechselrichter-Geräte-ID
+        description: Die Sigenergy Wechselrichter Modbus-Geräte-ID. Bei mehreren Wechselrichtern können Sie eine durch Leerzeichen getrennte Liste angeben.
+      accharger_device_id:
+        name: AC-Ladegerät-Geräte-ID
+        description: Die Sigenergy AC-Ladegerät Modbus-Geräte-ID.
+      dccharger_device_id:
+        name: DC-Ladegerät-Geräte-ID
+        description: Die Sigenergy DC-Ladegerät Modbus-Geräte-ID (normalerweise identisch mit Wechselrichter-ID).
+  scan_interval:
+    name: Sensor-Abtastintervalle
+    description: Konfiguration der Abtastintervalle für verschiedene Sensorklassen
+    fields:
+      low:
+        name: Niedrige Frequenz
+        description: Abtastintervall in Sekunden für Sensoren mit niedriger Frequenz. Standard 600, Minimum 1.
+      medium:
+        name: Mittlere Frequenz
+        description: Abtastintervall in Sekunden für Sensoren mit mittlerer Frequenz. Standard 60, Minimum 1.
+      high:
+        name: Hohe Frequenz
+        description: Abtastintervall in Sekunden für Sensoren mit hoher Frequenz. Standard 10, Minimum 1.
+      realtime:
+        name: Nahezu Echtzeit
+        description: Abtastintervall in Sekunden für Echtzeit-Sensoren. Standard 5, Minimum 1.
+  pvoutput:
+    name: PVOutput.org Integration
+    description: Konfiguration zur Integration mit PVOutput.org
+    fields:
+      enabled:
+        name: Hochladen aktivieren
+        description: Status-Updates für PVOutput aktivieren.
+      api_key:
+        name: API-Schlüssel
+        description: Der API-Schlüssel für PVOutput
+      system_id:
+        name: System-ID
+        description: Die PVOutput System-ID
+      consumption:
+        name: Verbrauchs-Uploads aktivieren
+        description: Verbrauchsstatus an PVOutput senden.
+      exports:
+        name: Export-Uploads aktivieren
+        description: Exportdaten an PVOutput senden.
+      imports:
+        name: Import-Uploads aktivieren
+        description: Importdaten an PVOutput senden.
+      eod_update:
+        name: Tagesend-Upload aktivieren
+        description: Spitzenerzeugung und Tagessummen am Tagesende senden.
+      voltage:
+        name: Spannungsquelle
+        description: Quelle des Spannungswerts für PVOutput. 'Phase A' für Einphasen, 'Phase B/C' oder 'Line to Line Average' für Dreiphasen.
+      ext_v7:
+        name: Erweiterte Daten v7
+        description: Sensorklassenname für das erweiterte Datenfeld v7 in PVOutput.
+      ext_v8:
+        name: Erweiterte Daten v8
+        description: Sensorklassenname für das erweiterte Datenfeld v8 in PVOutput.
+      ext_v9:
+        name: Erweiterte Daten v9
+        description: Sensorklassenname für das erweiterte Datenfeld v9 in PVOutput.
+      ext_v10:
+        name: Erweiterte Daten v10
+        description: Sensorklassenname für das erweiterte Datenfeld v10 in PVOutput.
+      ext_v11:
+        name: Erweiterte Daten v11
+        description: Sensorklassenname für das erweiterte Datenfeld v11 in PVOutput.
+      ext_v12:
+        name: Erweiterte Daten v12
+        description: Sensorklassenname für das erweiterte Datenfeld v12 in PVOutput.
+      temp_topic:
+        name: Temperatur-Topic
+        description: MQTT-Topic für aktuelle Temperaturdaten für PVOutput.
+  mqtt:
+    name: MQTT-Konfiguration
+    description: Konfiguration zur Verbindung mit Ihrem MQTT-Broker
+    fields:
+      broker:
+        name: Broker-Adresse
+        description: Hostname oder IP-Adresse Ihres MQTT-Brokers.
+      port:
+        name: MQTT-Port
+        description: Listening-Port des MQTT-Brokers. Standard 1883, oder 8883 bei TLS.
+      tls:
+        name: TLS-Kommunikation aktivieren
+        description: Sichere Kommunikation über TLS/SSL aktivieren.
+      username:
+        name: Benutzername
+        description: Benutzername für den MQTT-Broker.
+      password:
+        name: Passwort
+        description: Passwort für den MQTT-Broker.
+  advanced:
+    name: Erweiterte Einstellungen
+    description: Erweiterte Konfigurationseinstellungen für sigenergy2mqtt
+    fields:
+      clean:
+        name: MQTT Retained Messages bereinigen
+        description: MQTT Retained Messages bereinigen. **VORSICHT!** Home Assistant-Helfer werden entfernt!
+      consumption_method:
+        name: Verbrauchsmethode
+        description: Berechnungsmethode für 'Plant Consumed Power'. Standard 'Total Load' für V2.8.
+      read_only:
+        name: Nur-Lesen aktivieren
+        description: Nur Daten lesen, nicht schreiben.
+      no_remote_ems:
+        name: Remote-EMS deaktivieren
+        description: Lese-/Schreibsensoren für Remote-EMS ausblenden.
+      no_remote_ems_check:
+        name: Remote-EMS-Prüfungen deaktivieren
+        description: Validierung für ESS-Limits deaktivieren.
+      edit_pct_box:
+        name: Prozent-Box-Editor aktivieren
+        description: Numerisches Eingabefeld statt Schieberegler für Prozentsensoren.
+      metrics_enabled:
+        name: Metriken aktivieren
+        description: sigenergy2mqtt-Metriken veröffentlichen.
+      sanity_check_default_kw:
+        name: Standard-kW für Plausibilitätsprüfung
+        description: Standardwert in kW für Plausibilitätsprüfungen. Standard 500 kW.
+      device_name_prefix:
+        name: Gerätename-Präfix
+        description: Präfix für Home Assistant-Entitätsnamen.
+      entity_id_prefix:
+        name: Entitäts-ID-Präfix
+        description: Präfix für Home Assistant-Entitäts-IDs. Standard 'sigen'.
+      unique_id_prefix:
+        name: Unique-ID-Präfix
+        description: Präfix für Unique-IDs. NIEMALS ändern nach Einstellung!
+      discovery_prefix:
+        name: Discovery-Präfix
+        description: MQTT Discovery-Topic-Präfix. Standard 'homeassistant'.
+  logging:
+    name: Protokollierungskonfiguration
+    description: Konfiguration der Protokollierungsstufen
+    fields:
+      sigenergy2mqtt:
+        name: sigenergy2mqtt
+        description: sigenergy2mqtt-Protokollierungsstufe festlegen.
+      debug_sensor:
+        name: Zu debuggender Sensor
+        description: Sensor zum Debuggen angeben.
+      addon:
+        name: Add-on-Ausführungsskript
+        description: Protokollierungsstufe des Add-on-Skripts.
+      modbus:
+        name: Modbus
+        description: pymodbus-Protokollierungsstufe.
+      pvoutput:
+        name: PVOutput
+        description: PVOutput-Protokollierungsstufe.
+      mqtt:
+        name: MQTT
+        description: paho.mqtt-Protokollierungsstufe.
+  smartport:
+    name: Drittanbieter-Wechselrichter-Integration
+    description: Integration für Drittanbieter-Wechselrichter über Smart-Port
+    fields:
+      enabled:
+        name: Aktivieren
+        description: Drittanbieter-Wechselrichter-Integration aktivieren.
+      module_name:
+        name: Modulname
+        description: Modulname für Produktionsdaten. (Nur 'enphase' unterstützt.)
+      host:
+        name: Host-Adresse
+        description: IP-Adresse oder Hostname des Wechselrichters.
+      username:
+        name: Benutzername
+        description: Benutzername für Authentifizierung.
+      password:
+        name: Passwort
+        description: Passwort für Authentifizierung.
+      pv_power:
+        name: PV-Leistung
+        description: Sensorklasse für Produktionsdaten. (Nur 'EnphasePVPower' unterstützt.)
+      mqtt_topic:
+        name: MQTT-Topic
+        description: MQTT-Topic für Produktionsdaten.
+      mqtt_gain:
+        name: MQTT-Verstärkung
+        description: Verstärkung für Produktionsdaten. Standard 1 (Watt).

@@ -1,0 +1,210 @@
+configuration:
+  auto_discovery:
+    name: Automatische Sigenergy apparaatdetectie
+    description: Configuratie voor automatische detectie van uw Sigenergy apparaten
+    fields:
+      force:
+        name: Forceer automatische detectie
+        description: Activeer om automatische detectie van Sigenergy Modbus hosts en bijbehorende apparaat-ID's te forceren.
+      ping_timeout:
+        name: Ping timeout
+        description: Ping timeout in seconden voor automatische detectie. Standaard 0,5 seconden.
+      retries:
+        name: Maximale pogingen
+        description: Maximaal aantal pogingen voor automatische detectie. Standaard 0.
+      timeout:
+        name: Modbus timeout
+        description: Modbus timeout in seconden voor automatische detectie. Standaard 0,25 seconden.
+  manual_config:
+    name: Handmatige Sigenergy apparaatconfiguratie
+    description: Configuratie voor handmatig specificeren van verbindingsdetails
+    fields:
+      host:
+        name: Hostadres
+        description: Hostnaam of IP-adres van het Sigenergy apparaat. Laat leeg voor automatische detectie.
+      port:
+        name: Modbus poort
+        description: Modbus poortnummer van het Sigenergy apparaat.
+      inverter_device_id:
+        name: Omvormer apparaat-ID
+        description: Sigenergy omvormer Modbus apparaat-ID. Voor meerdere omvormers, gebruik een door spaties gescheiden lijst.
+      accharger_device_id:
+        name: AC-lader apparaat-ID
+        description: Sigenergy AC-lader Modbus apparaat-ID.
+      dccharger_device_id:
+        name: DC-lader apparaat-ID
+        description: Sigenergy DC-lader Modbus apparaat-ID (meestal gelijk aan omvormer-ID).
+  scan_interval:
+    name: Sensor scan-intervallen
+    description: Configuratie van scan-intervallen voor verschillende sensorklassen
+    fields:
+      low:
+        name: Lage frequentie
+        description: Scan-interval in seconden voor sensoren met lage frequentie. Standaard 600, minimum 1.
+      medium:
+        name: Gemiddelde frequentie
+        description: Scan-interval in seconden voor sensoren met gemiddelde frequentie. Standaard 60, minimum 1.
+      high:
+        name: Hoge frequentie
+        description: Scan-interval in seconden voor sensoren met hoge frequentie. Standaard 10, minimum 1.
+      realtime:
+        name: Bijna realtime
+        description: Scan-interval in seconden voor realtime sensoren. Standaard 5, minimum 1.
+  pvoutput:
+    name: PVOutput.org Integratie
+    description: Configuratie voor integratie met PVOutput.org
+    fields:
+      enabled:
+        name: Upload inschakelen
+        description: Statusupdates naar PVOutput inschakelen.
+      api_key:
+        name: API-sleutel
+        description: De API-sleutel voor PVOutput
+      system_id:
+        name: Systeem-ID
+        description: De PVOutput systeem-ID
+      consumption:
+        name: Verbruiksuploads inschakelen
+        description: Verbruiksstatus naar PVOutput verzenden.
+      exports:
+        name: Exportuploads inschakelen
+        description: Exportgegevens naar PVOutput verzenden.
+      imports:
+        name: Importuploads inschakelen
+        description: Importgegevens naar PVOutput verzenden.
+      eod_update:
+        name: Einde-dag upload inschakelen
+        description: Piekopwekking en dagelijkse totalen aan het einde van de dag verzenden.
+      voltage:
+        name: Spanningsbron
+        description: Bron van de spanningswaarde voor PVOutput. 'Phase A' voor enkelfase, 'Phase B/C' of 'Line to Line Average' voor driefase.
+      ext_v7:
+        name: Uitgebreide gegevens v7
+        description: Sensorklassenaam voor het uitgebreide gegevensveld v7 in PVOutput.
+      ext_v8:
+        name: Uitgebreide gegevens v8
+        description: Sensorklassenaam voor het uitgebreide gegevensveld v8 in PVOutput.
+      ext_v9:
+        name: Uitgebreide gegevens v9
+        description: Sensorklassenaam voor het uitgebreide gegevensveld v9 in PVOutput.
+      ext_v10:
+        name: Uitgebreide gegevens v10
+        description: Sensorklassenaam voor het uitgebreide gegevensveld v10 in PVOutput.
+      ext_v11:
+        name: Uitgebreide gegevens v11
+        description: Sensorklassenaam voor het uitgebreide gegevensveld v11 in PVOutput.
+      ext_v12:
+        name: Uitgebreide gegevens v12
+        description: Sensorklassenaam voor het uitgebreide gegevensveld v12 in PVOutput.
+      temp_topic:
+        name: Temperatuur topic
+        description: MQTT topic voor huidige temperatuurgegevens voor PVOutput.
+  mqtt:
+    name: MQTT-configuratie
+    description: Configuratie voor verbinding met uw MQTT broker
+    fields:
+      broker:
+        name: Broker adres
+        description: Hostnaam of IP-adres van uw MQTT broker.
+      port:
+        name: MQTT poort
+        description: Luisterpoort van de MQTT broker. Standaard 1883, of 8883 met TLS.
+      tls:
+        name: TLS-communicatie inschakelen
+        description: Beveiligde communicatie via TLS/SSL inschakelen.
+      username:
+        name: Gebruikersnaam
+        description: Gebruikersnaam voor de MQTT broker.
+      password:
+        name: Wachtwoord
+        description: Wachtwoord voor de MQTT broker.
+  advanced:
+    name: Geavanceerde instellingen
+    description: Geavanceerde configuratie-instellingen voor sigenergy2mqtt
+    fields:
+      clean:
+        name: MQTT bewaarde berichten opschonen
+        description: MQTT bewaarde berichten opschonen. **LET OP!** Home Assistant helpers worden verwijderd.
+      consumption_method:
+        name: Verbruiksmethode
+        description: Berekeningsmethode voor 'Plant Consumed Power'. Standaard 'Total Load' voor V2.8.
+      read_only:
+        name: Alleen-lezen inschakelen
+        description: Alleen gegevens lezen, niet schrijven.
+      no_remote_ems:
+        name: Remote EMS uitschakelen
+        description: Lees-/schrijfsensoren voor remote EMS verbergen.
+      no_remote_ems_check:
+        name: Remote EMS-controles uitschakelen
+        description: Validatie voor ESS-limieten uitschakelen.
+      edit_pct_box:
+        name: Percentage box editor inschakelen
+        description: Numeriek invoerveld gebruiken in plaats van schuifregelaar voor percentagesensoren.
+      metrics_enabled:
+        name: Metriek inschakelen
+        description: sigenergy2mqtt metrieken publiceren.
+      sanity_check_default_kw:
+        name: Standaard kW voor controle
+        description: Standaardwaarde in kW voor controles. Standaard 500 kW.
+      device_name_prefix:
+        name: Apparaatnaam prefix
+        description: Prefix voor Home Assistant entiteitsnamen.
+      entity_id_prefix:
+        name: Entiteit-ID prefix
+        description: Prefix voor Home Assistant entiteit-ID's. Standaard 'sigen'.
+      unique_id_prefix:
+        name: Unieke-ID prefix
+        description: Prefix voor unieke ID's. NOOIT wijzigen na configuratie!
+      discovery_prefix:
+        name: Discovery prefix
+        description: MQTT Discovery topic prefix. Standaard 'homeassistant'.
+  logging:
+    name: Logconfiguratie
+    description: Configuratie van logniveaus
+    fields:
+      sigenergy2mqtt:
+        name: sigenergy2mqtt
+        description: sigenergy2mqtt logniveau instellen.
+      debug_sensor:
+        name: Te debuggen sensor
+        description: Specificeer een sensor om te debuggen.
+      addon:
+        name: Add-on uitvoerscript
+        description: Logniveau van het add-on script.
+      modbus:
+        name: Modbus
+        description: pymodbus logniveau.
+      pvoutput:
+        name: PVOutput
+        description: PVOutput logniveau.
+      mqtt:
+        name: MQTT
+        description: paho.mqtt logniveau.
+  smartport:
+    name: Derde partij omvormer integratie
+    description: Integratie van derde partij omvormer via Smart-Port
+    fields:
+      enabled:
+        name: Inschakelen
+        description: Derde partij omvormer integratie inschakelen.
+      module_name:
+        name: Modulenaam
+        description: Modulenaam voor productiegegevens. (Alleen 'enphase' ondersteund.)
+      host:
+        name: Hostadres
+        description: IP-adres of hostnaam van de omvormer.
+      username:
+        name: Gebruikersnaam
+        description: Gebruikersnaam voor authenticatie.
+      password:
+        name: Wachtwoord
+        description: Wachtwoord voor authenticatie.
+      pv_power:
+        name: PV-vermogen
+        description: Sensorklasse voor productiegegevens. (Alleen 'EnphasePVPower' ondersteund.)
+      mqtt_topic:
+        name: MQTT topic
+        description: MQTT topic voor productiegegevens.
+      mqtt_gain:
+        name: MQTT versterking
+        description: Versterking voor productiegegevens. Standaard 1 (Watt).

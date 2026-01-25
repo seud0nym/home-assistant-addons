@@ -1,0 +1,210 @@
+configuration:
+  auto_discovery:
+    name: Sigenergy 设备自动发现
+    description: 自动发现您的 Sigenergy 设备的配置
+    fields:
+      force:
+        name: 强制自动发现
+        description: 启用以强制自动发现 Sigenergy Modbus 主机和关联的设备 ID。
+      ping_timeout:
+        name: Ping 超时
+        description: 自动发现时的 Ping 超时（秒）。默认 0.5 秒。
+      retries:
+        name: 最大重试次数
+        description: 自动发现时的最大重试次数。默认为 0。
+      timeout:
+        name: Modbus 超时
+        description: 自动发现时的 Modbus 超时（秒）。默认 0.25 秒。
+  manual_config:
+    name: Sigenergy 设备手动配置
+    description: 手动指定连接详细信息的配置
+    fields:
+      host:
+        name: 主机地址
+        description: Sigenergy 设备的主机名或 IP 地址。留空以进行自动发现。
+      port:
+        name: Modbus 端口
+        description: Sigenergy 设备的 Modbus 端口号。
+      inverter_device_id:
+        name: 逆变器设备 ID
+        description: Sigenergy 逆变器 Modbus 设备 ID。多个逆变器请使用空格分隔的列表。
+      accharger_device_id:
+        name: AC 充电器设备 ID
+        description: Sigenergy AC 充电器 Modbus 设备 ID。
+      dccharger_device_id:
+        name: DC 充电器设备 ID
+        description: Sigenergy DC 充电器 Modbus 设备 ID（通常与逆变器 ID 相同）。
+  scan_interval:
+    name: 传感器扫描间隔
+    description: 不同传感器类别的扫描间隔配置
+    fields:
+      low:
+        name: 低频率
+        description: 低频率传感器的扫描间隔（秒）。默认 600，最小值 1。
+      medium:
+        name: 中频率
+        description: 中频率传感器的扫描间隔（秒）。默认 60，最小值 1。
+      high:
+        name: 高频率
+        description: 高频率传感器的扫描间隔（秒）。默认 10，最小值 1。
+      realtime:
+        name: 近实时
+        description: 实时传感器的扫描间隔（秒）。默认 5，最小值 1。
+  pvoutput:
+    name: PVOutput.org 集成
+    description: 与 PVOutput.org 集成的配置
+    fields:
+      enabled:
+        name: 启用上传
+        description: 启用向 PVOutput 发送状态更新。
+      api_key:
+        name: API 密钥
+        description: PVOutput 的 API 密钥
+      system_id:
+        name: 系统 ID
+        description: PVOutput 系统 ID
+      consumption:
+        name: 启用消费量上传
+        description: 向 PVOutput 发送消费状态。
+      exports:
+        name: 启用导出上传
+        description: 向 PVOutput 发送导出数据。
+      imports:
+        name: 启用导入上传
+        description: 向 PVOutput 发送导入数据。
+      eod_update:
+        name: 启用日终上传
+        description: 在一天结束时发送峰值发电量和日总计。
+      voltage:
+        name: 电压源
+        description: 发送到 PVOutput 的电压值来源。单相用 'Phase A'，三相用 'Phase B/C' 或 'Line to Line Average'。
+      ext_v7:
+        name: 扩展数据 v7
+        description: 用于 PVOutput 扩展数据字段 v7 的传感器类名。
+      ext_v8:
+        name: 扩展数据 v8
+        description: 用于 PVOutput 扩展数据字段 v8 的传感器类名。
+      ext_v9:
+        name: 扩展数据 v9
+        description: 用于 PVOutput 扩展数据字段 v9 的传感器类名。
+      ext_v10:
+        name: 扩展数据 v10
+        description: 用于 PVOutput 扩展数据字段 v10 的传感器类名。
+      ext_v11:
+        name: 扩展数据 v11
+        description: 用于 PVOutput 扩展数据字段 v11 的传感器类名。
+      ext_v12:
+        name: 扩展数据 v12
+        description: 用于 PVOutput 扩展数据字段 v12 的传感器类名。
+      temp_topic:
+        name: 温度主题
+        description: 用于 PVOutput 当前温度数据的 MQTT 主题。
+  mqtt:
+    name: MQTT 配置
+    description: 连接到 MQTT 代理的配置
+    fields:
+      broker:
+        name: 代理地址
+        description: MQTT 代理的主机名或 IP 地址。
+      port:
+        name: MQTT 端口
+        description: MQTT 代理的监听端口。默认 1883，使用 TLS 时为 8883。
+      tls:
+        name: 启用 TLS 通信
+        description: 启用通过 TLS/SSL 的安全通信。
+      username:
+        name: 用户名
+        description: MQTT 代理的用户名。
+      password:
+        name: 密码
+        description: MQTT 代理的密码。
+  advanced:
+    name: 高级设置
+    description: sigenergy2mqtt 的高级配置设置
+    fields:
+      clean:
+        name: 清除 MQTT 保留消息
+        description: 清除 MQTT 保留消息。**警告！** Home Assistant 助手将被删除。
+      consumption_method:
+        name: 消费计算方式
+        description: 'Plant Consumed Power' 的计算方式。V2.8 默认为 'Total Load'。
+      read_only:
+        name: 启用只读
+        description: 仅读取数据，不写入。
+      no_remote_ems:
+        name: 禁用远程 EMS
+        description: 隐藏远程 EMS 的读写传感器。
+      no_remote_ems_check:
+        name: 禁用远程 EMS 检查
+        description: 禁用 ESS 限制验证。
+      edit_pct_box:
+        name: 启用百分比框编辑器
+        description: 对百分比传感器使用数字输入框而非滑块。
+      metrics_enabled:
+        name: 启用指标
+        description: 发布 sigenergy2mqtt 指标。
+      sanity_check_default_kw:
+        name: 验证默认 kW
+        description: 验证用的默认值（kW）。默认 500 kW。
+      device_name_prefix:
+        name: 设备名称前缀
+        description: Home Assistant 实体名称的前缀。
+      entity_id_prefix:
+        name: 实体 ID 前缀
+        description: Home Assistant 实体 ID 的前缀。默认 'sigen'。
+      unique_id_prefix:
+        name: 唯一 ID 前缀
+        description: 唯一 ID 的前缀。设置后切勿更改！
+      discovery_prefix:
+        name: 发现前缀
+        description: MQTT Discovery 主题前缀。默认 'homeassistant'。
+  logging:
+    name: 日志配置
+    description: 日志级别配置
+    fields:
+      sigenergy2mqtt:
+        name: sigenergy2mqtt
+        description: 设置 sigenergy2mqtt 日志级别。
+      debug_sensor:
+        name: 要调试的传感器
+        description: 指定要调试的传感器。
+      addon:
+        name: 附加组件运行脚本
+        description: 附加组件脚本的日志级别。
+      modbus:
+        name: Modbus
+        description: pymodbus 日志级别。
+      pvoutput:
+        name: PVOutput
+        description: PVOutput 日志级别。
+      mqtt:
+        name: MQTT
+        description: paho.mqtt 日志级别。
+  smartport:
+    name: 第三方逆变器集成
+    description: 通过 Smart-Port 集成第三方逆变器
+    fields:
+      enabled:
+        name: 启用
+        description: 启用第三方逆变器集成。
+      module_name:
+        name: 模块名称
+        description: 用于生产数据的模块名称。（仅支持 'enphase'）
+      host:
+        name: 主机地址
+        description: 逆变器的 IP 地址或主机名。
+      username:
+        name: 用户名
+        description: 认证用户名。
+      password:
+        name: 密码
+        description: 认证密码。
+      pv_power:
+        name: PV 功率
+        description: 用于生产数据的传感器类。（仅支持 'EnphasePVPower'）
+      mqtt_topic:
+        name: MQTT 主题
+        description: 用于生产数据的 MQTT 主题。
+      mqtt_gain:
+        name: MQTT 增益
+        description: 生产数据的增益。默认 1（瓦特）。

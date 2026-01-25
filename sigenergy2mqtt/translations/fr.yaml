@@ -1,0 +1,210 @@
+configuration:
+  auto_discovery:
+    name: Découverte automatique des appareils Sigenergy
+    description: Configuration pour découvrir automatiquement vos appareils Sigenergy
+    fields:
+      force:
+        name: Forcer la découverte automatique
+        description: Activez pour forcer la découverte automatique des hôtes Modbus Sigenergy et des ID de périphérique associés.
+      ping_timeout:
+        name: Délai de ping
+        description: Délai de ping en secondes pour la découverte automatique. Par défaut 0,5 secondes.
+      retries:
+        name: Tentatives maximales
+        description: Nombre maximal de tentatives pour la découverte automatique. Par défaut 0.
+      timeout:
+        name: Délai Modbus
+        description: Délai Modbus en secondes pour la découverte automatique. Par défaut 0,25 secondes.
+  manual_config:
+    name: Configuration manuelle de l'appareil Sigenergy
+    description: Configuration pour spécifier manuellement les détails de connexion
+    fields:
+      host:
+        name: Adresse de l'hôte
+        description: Nom d'hôte ou adresse IP de l'appareil Sigenergy. Laissez vide pour la découverte automatique.
+      port:
+        name: Port Modbus
+        description: Numéro de port Modbus de l'appareil Sigenergy.
+      inverter_device_id:
+        name: ID de l'onduleur
+        description: ID Modbus de l'onduleur Sigenergy. Pour plusieurs onduleurs, utilisez une liste séparée par des espaces.
+      accharger_device_id:
+        name: ID du chargeur AC
+        description: ID Modbus du chargeur AC Sigenergy.
+      dccharger_device_id:
+        name: ID du chargeur DC
+        description: ID Modbus du chargeur DC Sigenergy (généralement identique à l'ID de l'onduleur).
+  scan_interval:
+    name: Intervalles de scan des capteurs
+    description: Configuration des intervalles de scan pour différentes classes de capteurs
+    fields:
+      low:
+        name: Basse fréquence
+        description: Intervalle de scan en secondes pour les capteurs à basse fréquence. Par défaut 600, minimum 1.
+      medium:
+        name: Fréquence moyenne
+        description: Intervalle de scan en secondes pour les capteurs à fréquence moyenne. Par défaut 60, minimum 1.
+      high:
+        name: Haute fréquence
+        description: Intervalle de scan en secondes pour les capteurs à haute fréquence. Par défaut 10, minimum 1.
+      realtime:
+        name: Quasi temps réel
+        description: Intervalle de scan en secondes pour les capteurs en temps réel. Par défaut 5, minimum 1.
+  pvoutput:
+    name: Intégration PVOutput.org
+    description: Configuration pour l'intégration avec PVOutput.org
+    fields:
+      enabled:
+        name: Activer le téléchargement
+        description: Activer les mises à jour de statut vers PVOutput.
+      api_key:
+        name: Clé API
+        description: La clé API pour PVOutput
+      system_id:
+        name: ID du système
+        description: L'ID du système PVOutput
+      consumption:
+        name: Activer les téléchargements de consommation
+        description: Envoyer le statut de consommation à PVOutput.
+      exports:
+        name: Activer les téléchargements d'exportation
+        description: Envoyer les données d'exportation à PVOutput.
+      imports:
+        name: Activer les téléchargements d'importation
+        description: Envoyer les données d'importation à PVOutput.
+      eod_update:
+        name: Activer le téléchargement de fin de journée
+        description: Envoyer le pic de génération et les totaux quotidiens en fin de journée.
+      voltage:
+        name: Source de tension
+        description: Source de la valeur de tension pour PVOutput. 'Phase A' pour monophasé, 'Phase B/C' ou 'Line to Line Average' pour triphasé.
+      ext_v7:
+        name: Données étendues v7
+        description: Nom de classe de capteur pour le champ de données étendues v7 dans PVOutput.
+      ext_v8:
+        name: Données étendues v8
+        description: Nom de classe de capteur pour le champ de données étendues v8 dans PVOutput.
+      ext_v9:
+        name: Données étendues v9
+        description: Nom de classe de capteur pour le champ de données étendues v9 dans PVOutput.
+      ext_v10:
+        name: Données étendues v10
+        description: Nom de classe de capteur pour le champ de données étendues v10 dans PVOutput.
+      ext_v11:
+        name: Données étendues v11
+        description: Nom de classe de capteur pour le champ de données étendues v11 dans PVOutput.
+      ext_v12:
+        name: Données étendues v12
+        description: Nom de classe de capteur pour le champ de données étendues v12 dans PVOutput.
+      temp_topic:
+        name: Sujet de température
+        description: Sujet MQTT pour les données de température actuelles pour PVOutput.
+  mqtt:
+    name: Configuration MQTT
+    description: Configuration pour la connexion à votre broker MQTT
+    fields:
+      broker:
+        name: Adresse du broker
+        description: Nom d'hôte ou adresse IP de votre broker MQTT.
+      port:
+        name: Port MQTT
+        description: Port d'écoute du broker MQTT. Par défaut 1883, ou 8883 avec TLS.
+      tls:
+        name: Activer la communication TLS
+        description: Activer la communication sécurisée via TLS/SSL.
+      username:
+        name: Nom d'utilisateur
+        description: Nom d'utilisateur pour le broker MQTT.
+      password:
+        name: Mot de passe
+        description: Mot de passe pour le broker MQTT.
+  advanced:
+    name: Paramètres avancés
+    description: Paramètres de configuration avancés pour sigenergy2mqtt
+    fields:
+      clean:
+        name: Nettoyer les messages MQTT conservés
+        description: Nettoyer les messages MQTT conservés. **ATTENTION !** Les helpers Home Assistant seront supprimés.
+      consumption_method:
+        name: Méthode de consommation
+        description: Méthode de calcul pour 'Plant Consumed Power'. Par défaut 'Total Load' pour V2.8.
+      read_only:
+        name: Activer la lecture seule
+        description: Lire uniquement les données, pas d'écriture.
+      no_remote_ems:
+        name: Désactiver l'EMS distant
+        description: Masquer les capteurs de lecture/écriture pour l'EMS distant.
+      no_remote_ems_check:
+        name: Désactiver les vérifications EMS distant
+        description: Désactiver la validation pour les limites ESS.
+      edit_pct_box:
+        name: Activer l'éditeur de boîte de pourcentage
+        description: Utiliser une boîte de saisie numérique au lieu d'un curseur pour les capteurs de pourcentage.
+      metrics_enabled:
+        name: Activer les métriques
+        description: Publier les métriques de sigenergy2mqtt.
+      sanity_check_default_kw:
+        name: kW par défaut pour vérification
+        description: Valeur par défaut en kW pour les vérifications. Par défaut 500 kW.
+      device_name_prefix:
+        name: Préfixe du nom de l'appareil
+        description: Préfixe pour les noms d'entité Home Assistant.
+      entity_id_prefix:
+        name: Préfixe d'ID d'entité
+        description: Préfixe pour les ID d'entité Home Assistant. Par défaut 'sigen'.
+      unique_id_prefix:
+        name: Préfixe d'ID unique
+        description: Préfixe pour les ID uniques. NE JAMAIS changer après configuration !
+      discovery_prefix:
+        name: Préfixe de découverte
+        description: Préfixe de sujet MQTT Discovery. Par défaut 'homeassistant'.
+  logging:
+    name: Configuration de journalisation
+    description: Configuration des niveaux de journalisation
+    fields:
+      sigenergy2mqtt:
+        name: sigenergy2mqtt
+        description: Définir le niveau de journalisation de sigenergy2mqtt.
+      debug_sensor:
+        name: Capteur à déboguer
+        description: Spécifier un capteur à déboguer.
+      addon:
+        name: Script d'exécution de l'add-on
+        description: Niveau de journalisation du script de l'add-on.
+      modbus:
+        name: Modbus
+        description: Niveau de journalisation de pymodbus.
+      pvoutput:
+        name: PVOutput
+        description: Niveau de journalisation de PVOutput.
+      mqtt:
+        name: MQTT
+        description: Niveau de journalisation de paho.mqtt.
+  smartport:
+    name: Intégration d'onduleur tiers
+    description: Intégration d'onduleur tiers via Smart-Port
+    fields:
+      enabled:
+        name: Activer
+        description: Activer l'intégration d'onduleur tiers.
+      module_name:
+        name: Nom du module
+        description: Nom du module pour les données de production. (Seul 'enphase' supporté.)
+      host:
+        name: Adresse de l'hôte
+        description: Adresse IP ou nom d'hôte de l'onduleur.
+      username:
+        name: Nom d'utilisateur
+        description: Nom d'utilisateur pour l'authentification.
+      password:
+        name: Mot de passe
+        description: Mot de passe pour l'authentification.
+      pv_power:
+        name: Puissance PV
+        description: Classe de capteur pour les données de production. (Seul 'EnphasePVPower' supporté.)
+      mqtt_topic:
+        name: Sujet MQTT
+        description: Sujet MQTT pour les données de production.
+      mqtt_gain:
+        name: Gain MQTT
+        description: Gain pour les données de production. Par défaut 1 (Watts).

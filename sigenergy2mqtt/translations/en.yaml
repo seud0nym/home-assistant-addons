@@ -122,6 +122,9 @@ configuration:
     name: Advanced Settings
     description: Advanced configuration settings for sigenergy2mqtt
     fields:
+      clean:
+        name: Clean MQTT Retained Messages
+        description: Clean MQTT retained messages to refresh Home Assistant sigenergy2mqtt MQTT Devices. **USE WITH CAUTION!** Any defined Home Assistant helpers that reference sigenergy2mqtt sensors will be *removed*!
       consumption_method:
         name: Consumption Method
         description: The method of calculating the `Plant Consumed Power` sensor. On firmware earlier than that supporting Modbus Protocol V2.8, the only option available is 'Calculated', and all other values are _ignored_. For V2.8 firmware, the default is 'Total Load'.
@@ -159,12 +162,15 @@ configuration:
     name: Logging Configuration
     description: Configuration for logging levels of various components
     fields:
-      debug_sensor:
-        name: Sensor to Debug
-        description: Specify a sensor to be debugged using either the full entity id, a partial entity id, the full sensor class name, or a partial sensor class name. For example, specifying 'daily' would match all sensors with daily in their entity name. If specified, sigenergy2mqtt logging is also forced to DEBUG.
       sigenergy2mqtt:
         name: sigenergy2mqtt
         description: Set the sigenergy2mqtt log level.
+      debug_sensor:
+        name: Sensor to Debug
+        description: Specify a sensor to be debugged using either the full entity id, a partial entity id, the full sensor class name, or a partial sensor class name. You can also use regular expressions. For example, specifying 'daily' would match all sensors with daily in their entity name. If specified, sigenergy2mqtt logging is also forced to DEBUG.
+      addon:
+        name: Add-on Run Script
+        description: Set the add-on run script log level. WARNING! Setting this to ALL, TRACE or DEBUG will produce very verbose output.
       modbus:
         name: Modbus
         description: Set the pymodbus logging level. WARNING! Setting this to DEBUG will produce very verbose output.
