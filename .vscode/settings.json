@@ -1,4 +1,18 @@
 {
+    "cSpell.ignorePaths": [
+        ".vscode/settings.json",
+        "dist/**",
+        "sigenergy2mqtt/translations/de.yaml",
+        "sigenergy2mqtt/translations/es.yaml",
+        "sigenergy2mqtt/translations/fr.yaml",
+        "sigenergy2mqtt/translations/it.yaml",
+        "sigenergy2mqtt/translations/ja.yaml",
+        "sigenergy2mqtt/translations/ko.yaml",
+        "sigenergy2mqtt/translations/nl.yaml",
+        "sigenergy2mqtt/translations/pt.yaml",
+        "sigenergy2mqtt/translations/zh.yaml",
+    ],
+    "cSpell.language": "en-GB",
     "cSpell.words": [
         "accharger",
         "armhf",
@@ -29,7 +43,7 @@
         "smartport"
     ],
     "files.exclude": {
-    "**/.git": false,
-    "**/.git/{branches,info,objects,logs,refs,index,config,COMMIT_EDITMSG,description,*HEAD,packed-refs}": true
+        "**/.git": false,
+        "**/.git/{branches,info,objects,logs,refs,index,config,COMMIT_EDITMSG,description,*HEAD,packed-refs}": true,
     }
 }
