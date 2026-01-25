@@ -127,7 +127,7 @@ configuration:
         description: 清除 MQTT 保留消息。**警告！** Home Assistant 助手将被删除。
       consumption_method:
         name: 消费计算方式
-        description: 'Plant Consumed Power' 的计算方式。V2.8 默认为 'Total Load'。
+        description: "'Plant Consumed Power' 的计算方式。V2.8 默认为 'Total Load'。"
       read_only:
         name: 启用只读
         description: 仅读取数据，不写入。

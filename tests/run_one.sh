@@ -2,7 +2,7 @@
 
 cd "$(cd $(dirname $0); pwd)"
 
-test=$(find . -name "*$1*" | head -n 1)
+test=$(find . -name "*$1*" | grep '\.sh$' | head -n 1)
 if [ -z "$test" ]; then
     echo "No test found matching '*$1*'"
     exit 1

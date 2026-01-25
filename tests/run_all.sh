@@ -20,10 +20,10 @@ total=0
 for test in $tests; do
     test_name="$(basename "$test" .sh)"
     [[ "$1" != "-q" ]] && printf "Running: %-${chars}s " "$test"
-    { time { bash -c "$test"; result=$?; }; } 2> /tmp/${test_name}.time 
+    { time { bash "$test"; result=$?; }; } 2> /tmp/${test_name}.time 
     if [ $result -ne 0 ]; then
         [[ "$1" == "-q" ]] && echo -n "$test_name "
-        echo "## FAILED ##"
+        echo "## FAILED ## ($result)"
         [[ "$1" != "-q" ]] && cat /tmp/${test_name}.log
         exit 1
     else

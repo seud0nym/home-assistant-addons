@@ -127,7 +127,7 @@ configuration:
         description: MQTT 保持メッセージをクリアします。**注意！** Home Assistant ヘルパーは削除されます。
       consumption_method:
         name: 消費量計算方式
-        description: 'Plant Consumed Power' の計算方式。V2.8 ではデフォルト 'Total Load'。
+        description: "'Plant Consumed Power' の計算方式。V2.8 ではデフォルト 'Total Load'。"
       read_only:
         name: 読み取り専用を有効化
         description: データの読み取りのみ、書き込みは行いません。
