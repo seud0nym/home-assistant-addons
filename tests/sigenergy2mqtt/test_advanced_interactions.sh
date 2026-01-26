@@ -29,7 +29,7 @@ $BASE_CONFIG
 EOF
 
 declare -A ASSERTIONS=(
-    ["locale"]="en"
+    ["language"]="en"
     ["hass-enabled"]="true"
     ["mqtt-broker"]="127.0.0.1"
     ["mqtt-port"]="1883"
@@ -77,7 +77,7 @@ EOF
 
 unset ASSERTIONS
 declare -A ASSERTIONS=(
-    ["locale"]="en"
+    ["language"]="en"
     ["hass-enabled"]="true"
     ["mqtt-broker"]="127.0.0.1"
     ["mqtt-port"]="1883"
@@ -119,7 +119,7 @@ EOF
 
 unset ASSERTIONS
 declare -A ASSERTIONS=(
-    ["locale"]="en"
+    ["language"]="en"
     ["hass-enabled"]="true"
     ["mqtt-broker"]="127.0.0.1"
     ["mqtt-port"]="1883"
@@ -160,7 +160,7 @@ EOF
 
 unset ASSERTIONS
 declare -A ASSERTIONS=(
-    ["locale"]="en"
+    ["language"]="en"
     ["hass-enabled"]="true"
     ["mqtt-broker"]="127.0.0.1"
     ["mqtt-port"]="1883"
@@ -191,6 +191,112 @@ if grep -q "Parameter: \-\-no-remote-ems-check" $LOG_PATH; then
     echo "Scenario 4 Failed: Found --no-remote-ems-check"
     exit 1
 fi
+#endregion
+
+#region Scenario 5: Language is set to Default
+cat << EOF > $MOCK_OPTIONS_PATH
+advanced:
+    language: Default
+$BASE_CONFIG
+EOF
+
+unset ASSERTIONS
+declare -A ASSERTIONS=(
+    ["language"]="en"
+    ["hass-enabled"]="true"
+    ["mqtt-broker"]="127.0.0.1"
+    ["mqtt-port"]="1883"
+    ["mqtt-username"]="mock_mqtt_user"
+    ["mqtt-password"]="super_secret_mock_password"
+    ["consumption"]="calculated"
+    ["no-metrics"]="true"
+    ["modbus-host"]="127.0.0.1"
+)
+export_assertions
+( source ../../sigenergy2mqtt/rootfs/etc/services.d/sigenergy2mqtt/run ) > $LOG_PATH 2>&1
+RESULT=$?
+if [ $RESULT -ne 0 ]; then
+    echo "Scenario 5 failed with result $RESULT"
+    cat $LOG_PATH
+    exit $RESULT
+fi
+#endregion
+
+#region Scenario 6: Language is not set
+cat << EOF > $MOCK_OPTIONS_PATH
+$BASE_CONFIG
+EOF
+
+unset ASSERTIONS
+declare -A ASSERTIONS=(
+    ["language"]="en"
+    ["hass-enabled"]="true"
+    ["mqtt-broker"]="127.0.0.1"
+    ["mqtt-port"]="1883"
+    ["mqtt-username"]="mock_mqtt_user"
+    ["mqtt-password"]="super_secret_mock_password"
+    ["consumption"]="calculated"
+    ["no-metrics"]="true"
+    ["modbus-host"]="127.0.0.1"
+)
+export_assertions
+( source ../../sigenergy2mqtt/rootfs/etc/services.d/sigenergy2mqtt/run ) > $LOG_PATH 2>&1
+RESULT=$?
+if [ $RESULT -ne 0 ]; then
+    echo "Scenario 6 failed with result $RESULT"
+    cat $LOG_PATH
+    exit $RESULT
+fi
+#endregion
+
+#region Scenario 7: Language is set to all available languages
+declare -A lang_map=(
+  ["de"]="Deutsch"
+  ["en"]="English"
+  ["es"]="Español"
+  ["fr"]="Français"
+  ["it"]="Italiano"
+  ["ja"]="日本語"
+  ["ko"]="한국어"
+  ["nl"]="Nederlands"
+  ["pt"]="Português"
+  ["zh"]="中文"
+)
+
+for lang in $(find ../../sigenergy2mqtt/translations -type f -name "*.yaml" -exec basename {} .yaml \; | sort); do
+if [[ -z "${lang_map[$lang]}" ]]; then
+    echo "Scenario 7 ($lang): No language name found?" > $LOG_PATH
+    echo "Scenario 7 ($lang_map[$lang] $lang) failed with result $RESULT"
+    cat $LOG_PATH
+    exit $RESULT
+fi
+cat << EOF > $MOCK_OPTIONS_PATH
+advanced:
+    language: ${lang_map[$lang]}
+$BASE_CONFIG
+EOF
+
+unset ASSERTIONS
+declare -A ASSERTIONS=(
+    ["language"]="${lang}"
+    ["hass-enabled"]="true"
+    ["mqtt-broker"]="127.0.0.1"
+    ["mqtt-port"]="1883"
+    ["mqtt-username"]="mock_mqtt_user"
+    ["mqtt-password"]="super_secret_mock_password"
+    ["consumption"]="calculated"
+    ["no-metrics"]="true"
+    ["modbus-host"]="127.0.0.1"
+)
+export_assertions
+( source ../../sigenergy2mqtt/rootfs/etc/services.d/sigenergy2mqtt/run ) > $LOG_PATH 2>&1
+RESULT=$?
+if [ $RESULT -ne 0 ]; then
+    echo "Scenario 7 ($lang_map[$lang] $lang) failed with result $RESULT"
+    cat $LOG_PATH
+    exit $RESULT
+fi
+done
 #endregion
 
 exit 0

@@ -77,7 +77,7 @@ EOF
 
 #region Prepare expected assertions
 declare -A ASSERTIONS=(
-    ["locale"]="en"
+    ["language"]="en"
     ["consumption"]="calculated"
     ["debug-sensor"]="any"
     ["hass-device-name-prefix"]="device"

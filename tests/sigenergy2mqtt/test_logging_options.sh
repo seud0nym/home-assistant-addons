@@ -33,7 +33,7 @@ $BASE_CONFIG
 EOF
 
 declare -A ASSERTIONS=(
-    ["locale"]="en"
+    ["language"]="en"
     ["hass-enabled"]="true"
     ["mqtt-broker"]="127.0.0.1"
     ["mqtt-port"]="1883"
@@ -80,7 +80,7 @@ EOF
 
 unset ASSERTIONS
 declare -A ASSERTIONS=(
-    ["locale"]="en"
+    ["language"]="en"
     ["hass-enabled"]="true"
     ["mqtt-broker"]="127.0.0.1"
     ["mqtt-port"]="1883"
@@ -124,16 +124,16 @@ fi
 #endregion
 
 
-#region Scenario 3: Verify UNSET logging option
+#region Scenario 3: Verify Default logging option
 cat << EOF > $MOCK_OPTIONS_PATH
 logging:
-  sigenergy2mqtt: UNSET
+  sigenergy2mqtt: Default
   modbus: INFO
 $BASE_CONFIG
 EOF
 
 declare -A ASSERTIONS=(
-    ["locale"]="en"
+    ["language"]="en"
     ["hass-enabled"]="true"
     ["mqtt-broker"]="127.0.0.1"
     ["mqtt-port"]="1883"
