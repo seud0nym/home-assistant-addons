@@ -158,6 +158,9 @@ configuration:
       discovery_prefix:
         name: Discovery-Präfix
         description: MQTT Discovery-Topic-Präfix. Standard 'homeassistant'.
+      language:
+        name: Sprache
+        description: Die für sigenergy2mqtt zu verwendende Sprache. Der Standardwert ist die in Einstellungen → System → Sprache definierte Sprache. Wenn diese Sprache nicht unterstützt wird, ist der Standardwert Englisch.
   logging:
     name: Protokollierungskonfiguration
     description: Konfiguration der Protokollierungsstufen

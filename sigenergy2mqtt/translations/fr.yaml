@@ -156,8 +156,11 @@ configuration:
         name: Préfixe d'ID unique
         description: Préfixe pour les ID uniques. NE JAMAIS changer après configuration !
       discovery_prefix:
-        name: Préfixe de découverte
-        description: Préfixe de sujet MQTT Discovery. Par défaut 'homeassistant'.
+        name: Préfixe de Découverte
+        description: Remplacer le préfixe du sujet de découverte MQTT de Home Assistant à utiliser. Ne modifiez ceci que si vous l'avez déjà modifié dans les paramètres MQTT de Home Assistant. La valeur par défaut est 'homeassistant'.
+      language:
+        name: Langue
+        description: La langue à utiliser pour sigenergy2mqtt. La valeur par défaut est celle définie dans Paramètres → Système → Langue, ou si cette langue n'est pas prise en charge, la valeur par défaut est l'anglais.
   logging:
     name: Configuration de journalisation
     description: Configuration des niveaux de journalisation

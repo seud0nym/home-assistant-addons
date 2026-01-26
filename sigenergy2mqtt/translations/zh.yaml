@@ -157,7 +157,10 @@ configuration:
         description: 唯一 ID 的前缀。设置后切勿更改！
       discovery_prefix:
         name: 发现前缀
-        description: MQTT Discovery 主题前缀。默认 'homeassistant'。
+        description: 覆盖要使用的Home Assistant MQTT发现主题前缀。只有在Home Assistant的MQTT设置中已经更改过才更改此项。默认值为'homeassistant'。
+      language:
+        name: 语言
+        description: sigenergy2mqtt使用的语言。默认值为“设置”→“系统”→“语言”中定义的语言，如果不支持该语言，则默认为英语。
   logging:
     name: 日志配置
     description: 日志级别配置

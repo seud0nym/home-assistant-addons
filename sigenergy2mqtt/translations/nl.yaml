@@ -146,6 +146,9 @@ configuration:
       sanity_check_default_kw:
         name: Standaard kW voor controle
         description: Standaardwaarde in kW voor controles. Standaard 500 kW.
+      language:
+        name: Taal
+        description: De taal die voor sigenergy2mqtt moet worden gebruikt. De standaard is die gedefinieerd in Instellingen → Systeem → Taal, of als die taal niet wordt ondersteund, is de standaard Engels.
       device_name_prefix:
         name: Apparaatnaam prefix
         description: Prefix voor Home Assistant entiteitsnamen.

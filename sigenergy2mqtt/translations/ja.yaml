@@ -156,8 +156,11 @@ configuration:
         name: 一意IDプレフィックス
         description: 一意IDのプレフィックス。設定後は絶対に変更しないでください！
       discovery_prefix:
-        name: ディスカバリープレフィックス
-        description: MQTT Discovery トピックプレフィックス。デフォルトは 'homeassistant'。
+        name: 検出プレフィックス
+        description: 使用する Home Assistant MQTT ディスカバリートピックのプレフィックスを上書きします。Home Assistant の MQTT 設定ですでにこれを変更している場合にのみ変更してください。デフォルトは 'homeassistant' です。
+      language:
+        name: 言語
+        description: sigenergy2mqtt に使用する言語。デフォルトは「設定」→「システム」→「言語」で定義されたものです。その言語がサポートされていない場合、デフォルトは英語になります。
   logging:
     name: ログ設定
     description: ログレベルの設定

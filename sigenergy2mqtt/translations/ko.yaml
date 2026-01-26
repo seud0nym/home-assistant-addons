@@ -157,7 +157,10 @@ configuration:
         description: 고유 ID의 접두사. 설정 후 절대 변경하지 마세요!
       discovery_prefix:
         name: 검색 접두사
-        description: MQTT Discovery 토픽 접두사. 기본값 'homeassistant'.
+        description: 사용할 Home Assistant MQTT 검색 토픽 접두사를 덮어씁니다. Home Assistant의 MQTT 설정에서 이미 변경한 경우에만 변경하세요. 기본값은 'homeassistant'입니다.
+      language:
+        name: 언어
+        description: sigenergy2mqtt에 사용할 언어입니다. 기본값은 설정 → 시스템 → 언어에 정의된 값이며, 해당 언어가 지원되지 않는 경우 기본값은 영어입니다.
   logging:
     name: 로깅 설정
     description: 로깅 레벨 설정

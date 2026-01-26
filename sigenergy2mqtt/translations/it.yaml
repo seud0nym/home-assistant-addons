@@ -156,8 +156,11 @@ configuration:
         name: Prefisso ID univoco
         description: Prefisso per gli ID univoci. MAI modificare dopo la configurazione!
       discovery_prefix:
-        name: Prefisso discovery
-        description: Prefisso topic MQTT Discovery. Predefinito 'homeassistant'.
+        name: Prefisso di Scoperta
+        description: Sovrascrivi il prefisso dell'argomento MQTT Discovery di Home Assistant da utilizzare. Modifica questo solo se lo hai già modificato nelle impostazioni MQTT in Home Assistant. L'impostazione predefinita è 'homeassistant'.
+      language:
+        name: Lingua
+        description: La lingua da utilizzare per sigenergy2mqtt. L'impostazione predefinita è quella definita in Impostazioni → Sistema → Lingua o, se tale lingua non è supportata, l'impostazione predefinita è l'inglese.
   logging:
     name: Configurazione registrazione
     description: Configurazione dei livelli di registrazione

@@ -40,7 +40,7 @@ home-assistant:
 | `Force Auto-Discovery` | Enable to force the automatic discovery of Sigenergy Modbus hosts and associated Device IDs. You only need enable this if you have previously auto-discovered hosts/device IDs and your network or devices have changed. Once auto-discovery has been forced, this option will be reset to disabled. However, this may _not_ be reflected in the Configuration User Interface until your refresh the screen. |
 | `Ping Timeout` | The ping timeout, in seconds, to use when performing auto-discovery of Sigenergy devices on the network. The default is **0.5** (seconds). |
 | `Modbus Timeout` | The Modbus timeout, in seconds, to use when performing auto-discovery of Sigenergy devices on the network. The default is **0.25** (seconds). |
-| `Retries` | The maximum retry count to use when performing auto-discovery of Sigenergy devices on the network. The default is **0**.
+| `Maximum Retries` | The maximum retry count to use when performing auto-discovery of Sigenergy devices on the network. The default is **0**.
 
 #### Manual Sigenergy Device Configuration
 
@@ -58,10 +58,10 @@ The Sigenergy Modbus Host and the Device IDs for Inverters, AC Chargers, and DC 
 
 | Option | Description |
 |--------|-------------|
-| `Scan Interval (Near Realtime Frequency)` | The scan interval in seconds for Modbus registers that are to be scanned in near-real time. Default is **5** (seconds), and the minimum value is 1. |
-| `Scan Interval (High Frequency)` | The scan interval in seconds for Modbus registers that are to be scanned at a high frequency. Default is **10** (seconds), and the minimum value is 1. |
-| `Scan Interval (Medium Frequency)` | The scan interval in seconds for Modbus registers that are to be scanned at a medium frequency. Default is **60** (seconds), and the minimum value is 1. |
-| `Scan Interval (Low Frequency)` | The scan interval in seconds for Modbus registers that are to be scanned at a low frequency. Default is **600** (seconds), and the minimum value is 1. |
+| `Near Realtime Frequency` | The scan interval in seconds for Modbus registers that are to be scanned in near-real time. Default is **5** (seconds), and the minimum value is 1. |
+| `High Frequency` | The scan interval in seconds for Modbus registers that are to be scanned at a high frequency. Default is **10** (seconds), and the minimum value is 1. |
+| `Medium Frequency` | The scan interval in seconds for Modbus registers that are to be scanned at a medium frequency. Default is **60** (seconds), and the minimum value is 1. |
+| `Low Frequency` | The scan interval in seconds for Modbus registers that are to be scanned at a low frequency. Default is **600** (seconds), and the minimum value is 1. |
 
 #### PVOutput.org Integration
 
@@ -78,13 +78,13 @@ If you enable status updates to PVOutput, you must enter both the ***API Key*** 
     <tr><td><code>Enable Imports Uploads</code></td><td>Enable sending import data to PVOutput.</td></tr>
     <tr><td><code>Enable End-of-Day Upload</code></td><td>If enabled, peak generation and the daily totals for exports and imports (if enabled) are sent to PVOutput at end of day <i>only</i>.<br>If disabled, these values are uploaded at the same interval as status updates.<br><br>If uploaded at the same interval as status updates, PVOutput can overwrite the uploaded values during the day. If this occurs, it will be fixed at end of day.</td></tr>
     <tr><td><code>Voltage Source</code></td><td>The source of the voltage value to be sent to PVOutput. Use 'Phase A' for single-phase systems, 'Phase B', 'Phase C' or 'Line to Line Average' for three-phase or 'Line to Neutral Average' or 'PV Average' for either. The default is 'Line to Neutral Average'.</td></tr>
-    <tr><td><code>PVOutput Extended Data v7</code></td><td rowspan=6>A sensor class name, or entity_id without the 'sensor.' prefix, that will be used to populate the associated extended data field in PVOutput. If not specified, OR your donation status is not current, the field will not be sent to PVOutput. You can use any sensor with a numeric value.<br><br> See note below.</td></tr>
-    <tr><td><code>PVOutput Extended Data v8</code></td></tr>
-    <tr><td><code>PVOutput Extended Data v9</code></td></tr>
-    <tr><td><code>PVOutput Extended Data v10</code></td></tr>
-    <tr><td><code>PVOutput Extended Data v11</code></td></tr>
-    <tr><td><code>PVOutput Extended Data v12</code></td></tr>
-    <tr><td><code>PVOutput Temperature Topic</code></td><td>The MQTT topic to which to subscribe to obtain the current temperature data for PVOutput. If specified, the temperature will be sent to PVOutput. See note below.</td></tr>
+    <tr><td><code>Extended Data v7</code></td><td rowspan=6>A sensor class name, or entity_id without the 'sensor.' prefix, that will be used to populate the associated extended data field in PVOutput. If not specified, OR your donation status is not current, the field will not be sent to PVOutput. You can use any sensor with a numeric value.<br><br> See note below.</td></tr>
+    <tr><td><code>Extended Data v8</code></td></tr>
+    <tr><td><code>Extended Data v9</code></td></tr>
+    <tr><td><code>Extended Data v10</code></td></tr>
+    <tr><td><code>Extended Data v11</code></td></tr>
+    <tr><td><code>Extended Data v12</code></td></tr>
+    <tr><td><code>Temperature Topic</code></td><td>The MQTT topic to which to subscribe to obtain the current temperature data for PVOutput. If specified, the temperature will be sent to PVOutput. See note below.</td></tr>
   </tbody>
 </table>
 
@@ -191,7 +191,7 @@ mode: single
 
 Once you have this automation running, you can add it to your PVOutput status uploads by specifying the MQTT topic `homeassistant/weather/temperature` in the `PVOutput Temperature Topic` configuration field.
 
-##### PVOutput Extended Data Fields
+##### Extended Data Fields
 
 Extended data fields are only sent to PVOutput if your donation status is current. 
 
@@ -219,24 +219,27 @@ Otherwise, you _must_ enter the IP address or host name of the **MQTT Broker**, 
 
 | Option | Description |
 |--------|-------------|
-| `Consumption Method` | Set the method of calculating the `Plant Consumed Power` sensor. Valid values are:<br>`Calculated` (consumption is calculated from other sensors, using the algorithm: TotalPVPower &plus; GridSensorActivePower &minus; BatteryPower &minus; ACChargerChargingPower &minus; DCChargerOutputPower),<br>`Total Load` (use `Total Load Power` sensor which is general household load plus AC/DC Charger load), or<br>`General Load` (use the `General Load Power` sensor, which is household load only).<br>The default is **Calculated** on firmware earlier than that supporting Modbus Protocol V2.8 and cannot be changed. On firmware supporting Modbus Protocol V2.8, the default is `Total Load`. |
-| `Read Only` | Enable to only read data from the Sigenergy device. Disable to allow writing data to the Sigenergy device. |
+| `Clean MQTT Retained Messages` | Enable to clean MQTT retained messages to refresh Home Assistant sigenergy2mqtt MQTT Devices. **USE WITH CAUTION!** Any defined Home Assistant helpers that reference `sigenergy2mqtt` sensors will be *removed*! |
+| `Enable Read Only` | Enable to only read data from the Sigenergy device. Disable to allow writing data to the Sigenergy device. |
 | `Disable Remote EMS` | Enable to hide all read/write sensors used for remote Energy Management System (EMS) integration. This may be applicable if, for example, you are part of a VPP which manages the battery. Ignored if `Read Only' is enabled. |
 | `Disable Remote EMS Checks` | Enable to turn OFF the validation that disables ESS Max Charging/Discharging and PV Max Power limits when Remote EMS Control Mode is not Command Charging/Discharging. This setting does NOT comply with the Sigenergy Modbus Protocol documentation, and may lead to changes not being applied in some instances. Use with caution! Ignored if `Disable Remote EMS` is enabled. |
 | `Enable Percentage Box Editor` | Enable to use a numeric entry box to change the value of percentage sensors or leave disabled to use a slider to change the value. |
 | `Enable Metrics` | Enable the publication of sigenergy2mqtt metrics to Home Assistant. |
+| `Consumption Method` | Set the method of calculating the `Plant Consumed Power` sensor. Valid values are:<br>`Calculated` (consumption is calculated from other sensors, using the algorithm: TotalPVPower &plus; GridSensorActivePower &minus; BatteryPower &minus; ACChargerChargingPower &minus; DCChargerOutputPower),<br>`Total Load` (use `Total Load Power` sensor which is general household load plus AC/DC Charger load), or<br>`General Load` (use the `General Load Power` sensor, which is household load only).<br>The default is **Calculated** on firmware earlier than that supporting Modbus Protocol V2.8 and cannot be changed. On firmware supporting Modbus Protocol V2.8, the default is `Total Load`. |
 | `Sanity Check Default kW` | The default value in kW used for sanity checks to validate the maximum and minimum values for actual value of power sensors and the delta value of energy sensors. The default value is **500** kW per second, meaning readings outside the range ±500 are ignored. |
 | `Device Name Prefix` | The prefix to use for Home Assistant entity names. e.g. A prefix of 'prefix' will prepend 'prefix ' to entity names. The default is no prefix. |
 | `Entity ID Prefix` | The prefix to use for Home Assistant entity IDs. e.g. A prefix of 'prefix' will prepend 'prefix_' to entity IDs. If you don't specify a prefix, the entity ID will be prefixed with 'sigen'.  |
 | `Unique ID Prefix` | The prefix to use for Home Assistant unique IDs. e.g. A prefix of 'prefix' will prepend 'prefix_' to unique IDs. Once you have set this, you should NEVER change it, as it will break existing entities in Home Assistant. If you don't specify a prefix, the entity ID will be prefixed with 'sigen'. |
 | `Discovery Prefix` | Override the Home Assistant MQTT Discovery topic prefix to use. Only change this if you have already changed it in the MQTT settings in Home Assistant. The default is 'homeassistant'. |
+| `Language` | The language to use for `sigenergy2mqtt`. The default is the language defined in Settings → System → Language, or if that language is not supported, the default is English. |
 
 #### Logging Configuration
 
 | Option | Description |
 |--------|-------------|
-| `Sensor to Debug` | Specify a sensor to be debugged using either the full entity id, a partial entity id, the full sensor class name, or a partial sensor class name. For example, specifying 'daily' would match all sensors with daily in their entity name. If specified, `Logging Level` is also forced to **DEBUG**. |
 | `sigenergy2mqtt` | Use to set the `sigenergy2mqtt` log level. By default, only WARNING messages are logged. |
+| `Sensor to Debug` | Specify a sensor to be debugged using either the full entity id, a partial entity id, the full sensor class name, or a partial sensor class name. You can also use regular expressions. For example, specifying 'daily' would match all sensors with daily in their entity name. If specified, `Logging Level` is also forced to **DEBUG**. |
+| `Add-on Run Script` | Set the add-on run script log level. **WARNING!** Setting this to ALL, TRACE or DEBUG will produce very verbose output. |
 | `Modbus` | Set the pymodbus logging level. **WARNING!** Setting this to DEBUG will produce very verbose output. |
 | `PVOutput` | Set the PVOutput services logging level. |
 | `MQTT` | Set the paho.mqtt logging level. **WARNING!** Setting this to DEBUG will produce very verbose output. |

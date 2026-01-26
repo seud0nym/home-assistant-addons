@@ -158,6 +158,9 @@ configuration:
       discovery_prefix:
         name: Discovery Prefix
         description: Override the Home Assistant MQTT Discovery topic prefix to use. Only change this if you have already changed it in the MQTT settings in Home Assistant. The default is 'homeassistant'.
+      language:
+        name: Language
+        description: The language to use for sigenergy2mqtt. The default is the language defined in Settings → System → Language, or if that language is not supported, the default is English.
   logging:
     name: Logging Configuration
     description: Configuration for logging levels of various components
