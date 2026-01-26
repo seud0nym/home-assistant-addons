@@ -8,7 +8,20 @@ export SUPERVISOR_TOKEN=""
 # --------------------------------------------------------
 
 # --- Logging Functions ---
-function bashio::log.debug() {   echo "[DEBUG] $1"; }
+[[ -z "${__BASHIO_LOG_LEVEL:-}" ]] && export __BASHIO_LOG_LEVEL="info"
+function bashio::log.level() {
+    local level=$1
+    case "$level" in
+        debug|info|warning|fatal)
+            export __BASHIO_LOG_LEVEL="$level"
+            ;;
+        *)
+            bashio::log.warning "Unknown log level '$level' specified, defaulting to 'info'"
+            export __BASHIO_LOG_LEVEL="info"
+            ;;
+    esac
+}
+function bashio::log.debug() {   [[ "${__BASHIO_LOG_LEVEL:-info}" == "debug" ]] && echo "[DEBUG] $1"; }
 function bashio::log.info() {    echo "[INFO]  $1"; }
 function bashio::log.warning() { echo "[WARN]  $1" >&2; }
 function bashio::log.fatal() {   echo "[FATAL] $1" >&2; }

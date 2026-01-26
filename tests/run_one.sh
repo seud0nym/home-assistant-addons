@@ -10,6 +10,7 @@ fi
 
 test_name="$(basename "$test" .sh)"
 echo "### Running: $test_name ###"
+export __BASHIO_LOG_LEVEL="debug"
 bash "$test"
 result=$?
 cat /tmp/${test_name}.log
