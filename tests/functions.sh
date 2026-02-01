@@ -53,8 +53,20 @@ function validate_params_against_assertions() {
         expected_value="${ASSERTIONS[$k]}"
         actual_value="${SIGENERGY2MQTT_PARAMETERS[$k]}"
         if [[ "$expected_value" != "any" && "$actual_value" != "$expected_value" ]]; then
-            echo "${TEST_NAME} [ERROR] Mismatch for option '$k': expected '$expected_value', got '$actual_value'"
-            result=1
+            # Check if we need to do a list comparison
+            if [[ "$expected_value" == *"|"* || "$actual_value" == *"|"* ]]; then
+                 # Sort both lists and compare strings
+                 sorted_expected=$(echo "$expected_value" | tr '|' '\n' | sort | tr '\n' '|' | sed 's/|$//')
+                 sorted_actual=$(echo "$actual_value" | tr '|' '\n' | sort | tr '\n' '|' | sed 's/|$//')
+                 
+                 if [[ "$sorted_expected" != "$sorted_actual" ]]; then
+                     echo "${TEST_NAME} [ERROR] Mismatch for option '$k': expected '$sorted_expected', got '$sorted_actual'"
+                     result=1
+                 fi
+            else
+                echo "${TEST_NAME} [ERROR] Mismatch for option '$k': expected '$expected_value', got '$actual_value'"
+                result=1
+            fi
         fi
     done
 

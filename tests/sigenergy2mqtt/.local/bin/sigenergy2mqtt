@@ -6,6 +6,8 @@ declare -A LIST_OPTS                    # options that accept multiple values
 LIST_OPTS["modbus-inverter-device-id"]=1
 LIST_OPTS["modbus-accharger-device-id"]=1
 LIST_OPTS["modbus-dccharger-device-id"]=1
+LIST_OPTS["influxdb-include"]=1
+LIST_OPTS["influxdb-exclude"]=1
 
 # Logging for clean-option test
 if [ -n "$TEST_NAME" ]; then
@@ -21,7 +23,11 @@ while [[ $# -gt 0 ]]; do
             key="${arg%%=*}"
             key="${key#--}"
             value="${arg#*=}"
-            SIGENERGY2MQTT_PARAMETERS["$key"]="$value"
+            if [[ -n "${LIST_OPTS[$key]}" && -n "${SIGENERGY2MQTT_PARAMETERS[$key]}" ]]; then
+                SIGENERGY2MQTT_PARAMETERS["$key"]="${SIGENERGY2MQTT_PARAMETERS[$key]}|$value"
+            else
+                SIGENERGY2MQTT_PARAMETERS["$key"]="$value"
+            fi
             shift
             ;;
 
