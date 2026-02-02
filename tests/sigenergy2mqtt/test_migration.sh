@@ -33,7 +33,7 @@ mqtt_password: test_mqtt_password
 mqtt_port: 8883
 mqtt_tls: true
 mqtt_username: test_mqtt_user
-no_remote_ems_check: true
+no_ems_mode_check: true
 pvoutput_api_key: b2d224a131574b6a96f3592741637ad82f4c1989
 pvoutput_consumption: true
 pvoutput_enabled: true
@@ -82,7 +82,7 @@ declare -A ASSERTIONS=(
     ["modbus-accharger-device-id"]="2"
     ["modbus-dccharger-device-id"]="1"
     ["modbus-host"]="127.0.0.1"
-    ["modbus-inverter-device-id"]="1 3"
+    ["modbus-inverter-device-id"]="1|3"
     ["modbus-log-level"]="WARNING"
     ["modbus-port"]="502"
     ["modbus-readonly"]="true"

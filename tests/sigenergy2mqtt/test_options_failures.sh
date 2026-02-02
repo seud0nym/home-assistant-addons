@@ -33,7 +33,7 @@ if [ $RESULT -eq 0 ]; then
     echo "Expected failure for missing PVOutput keys, but got success"
     exit 1
 fi
-grep -q "PVOutput enabled, but API Key and/or System ID not found" $LOG_PATH
+grep -q "PVOutput enabled, but API Key and/or System ID not configured" $LOG_PATH
 if [ $? -ne 0 ]; then
    echo "Did not find expected error message for PVOutput missing keys"
    echo "--- LOG START ---"
@@ -65,7 +65,7 @@ if [ $RESULT -eq 0 ]; then
     echo "Expected failure for missing SmartPort keys, but got success"
     exit 1
 fi
-grep -q "Smart-Port enabled, but neither module name or MQTT topic found" $LOG_PATH
+grep -q "Smart-Port enabled, but neither module name or MQTT topic configured" $LOG_PATH
 if [ $? -ne 0 ]; then
    echo "Did not find expected error message for SmartPort missing keys"
    echo "--- LOG START ---"

@@ -41,9 +41,7 @@ declare -A ASSERTIONS=(
 # "Mismatch in number of parsed options" -> Yes, it fails count check.
 # So we need ALL default params.
 # Defaults from run script:
-# --consumption=calculated (if advanced missing)
 # --no-metrics (if advanced missing)
-ASSERTIONS["consumption"]="calculated"
 ASSERTIONS["no-metrics"]="true"
 
 cd $HOME
@@ -76,7 +74,6 @@ declare -A ASSERTIONS=(
     ["mqtt-username"]="mock_mqtt_user" # Inherited from auto-discovery
     ["mqtt-password"]="super_secret_mock_password" # Inherited
     ["modbus-host"]="127.0.0.1"
-    ["consumption"]="calculated"
     ["no-metrics"]="true"
 )
 export_assertions
@@ -108,7 +105,6 @@ declare -A ASSERTIONS=(
     ["mqtt-password"]="mypassword"
     ["mqtt-tls"]="true"
     ["modbus-host"]="127.0.0.1"
-    ["consumption"]="calculated"
     ["no-metrics"]="true"
 )
 export_assertions

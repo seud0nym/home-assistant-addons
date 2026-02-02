@@ -134,7 +134,7 @@ configuration:
       no_remote_ems:
         name: Desativar EMS remoto
         description: Ocultar sensores de leitura/escrita para EMS remoto.
-      no_remote_ems_check:
+      no_ems_mode_check:
         name: Desativar verificações EMS remoto
         description: Desativar validação para limites ESS.
       edit_pct_box:
@@ -183,6 +183,54 @@ configuration:
       mqtt:
         name: MQTT
         description: Nível de registo de paho.mqtt.
+      influxdb:
+        name: InfluxDB
+        description: Nível de registo de InfluxDB.
+  influxdb:
+    name: Configuração InfluxDB
+    description: Configuração para escrever dados de sensores na sua base de dados InfluxDB. (Isto é diferente da integração do Home Assistant com InfluxDB, que apenas publica sensores ativados e não publica dados repetidos.)
+    fields:
+      enabled:
+        name: Ativar InfluxDB
+        description: Ativar a publicação de dados de sensores para InfluxDB.
+      host:
+        name: Servidor
+        description: Nome do host ou endereço IP da sua base de dados InfluxDB. Predefinido é 'a0d7b954-influxdb' (nome do host do add-on InfluxDB do Home Assistant).
+      port:
+        name: Porta
+        description: Porta de escuta da base de dados InfluxDB. Predefinido é 8086.
+      username:
+        name: Nome de utilizador
+        description: Nome de utilizador válido para a base de dados InfluxDB.
+      password:
+        name: Palavra-passe
+        description: Palavra-passe válida para o utilizador da base de dados InfluxDB.
+      database:
+        name: Base de dados
+        description: Nome da base de dados a usar. Predefinido é sigenergy.
+      org:
+        name: Organização
+        description: Nome ou ID da organização InfluxDB v2. Se não especificado, será usada a API v1.
+      token:
+        name: Ficha de acesso
+        description: Token de autenticação InfluxDB v2. Se fornecido, as APIs v2 serão usadas preferencialmente.
+      bucket:
+        name: Repositório
+        description: Nome do bucket InfluxDB v2. Se não especificado, o valor de 'base de dados' será usado como nome do bucket v2.
+      include:
+        name: Incluir
+        description: Lista de sensores a incluir ao publicar no InfluxDB, usando o ID de entidade completo ou parcial, o nome da classe do sensor ou uma expressão regular. Se não especificado, todos os sensores serão incluídos.
+        fields:
+          sensor:
+            name: Transdutor
+            description: O sensor a incluir ao publicar no InfluxDB.
+      exclude:
+        name: Excluir
+        description: Lista de sensores a excluir ao publicar no InfluxDB, usando o ID de entidade completo ou parcial, o nome da classe do sensor ou uma expressão regular. Se não especificado, nenhum sensor será excluído.
+        fields:
+          sensor:
+            name: Transdutor
+            description: O sensor a excluir ao publicar no InfluxDB.
   smartport:
     name: Integração de inversor de terceiros
     description: Integração de inversor de terceiros via Smart-Port

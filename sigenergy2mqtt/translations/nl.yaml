@@ -134,7 +134,7 @@ configuration:
       no_remote_ems:
         name: Remote EMS uitschakelen
         description: Lees-/schrijfsensoren voor remote EMS verbergen.
-      no_remote_ems_check:
+      no_ems_mode_check:
         name: Remote EMS-controles uitschakelen
         description: Validatie voor ESS-limieten uitschakelen.
       edit_pct_box:
@@ -183,6 +183,54 @@ configuration:
       mqtt:
         name: MQTT
         description: paho.mqtt logniveau.
+      influxdb:
+        name: InfluxDB
+        description: InfluxDB logniveau.
+  influxdb:
+    name: InfluxDB-configuratie
+    description: Configuratie voor het schrijven van sensorgegevens naar uw InfluxDB-database. (Dit is anders dan de Home Assistant-integratie met InfluxDB, die alleen ingeschakelde sensoren publiceert en geen herhalende gegevens publiceert.)
+    fields:
+      enabled:
+        name: InfluxDB inschakelen
+        description: Publicatie van sensorgegevens naar InfluxDB inschakelen.
+      host:
+        name: Serveradres
+        description: Hostnaam of IP-adres van uw InfluxDB-database. Standaard is 'a0d7b954-influxdb' (hostnaam van de InfluxDB Home Assistant add-on).
+      port:
+        name: Poort
+        description: Luisterpoort van de InfluxDB-database. Standaard is 8086.
+      username:
+        name: Gebruikersnaam
+        description: Geldige gebruikersnaam voor de InfluxDB-database.
+      password:
+        name: Wachtwoord
+        description: Geldig wachtwoord voor de InfluxDB-databasegebruiker.
+      database:
+        name: Gegevensbank
+        description: Naam van de te gebruiken database. Standaard is sigenergy.
+      org:
+        name: Organisatie
+        description: InfluxDB v2 organisatienaam of -ID. Indien niet opgegeven, wordt de v1 API gebruikt.
+      token:
+        name: Toegangstoken
+        description: InfluxDB v2 authenticatietoken. Indien opgegeven, worden v2 API's bij voorkeur gebruikt.
+      bucket:
+        name: Opslagemmer
+        description: InfluxDB v2 bucketnaam. Indien niet opgegeven, wordt de waarde van 'database' als v2 bucketnaam gebruikt.
+      include:
+        name: Opnemen
+        description: Lijst van sensoren om op te nemen bij publicatie naar InfluxDB, met volledige of gedeeltelijke entiteit-ID, sensorklassenaam of een reguliere expressie. Indien niet opgegeven, worden alle sensoren opgenomen.
+        fields:
+          sensor:
+            name: Meetvoeler
+            description: De sensor om op te nemen bij publicatie naar InfluxDB.
+      exclude:
+        name: Uitsluiten
+        description: Lijst van sensoren om uit te sluiten bij publicatie naar InfluxDB, met volledige of gedeeltelijke entiteit-ID, sensorklassenaam of een reguliere expressie. Indien niet opgegeven, worden geen sensoren uitgesloten.
+        fields:
+          sensor:
+            name: Meetvoeler
+            description: De sensor om uit te sluiten bij publicatie naar InfluxDB.
   smartport:
     name: Derde partij omvormer integratie
     description: Integratie van derde partij omvormer via Smart-Port
@@ -206,7 +254,7 @@ configuration:
         name: PV-vermogen
         description: Sensorklasse voor productiegegevens. (Alleen 'EnphasePVPower' ondersteund.)
       mqtt_topic:
-        name: MQTT topic
+        name: MQTT-onderwerp
         description: MQTT topic voor productiegegevens.
       mqtt_gain:
         name: MQTT versterking

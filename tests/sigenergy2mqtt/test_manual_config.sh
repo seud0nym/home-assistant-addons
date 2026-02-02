@@ -31,12 +31,11 @@ declare -A ASSERTIONS=(
     ["mqtt-port"]="1883" # Default
     ["mqtt-username"]="mock_mqtt_user" # Default
     ["mqtt-password"]="super_secret_mock_password" # Default
-    ["consumption"]="calculated" # Default
     ["no-metrics"]="true" # Default
     ["modbus-accharger-device-id"]="2"
     ["modbus-dccharger-device-id"]="1"
     ["modbus-host"]="127.0.0.1"
-    ["modbus-inverter-device-id"]="1 3"
+    ["modbus-inverter-device-id"]="1|3"
 )
 #endregion
 

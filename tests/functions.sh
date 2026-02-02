@@ -44,9 +44,27 @@ function validate_params_against_assertions() {
     declare -A ASSERTIONS
     import_assertions
 
-    if [[ ${#SIGENERGY2MQTT_PARAMETERS[@]} -ne  ${#ASSERTIONS[@]} ]]; then
+    if [[ ${#SIGENERGY2MQTT_PARAMETERS[@]} -ne ${#ASSERTIONS[@]} ]]; then
         echo "${TEST_NAME} [ERROR] Mismatch in number of parsed options (${#SIGENERGY2MQTT_PARAMETERS[@]}) and assertions (${#ASSERTIONS[@]})."
-        result=1
+        
+        # Show which keys are missing or extra
+        local -A all_keys
+        for k in "${!SIGENERGY2MQTT_PARAMETERS[@]}"; do
+            all_keys[$k]=1
+        done
+        for k in "${!ASSERTIONS[@]}"; do
+            all_keys[$k]=1
+        done
+        
+        for k in $(printf "%s\n" "${!all_keys[@]}" | sort); do
+            if [[ ! -v ASSERTIONS[$k] ]]; then
+                echo "${TEST_NAME} [ERROR]  → Extra key in SIGENERGY2MQTT_PARAMETERS: '$k' (value: '${SIGENERGY2MQTT_PARAMETERS[$k]}')"
+                result=1
+            elif [[ ! -v SIGENERGY2MQTT_PARAMETERS[$k] ]]; then
+                echo "${TEST_NAME} [ERROR]  → Missing key from SIGENERGY2MQTT_PARAMETERS: '$k' (expected: '${ASSERTIONS[$k]}')"
+                result=1
+            fi
+        done
     fi
 
     for k in $(printf "%s\n" "${!ASSERTIONS[@]}" | sort); do

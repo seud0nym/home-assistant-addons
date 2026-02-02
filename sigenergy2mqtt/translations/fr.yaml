@@ -134,7 +134,7 @@ configuration:
       no_remote_ems:
         name: Désactiver l'EMS distant
         description: Masquer les capteurs de lecture/écriture pour l'EMS distant.
-      no_remote_ems_check:
+      no_ems_mode_check:
         name: Désactiver les vérifications EMS distant
         description: Désactiver la validation pour les limites ESS.
       edit_pct_box:
@@ -183,6 +183,54 @@ configuration:
       mqtt:
         name: MQTT
         description: Niveau de journalisation de paho.mqtt.
+      influxdb:
+        name: InfluxDB
+        description: Niveau de journalisation de InfluxDB.
+  influxdb:
+    name: Configuration InfluxDB
+    description: Configuration pour écrire les données des capteurs dans votre base de données InfluxDB. (Ceci est différent de l'intégration Home Assistant avec InfluxDB, qui ne publie que les capteurs activés et ne publie pas les données répétitives.)
+    fields:
+      enabled:
+        name: Activer InfluxDB
+        description: Activer la publication des données des capteurs vers InfluxDB.
+      host:
+        name: Hôte
+        description: Nom d'hôte ou adresse IP de votre base de données InfluxDB. Par défaut 'a0d7b954-influxdb' (nom d'hôte de l'add-on InfluxDB de Home Assistant).
+      port:
+        name: Numéro de port
+        description: Port d'écoute de la base de données InfluxDB. Par défaut 8086.
+      username:
+        name: Nom d'utilisateur
+        description: Nom d'utilisateur valide pour la base de données InfluxDB.
+      password:
+        name: Mot de passe
+        description: Mot de passe valide pour l'utilisateur de la base de données InfluxDB.
+      database:
+        name: Base de données
+        description: Nom de la base de données à utiliser. Par défaut sigenergy.
+      org:
+        name: Organisation
+        description: Nom ou ID d'organisation InfluxDB v2. Si non spécifié, l'API v1 sera utilisée.
+      token:
+        name: Jeton
+        description: Jeton d'authentification InfluxDB v2. Si fourni, les APIs v2 seront utilisées de préférence.
+      bucket:
+        name: Compartiment
+        description: Nom du bucket InfluxDB v2. Si non spécifié, la valeur de 'base de données' sera utilisée comme nom de bucket v2.
+      include:
+        name: Inclure
+        description: Liste des capteurs à inclure lors de la publication vers InfluxDB, en utilisant l'ID d'entité complet ou partiel, le nom de classe du capteur ou une expression régulière. Si non spécifié, tous les capteurs seront inclus.
+        fields:
+          sensor:
+            name: Capteur
+            description: Le capteur à inclure lors de la publication vers InfluxDB.
+      exclude:
+        name: Exclure
+        description: Liste des capteurs à exclure lors de la publication vers InfluxDB, en utilisant l'ID d'entité complet ou partiel, le nom de classe du capteur ou une expression régulière. Si non spécifié, aucun capteur ne sera exclu.
+        fields:
+          sensor:
+            name: Capteur
+            description: Le capteur à exclure lors de la publication vers InfluxDB.
   smartport:
     name: Intégration d'onduleur tiers
     description: Intégration d'onduleur tiers via Smart-Port

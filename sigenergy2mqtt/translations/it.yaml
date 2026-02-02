@@ -116,7 +116,7 @@ configuration:
         name: Nome utente
         description: Nome utente per il broker MQTT.
       password:
-        name: Password
+        name: Parola chiave
         description: Password per il broker MQTT.
   advanced:
     name: Impostazioni avanzate
@@ -134,7 +134,7 @@ configuration:
       no_remote_ems:
         name: Disabilita EMS remoto
         description: Nascondi sensori di lettura/scrittura per EMS remoto.
-      no_remote_ems_check:
+      no_ems_mode_check:
         name: Disabilita controlli EMS remoto
         description: Disabilita validazione per limiti ESS.
       edit_pct_box:
@@ -183,6 +183,54 @@ configuration:
       mqtt:
         name: MQTT
         description: Livello di registrazione di paho.mqtt.
+      influxdb:
+        name: InfluxDB
+        description: Livello di registrazione di InfluxDB.
+  influxdb:
+    name: Configurazione InfluxDB
+    description: Configurazione per scrivere i dati dei sensori nel database InfluxDB. (Questo è diverso dall'integrazione di Home Assistant con InfluxDB, che pubblica solo i sensori abilitati e non pubblica dati ripetuti.)
+    fields:
+      enabled:
+        name: Abilita InfluxDB
+        description: Abilita la pubblicazione dei dati dei sensori su InfluxDB.
+      host:
+        name: Indirizzo server
+        description: Nome host o indirizzo IP del database InfluxDB. Predefinito 'a0d7b954-influxdb' (nome host dell'add-on InfluxDB di Home Assistant).
+      port:
+        name: Porta
+        description: Porta di ascolto del database InfluxDB. Predefinito 8086.
+      username:
+        name: Nome utente
+        description: Nome utente valido per il database InfluxDB.
+      password:
+        name: Parola chiave
+        description: Password valida per l'utente del database InfluxDB.
+      database:
+        name: Banca dati
+        description: Nome del database da utilizzare. Predefinito sigenergy.
+      org:
+        name: Organizzazione
+        description: Nome o ID dell'organizzazione InfluxDB v2. Se non specificato, verrà utilizzata l'API v1.
+      token:
+        name: Gettone di accesso
+        description: Token di autenticazione InfluxDB v2. Se fornito, verranno utilizzate preferibilmente le API v2.
+      bucket:
+        name: Contenitore
+        description: Nome del bucket InfluxDB v2. Se non specificato, verrà utilizzato il valore di 'database' come nome del bucket v2.
+      include:
+        name: Includi
+        description: Elenco dei sensori da includere durante la pubblicazione su InfluxDB, utilizzando l'ID entità completo o parziale, il nome della classe del sensore o un'espressione regolare. Se non specificato, verranno inclusi tutti i sensori.
+        fields:
+          sensor:
+            name: Sensore
+            description: Il sensore da includere durante la pubblicazione su InfluxDB.
+      exclude:
+        name: Escludi
+        description: Elenco dei sensori da escludere durante la pubblicazione su InfluxDB, utilizzando l'ID entità completo o parziale, il nome della classe del sensore o un'espressione regolare. Se non specificato, non verrà escluso alcun sensore.
+        fields:
+          sensor:
+            name: Sensore
+            description: Il sensore da escludere durante la pubblicazione su InfluxDB.
   smartport:
     name: Integrazione inverter di terze parti
     description: Integrazione inverter di terze parti via Smart-Port
@@ -200,7 +248,7 @@ configuration:
         name: Nome utente
         description: Nome utente per autenticazione.
       password:
-        name: Password
+        name: Parola chiave
         description: Password per autenticazione.
       pv_power:
         name: Potenza PV

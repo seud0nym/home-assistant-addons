@@ -8,14 +8,14 @@ export MOCK_OPTIONS_PATH="/tmp/${TEST_NAME}.yaml"
 #region Prepare mock sigenergy2mqtt options file
 cat << EOF > $MOCK_OPTIONS_PATH
 advanced:
-    consumption_method: Calculated
+    consumption_method: Total Load
     device_name_prefix: device
     discovery_prefix: discover
     edit_pct_box: true
     entity_id_prefix: entity
     metrics_enabled: true
     no_remote_ems: true
-    no_remote_ems_check: true
+    no_ems_mode_check: true
     read_only: true
     sanity_check_default_kw: 495
     unique_id_prefix: unique
@@ -24,14 +24,31 @@ auto_discovery:
     ping_timeout: 1
     retries: 1
     timeout: 1
+influxdb:
+    enabled: true
+    host: 127.0.0.1
+    port: 8686
+    user: test_influxdb_user
+    password: test_influxdb_password
+    database: test_influxdb_database
+    org: test_influxdb_organization
+    token: test_influxdb_token
+    bucket: test_influxdb_bucket
+    include: 
+        - sensor: test_influxdb_include1
+        - sensor: test_influxdb_include2
+    exclude: 
+        - sensor: test_influxdb_exclude1
+        - sensor: test_influxdb_exclude2
 logging:
     debug_sensor: any
-    modbus: WARNING
+    modbus: INFO
     mqtt: WARNING
-    pvoutput: WARNING
-    sigenergy2mqtt: WARNING
+    pvoutput: INFO
+    sigenergy2mqtt: DEBUG
+    influxdb: CRITICAL
 manual_config:
-    accharger_device_id: 2
+    accharger_device_id: 2,4
     dccharger_device_id: 1
     host: 127.0.0.1
     inverter_device_id: 1 3
@@ -78,7 +95,7 @@ EOF
 #region Prepare expected assertions
 declare -A ASSERTIONS=(
     ["language"]="en"
-    ["consumption"]="calculated"
+    ["consumption"]="total"
     ["debug-sensor"]="any"
     ["hass-device-name-prefix"]="device"
     ["hass-discovery-prefix"]="discover"
@@ -86,12 +103,24 @@ declare -A ASSERTIONS=(
     ["hass-enabled"]="true"
     ["hass-entity-id-prefix"]="entity"
     ["hass-unique-id-prefix"]="unique"
-    ["log-level"]="WARNING"
-    ["modbus-accharger-device-id"]="2"
+    ["influxdb-enabled"]="true"
+    ["influxdb-host"]="127.0.0.1"
+    ["influxdb-log-level"]="WARNING"
+    ["influxdb-port"]="8686"
+    ["influxdb-password"]="test_influxdb_password"
+    ["influxdb-token"]="test_influxdb_token"
+    ["influxdb-database"]="test_influxdb_database"
+    ["influxdb-org"]="test_influxdb_organization"
+    ["influxdb-bucket"]="test_influxdb_bucket"
+    ["influxdb-include"]="test_influxdb_include1|test_influxdb_include2"
+    ["influxdb-exclude"]="test_influxdb_exclude1|test_influxdb_exclude2"
+    ["influxdb-log-level"]="CRITICAL"
+    ["log-level"]="DEBUG"
+    ["modbus-accharger-device-id"]="2|4"
     ["modbus-dccharger-device-id"]="1"
     ["modbus-host"]="127.0.0.1"
-    ["modbus-inverter-device-id"]="1 3"
-    ["modbus-log-level"]="WARNING"
+    ["modbus-inverter-device-id"]="1|3"
+    ["modbus-log-level"]="INFO"
     ["modbus-port"]="502"
     ["modbus-readonly"]="true"
     ["mqtt-broker"]="localhost"
@@ -111,7 +140,7 @@ declare -A ASSERTIONS=(
     ["pvoutput-ext-v8"]="EV8"
     ["pvoutput-ext-v9"]="EV9"
     ["pvoutput-imports"]="true"
-    ["pvoutput-log-level"]="WARNING"
+    ["pvoutput-log-level"]="INFO"
     ["pvoutput-system-id"]="testing"
     ["pvoutput-temp-topic"]="homeassistant/weather/temperature"
     ["pvoutput-voltage"]="l/n-avg"

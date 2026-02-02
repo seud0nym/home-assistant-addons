@@ -40,7 +40,6 @@ declare -A ASSERTIONS=(
     ["mqtt-username"]="mock_mqtt_user"
     ["mqtt-password"]="super_secret_mock_password"
     ["modbus-host"]="127.0.0.1"
-    ["consumption"]="calculated"
     ["no-metrics"]="true"
     # Logging assertions
     ["log-level"]="DEBUG"
@@ -52,7 +51,6 @@ declare -A ASSERTIONS=(
     ["pvoutput-enabled"]="true"
     ["pvoutput-api-key"]="k"
     ["pvoutput-system-id"]="s"
-    ["pvoutput-voltage"]="l/n-avg" # Default
     ["pvoutput-output-hour"]="-1" # Default when eod_update missing
 )
 
@@ -87,7 +85,6 @@ declare -A ASSERTIONS=(
     ["mqtt-username"]="mock_mqtt_user"
     ["mqtt-password"]="super_secret_mock_password"
     ["modbus-host"]="127.0.0.1"
-    ["consumption"]="calculated"
     ["no-metrics"]="true"
 )
 
@@ -140,7 +137,6 @@ declare -A ASSERTIONS=(
     ["mqtt-username"]="mock_mqtt_user"
     ["mqtt-password"]="super_secret_mock_password"
     ["modbus-host"]="127.0.0.1"
-    ["consumption"]="calculated"
     ["no-metrics"]="true"
     # Logging assertions
     ["modbus-log-level"]="INFO"

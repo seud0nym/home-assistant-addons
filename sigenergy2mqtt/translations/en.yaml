@@ -134,7 +134,7 @@ configuration:
       no_remote_ems:
         name: Disable Remote EMS
         description: Enable to hide all read/write sensors used for remote Energy Management System (EMS) integration. Ignored if 'Modbus Read Only' is enabled.
-      no_remote_ems_check:
+      no_ems_mode_check:
         name: Disable Remote EMS Checks
         description: Enable to turn OFF the validation that disables ESS Max Charging/Discharging and PV Max Power limits when Remote EMS Control Mode is not Command Charging/Discharging. Ignored if 'No Remote EMS' is enabled. (Advanced setting - use with caution)
       edit_pct_box:
@@ -183,6 +183,54 @@ configuration:
       mqtt:
         name: MQTT
         description: Set the paho.mqtt logging level. WARNING! Setting this to DEBUG will produce very verbose output.
+      influxdb:
+        name: InfluxDB
+        description: Set the InfluxDB logging level. WARNING! Setting this to DEBUG may produce very verbose output.
+  influxdb:
+    name: InfluxDB Configuration
+    description: Configuration for writing sensor data to your InfluxDB database. (This is different to the Home Assistant integration with InfluxDB, which only publishes enabled sensors, and does not publish repeating data.)
+    fields:
+      enabled:
+        name: Enable InfluxDB
+        description: Enable the publication of sensor data to InfluxDB.
+      host:
+        name: Host
+        description: The hostname or IP address of your InfluxDB database. The default is 'a0d7b954-influxdb' (the hostname of the InfluxDB Home Assistant add-on).
+      port:
+        name: Port
+        description: The listening port of the InfluxDB database. The default is 8086.
+      username:
+        name: User Name
+        description: A valid user name for the InfluxDB database.
+      password:
+        name: Password
+        description: A valid password for the InfluxDB database username.
+      database:
+        name: Database
+        description: The name of the database to use. The default is sigenergy.
+      org:
+        name: Organization
+        description: The InfluxDB v2 organization name or ID. If not specified, the v1 API will be used.
+      token:
+        name: Token
+        description: The InfluxDB v2 authentication token. If supplied, v2 APIs will be used in preference to v1.
+      bucket:
+        name: Bucket
+        description: The InfluxDB v2 bucket name. If not specified, the value of 'database' will be used as the v2 bucket name.
+      include:
+        name: Include
+        description: A list of sensors to include when publishing to InfluxDB, using either the full or partial entity id or sensor class name, or a regular expression to be matched against the entity id or sensor class name. If not specified, all sensors will be included.
+        fields:
+          sensor:
+            name: Sensor
+            description: The sensor to include when publishing to InfluxDB.
+      exclude:
+        name: Exclude
+        description: A list of sensors to exclude when publishing to InfluxDB, using either the full or partial entity id or sensor class name, or a regular expression to be matched against the entity id or sensor class name. If not specified, no sensors will be excluded.
+        fields:
+          sensor:
+            name: Sensor
+            description: The sensor to exclude when publishing to InfluxDB.
   smartport:
     name: Third-Party Inverter Integration
     description: Configuration for integrating a third-party inverter via Smart-Port to obtain production data
@@ -213,170 +261,170 @@ configuration:
         description: The gain to be applied to the production data for the third-party inverter obtained from the MQTT topic. (e.g. 1000 if the data is in kW) Default is 1 (Watts).
   # Deprecated options left in for backward compatibility. The run script will migrate them to their replacements if found.
   consumption_method:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: Consumption Method - DEPRECATED
   debug_sensor:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: Sensor to Debug - DEPRECATED
   device_name_prefix:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: Home Assistant Device Name Prefix - DEPRECATED
   discovery_prefix:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: Home Assistant Discovery Prefix - DEPRECATED
   edit_pct_box:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: Percentage Box Editor - DEPRECATED
   entity_id_prefix:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: Home Assistant Entity ID Prefix - DEPRECATED
   log_level:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: sigenergy2mqtt Logging Level - DEPRECATED
   metrics_enabled:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: Enable sigenergy2mqtt Metrics - DEPRECATED
   modbus_accharger_slave:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: AC-Charger Device ID - DEPRECATED
   modbus_auto_discovery_ping_timeout:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: Auto-Discovery Ping Timeout - DEPRECATED
   modbus_auto_discovery_retries:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: Auto-Discovery Modbus Retries - DEPRECATED
   modbus_auto_discovery_timeout:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: Auto-Discovery Modbus Timeout - DEPRECATED
   modbus_dccharger_slave:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: DC-Charger Device ID - DEPRECATED
   modbus_force_auto_discovery:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: Force Modbus Auto-Discovery - DEPRECATED
   modbus_host:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: Modbus Host - DEPRECATED
   modbus_log_level:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: Modbus Logging Level - DEPRECATED
   modbus_no_remote_ems:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: No Remote EMS - DEPRECATED
   modbus_port:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: Modbus Port - DEPRECATED
   modbus_read_only:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: Read Only - DEPRECATED
   modbus_slave:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: Inverter Device ID - DEPRECATED
   mqtt_broker:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: MQTT Broker - DEPRECATED
   mqtt_log_level:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: MQTT Logging Level - DEPRECATED
   mqtt_password:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: MQTT Password - DEPRECATED
   mqtt_port:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: MQTT Port - DEPRECATED
   mqtt_tls:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: MQTT TLS Communication Enabled - DEPRECATED
   mqtt_username:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: MQTT User Name - DEPRECATED
   pvoutput_api_key:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: PVOutput API Key - DEPRECATED
   pvoutput_consumption:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: PVOutput Consumption - DEPRECATED
   pvoutput_enabled:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: PVOutput Enabled - DEPRECATED
   pvoutput_eod_update:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: PVOutput End-of-Day Upload - DEPRECATED
   pvoutput_exports:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: PVOutput Exports - DEPRECATED
   pvoutput_ext_v10:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: PVOutput Extended Data v10 - DEPRECATED
   pvoutput_ext_v11:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: PVOutput Extended Data v11 - DEPRECATED
   pvoutput_ext_v12:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: PVOutput Extended Data v12 - DEPRECATED
   pvoutput_ext_v7:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: PVOutput Extended Data v7 - DEPRECATED
   pvoutput_ext_v8:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: PVOutput Extended Data v8 - DEPRECATED
   pvoutput_ext_v9:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: PVOutput Extended Data v9 - DEPRECATED
   pvoutput_imports:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: PVOutput Imports - DEPRECATED
   pvoutput_log_level:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: PVOutput Logging Level - DEPRECATED
   pvoutput_system_id:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: PVOutput System ID - DEPRECATED
   pvoutput_temp_topic:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: PVOutput Temperature Topic - DEPRECATED
   pvoutput_voltage:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: PVOutput Voltage Upload - DEPRECATED
   sanity_check_default_kw:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: Sanity Check Default kW - DEPRECATED
   scan_interval_high:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: Scan Interval (High Frequency) - DEPRECATED
   scan_interval_low:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: Scan Interval (Low Frequency) - DEPRECATED
   scan_interval_medium:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: Scan Interval (Medium Frequency) - DEPRECATED
   scan_interval_realtime:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: Scan Interval (Near Realtime Frequency) - DEPRECATED
   smartport_enabled:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: Smart-Port Enabled - DEPRECATED
   smartport_host:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: Smart-Port Host - DEPRECATED
   smartport_module_name:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: Smart-Port Module Name - DEPRECATED
   smartport_mqtt_gain:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: Smart-Port MQTT gain - DEPRECATED
   smartport_mqtt_topic:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: Smart-Port MQTT topic - DEPRECATED
   smartport_password:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: Smart-Port Password - DEPRECATED
   smartport_pv_power:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: Smart-Port PV power - DEPRECATED
   smartport_username:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: Smart-Port User Name - DEPRECATED
   unique_id_prefix:
-    description: This option is deprecated. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
+    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: Home Assistant Unique ID Prefix - DEPRECATED

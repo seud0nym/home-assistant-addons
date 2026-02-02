@@ -134,7 +134,7 @@ configuration:
       no_remote_ems:
         name: 원격 EMS 비활성화
         description: 원격 EMS용 읽기/쓰기 센서 숨기기.
-      no_remote_ems_check:
+      no_ems_mode_check:
         name: 원격 EMS 검사 비활성화
         description: ESS 제한 검증 비활성화.
       edit_pct_box:
@@ -183,6 +183,54 @@ configuration:
       mqtt:
         name: MQTT
         description: paho.mqtt 로깅 레벨.
+      influxdb:
+        name: InfluxDB
+        description: InfluxDB 로깅 레벨.
+  influxdb:
+    name: InfluxDB 설정
+    description: 센서 데이터를 InfluxDB 데이터베이스에 기록하기 위한 설정. (이것은 활성화된 센서만 게시하고 반복 데이터를 게시하지 않는 Home Assistant의 InfluxDB 통합과 다릅니다.)
+    fields:
+      enabled:
+        name: InfluxDB 활성화
+        description: InfluxDB로 센서 데이터 게시를 활성화합니다.
+      host:
+        name: 호스트
+        description: InfluxDB 데이터베이스의 호스트 이름 또는 IP 주소. 기본값은 'a0d7b954-influxdb' (InfluxDB Home Assistant 애드온의 호스트 이름).
+      port:
+        name: 포트
+        description: InfluxDB 데이터베이스의 리스닝 포트. 기본값은 8086.
+      username:
+        name: 사용자 이름
+        description: InfluxDB 데이터베이스의 유효한 사용자 이름.
+      password:
+        name: 비밀번호
+        description: InfluxDB 데이터베이스 사용자의 유효한 비밀번호.
+      database:
+        name: 데이터베이스
+        description: 사용할 데이터베이스 이름. 기본값은 sigenergy.
+      org:
+        name: 조직
+        description: InfluxDB v2 조직 이름 또는 ID. 지정하지 않으면 v1 API가 사용됩니다.
+      token:
+        name: 토큰
+        description: InfluxDB v2 인증 토큰. 제공되면 v2 API가 우선적으로 사용됩니다.
+      bucket:
+        name: 버킷
+        description: InfluxDB v2 버킷 이름. 지정하지 않으면 'database' 값이 v2 버킷 이름으로 사용됩니다.
+      include:
+        name: 포함
+        description: InfluxDB에 게시할 때 포함할 센서 목록. 전체 또는 부분 엔티티 ID, 센서 클래스 이름 또는 정규 표현식을 사용합니다. 지정하지 않으면 모든 센서가 포함됩니다.
+        fields:
+          sensor:
+            name: 센서
+            description: InfluxDB에 게시할 때 포함할 센서.
+      exclude:
+        name: 제외
+        description: InfluxDB에 게시할 때 제외할 센서 목록. 전체 또는 부분 엔티티 ID, 센서 클래스 이름 또는 정규 표현식을 사용합니다. 지정하지 않으면 제외되는 센서가 없습니다.
+        fields:
+          sensor:
+            name: 센서
+            description: InfluxDB에 게시할 때 제외할 센서.
   smartport:
     name: 서드파티 인버터 통합
     description: Smart-Port를 통한 서드파티 인버터 통합

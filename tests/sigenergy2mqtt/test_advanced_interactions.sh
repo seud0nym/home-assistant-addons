@@ -24,7 +24,7 @@ cat << EOF > $MOCK_OPTIONS_PATH
 advanced:
     read_only: true
     no_remote_ems: true
-    no_remote_ems_check: true
+    no_ems_mode_check: true
 $BASE_CONFIG
 EOF
 
@@ -35,7 +35,6 @@ declare -A ASSERTIONS=(
     ["mqtt-port"]="1883"
     ["mqtt-username"]="mock_mqtt_user"
     ["mqtt-password"]="super_secret_mock_password"
-    ["consumption"]="calculated"
     ["no-metrics"]="true"
     ["modbus-host"]="127.0.0.1"
     ["modbus-readonly"]="true"
@@ -59,8 +58,8 @@ if grep -q "Parameter: \-\-modbus-no-remote-ems" $LOG_PATH; then
     echo "Scenario 1 Failed: Found --modbus-no-remote-ems when read_only is true"
     exit 1
 fi
-if grep -q "Parameter: \-\-no-remote-ems-check" $LOG_PATH; then
-    echo "Scenario 1 Failed: Found --no-remote-ems-check when read_only is true"
+if grep -q "Parameter: \-\-no-ems-mode-check" $LOG_PATH; then
+    echo "Scenario 1 Failed: Found --no-ems-mode-check when read_only is true"
     exit 1
 fi
 #endregion
@@ -71,7 +70,7 @@ cat << EOF > $MOCK_OPTIONS_PATH
 advanced:
     read_only: false
     no_remote_ems: true
-    no_remote_ems_check: true
+    no_ems_mode_check: true
 $BASE_CONFIG
 EOF
 
@@ -83,7 +82,6 @@ declare -A ASSERTIONS=(
     ["mqtt-port"]="1883"
     ["mqtt-username"]="mock_mqtt_user"
     ["mqtt-password"]="super_secret_mock_password"
-    ["consumption"]="calculated"
     ["no-metrics"]="true"
     ["modbus-host"]="127.0.0.1"
     ["modbus-no-remote-ems"]="true"
@@ -102,8 +100,8 @@ if grep -q "Parameter: \-\-modbus-readonly" $LOG_PATH; then
     echo "Scenario 2 Failed: Found --modbus-readonly"
     exit 1
 fi
-if grep -q "Parameter: \-\-no-remote-ems-check" $LOG_PATH; then
-    echo "Scenario 2 Failed: Found --no-remote-ems-check when no_remote_ems is true"
+if grep -q "Parameter: \-\-no-ems-mode-check" $LOG_PATH; then
+    echo "Scenario 2 Failed: Found --no-ems-mode-check when no_remote_ems is true"
     exit 1
 fi
 #endregion
@@ -113,7 +111,7 @@ cat << EOF > $MOCK_OPTIONS_PATH
 advanced:
     read_only: false
     no_remote_ems: false
-    no_remote_ems_check: true
+    no_ems_mode_check: true
 $BASE_CONFIG
 EOF
 
@@ -125,10 +123,9 @@ declare -A ASSERTIONS=(
     ["mqtt-port"]="1883"
     ["mqtt-username"]="mock_mqtt_user"
     ["mqtt-password"]="super_secret_mock_password"
-    ["consumption"]="calculated"
     ["no-metrics"]="true"
     ["modbus-host"]="127.0.0.1"
-    ["no-remote-ems-check"]="true"
+    ["no-ems-mode-check"]="true"
 )
 export_assertions
 ( source ../../sigenergy2mqtt/rootfs/etc/services.d/sigenergy2mqtt/run ) > $LOG_PATH 2>&1
@@ -154,7 +151,7 @@ cat << EOF > $MOCK_OPTIONS_PATH
 advanced:
     read_only: false
     no_remote_ems: false
-    no_remote_ems_check: false
+    no_ems_mode_check: false
 $BASE_CONFIG
 EOF
 
@@ -166,7 +163,6 @@ declare -A ASSERTIONS=(
     ["mqtt-port"]="1883"
     ["mqtt-username"]="mock_mqtt_user"
     ["mqtt-password"]="super_secret_mock_password"
-    ["consumption"]="calculated"
     ["no-metrics"]="true"
     ["modbus-host"]="127.0.0.1"
 )
@@ -187,8 +183,8 @@ if grep -q "Parameter: \-\-modbus-no-remote-ems" $LOG_PATH; then
     echo "Scenario 4 Failed: Found --modbus-no-remote-ems"
     exit 1
 fi
-if grep -q "Parameter: \-\-no-remote-ems-check" $LOG_PATH; then
-    echo "Scenario 4 Failed: Found --no-remote-ems-check"
+if grep -q "Parameter: \-\-no-ems-mode-check" $LOG_PATH; then
+    echo "Scenario 4 Failed: Found --no-ems-mode-check"
     exit 1
 fi
 #endregion
@@ -208,7 +204,6 @@ declare -A ASSERTIONS=(
     ["mqtt-port"]="1883"
     ["mqtt-username"]="mock_mqtt_user"
     ["mqtt-password"]="super_secret_mock_password"
-    ["consumption"]="calculated"
     ["no-metrics"]="true"
     ["modbus-host"]="127.0.0.1"
 )
@@ -235,7 +230,6 @@ declare -A ASSERTIONS=(
     ["mqtt-port"]="1883"
     ["mqtt-username"]="mock_mqtt_user"
     ["mqtt-password"]="super_secret_mock_password"
-    ["consumption"]="calculated"
     ["no-metrics"]="true"
     ["modbus-host"]="127.0.0.1"
 )
@@ -260,7 +254,7 @@ declare -A lang_map=(
   ["ko"]="한국어"
   ["nl"]="Nederlands"
   ["pt"]="Português"
-  ["zh"]="中文"
+  ["zh-Hans"]="中文"
 )
 
 for lang in $(find ../../sigenergy2mqtt/translations -type f -name "*.yaml" -exec basename {} .yaml \; | sort); do
@@ -284,7 +278,6 @@ declare -A ASSERTIONS=(
     ["mqtt-port"]="1883"
     ["mqtt-username"]="mock_mqtt_user"
     ["mqtt-password"]="super_secret_mock_password"
-    ["consumption"]="calculated"
     ["no-metrics"]="true"
     ["modbus-host"]="127.0.0.1"
 )

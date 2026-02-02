@@ -270,7 +270,6 @@ declare -A ASSERTIONS=(
     ["mqtt-port"]="1883"
     ["mqtt-username"]="mock_mqtt_user"
     ["mqtt-password"]="super_secret_mock_password"
-    ["consumption"]="calculated"
     # no-metrics should be ABSENT
     ["pvoutput-enabled"]="true"
     ["pvoutput-api-key"]="test_key"

@@ -25,7 +25,6 @@ declare -A ASSERTIONS=(
     ["mqtt-port"]="1883" # Default
     ["mqtt-username"]="mock_mqtt_user" # Default
     ["mqtt-password"]="super_secret_mock_password" # Default
-    ["consumption"]="calculated" # Default
     ["no-metrics"]="true" # Default
     ["modbus-auto-discovery"]="once" # Default
 )

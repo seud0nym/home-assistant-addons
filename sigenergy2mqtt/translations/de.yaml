@@ -51,7 +51,7 @@ configuration:
         name: Nahezu Echtzeit
         description: Abtastintervall in Sekunden für Echtzeit-Sensoren. Standard 5, Minimum 1.
   pvoutput:
-    name: PVOutput.org Integration
+    name: PVOutput.org-Integration
     description: Konfiguration zur Integration mit PVOutput.org
     fields:
       enabled:
@@ -134,7 +134,7 @@ configuration:
       no_remote_ems:
         name: Remote-EMS deaktivieren
         description: Lese-/Schreibsensoren für Remote-EMS ausblenden.
-      no_remote_ems_check:
+      no_ems_mode_check:
         name: Remote-EMS-Prüfungen deaktivieren
         description: Validierung für ESS-Limits deaktivieren.
       edit_pct_box:
@@ -183,6 +183,54 @@ configuration:
       mqtt:
         name: MQTT
         description: paho.mqtt-Protokollierungsstufe.
+      influxdb:
+        name: InfluxDB
+        description: InfluxDB-Protokollierungsstufe.
+  influxdb:
+    name: InfluxDB-Konfiguration
+    description: Konfiguration zum Schreiben von Sensordaten in Ihre InfluxDB-Datenbank. (Dies unterscheidet sich von der Home Assistant-Integration mit InfluxDB, die nur aktivierte Sensoren veröffentlicht und keine wiederholenden Daten sendet.)
+    fields:
+      enabled:
+        name: InfluxDB aktivieren
+        description: Veröffentlichung von Sensordaten an InfluxDB aktivieren.
+      host:
+        name: Hostadresse
+        description: Hostname oder IP-Adresse Ihrer InfluxDB-Datenbank. Standard ist 'a0d7b954-influxdb' (Hostname des InfluxDB Home Assistant Add-ons).
+      port:
+        name: Anschluss
+        description: Listening-Port der InfluxDB-Datenbank. Standard ist 8086.
+      username:
+        name: Benutzername
+        description: Gültiger Benutzername für die InfluxDB-Datenbank.
+      password:
+        name: Passwort
+        description: Gültiges Passwort für den InfluxDB-Datenbankbenutzer.
+      database:
+        name: Datenbank
+        description: Name der zu verwendenden Datenbank. Standard ist sigenergy.
+      org:
+        name: Organisation
+        description: InfluxDB v2 Organisationsname oder -ID. Wenn nicht angegeben, wird die v1 API verwendet.
+      token:
+        name: Zugriffstoken
+        description: InfluxDB v2 Authentifizierungstoken. Wenn angegeben, werden v2 APIs bevorzugt verwendet.
+      bucket:
+        name: Speicher-Bucket
+        description: InfluxDB v2 Bucket-Name. Wenn nicht angegeben, wird der Wert von 'database' als v2 Bucket-Name verwendet.
+      include:
+        name: Einschließen
+        description: Liste der Sensoren, die bei der Veröffentlichung an InfluxDB eingeschlossen werden sollen, unter Verwendung der vollständigen oder teilweisen Entitäts-ID oder des Sensorklassennamens oder eines regulären Ausdrucks. Wenn nicht angegeben, werden alle Sensoren eingeschlossen.
+        fields:
+          sensor:
+            name: Messfühler
+            description: Der bei der Veröffentlichung an InfluxDB einzuschließende Sensor.
+      exclude:
+        name: Ausschließen
+        description: Liste der Sensoren, die bei der Veröffentlichung an InfluxDB ausgeschlossen werden sollen, unter Verwendung der vollständigen oder teilweisen Entitäts-ID oder des Sensorklassennamens oder eines regulären Ausdrucks. Wenn nicht angegeben, werden keine Sensoren ausgeschlossen.
+        fields:
+          sensor:
+            name: Messfühler
+            description: Der bei der Veröffentlichung an InfluxDB auszuschließende Sensor.
   smartport:
     name: Drittanbieter-Wechselrichter-Integration
     description: Integration für Drittanbieter-Wechselrichter über Smart-Port

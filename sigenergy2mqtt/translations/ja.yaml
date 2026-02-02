@@ -134,7 +134,7 @@ configuration:
       no_remote_ems:
         name: リモート EMS を無効化
         description: リモート EMS 用の読み書きセンサーを非表示にします。
-      no_remote_ems_check:
+      no_ems_mode_check:
         name: リモート EMS チェックを無効化
         description: ESS 制限の検証を無効にします。
       edit_pct_box:
@@ -183,6 +183,54 @@ configuration:
       mqtt:
         name: MQTT
         description: paho.mqtt のログレベル。
+      influxdb:
+        name: InfluxDB
+        description: InfluxDB のログレベル。
+  influxdb:
+    name: InfluxDB 設定
+    description: センサーデータを InfluxDB データベースに書き込むための設定。（これは Home Assistant の InfluxDB 統合とは異なり、有効なセンサーのみを公開し、繰り返しデータは公開しません。）
+    fields:
+      enabled:
+        name: InfluxDB を有効化
+        description: InfluxDB へのセンサーデータの公開を有効にします。
+      host:
+        name: ホスト
+        description: InfluxDB データベースのホスト名または IP アドレス。デフォルトは 'a0d7b954-influxdb'（InfluxDB Home Assistant アドオンのホスト名）。
+      port:
+        name: ポート
+        description: InfluxDB データベースのリスニングポート。デフォルトは 8086。
+      username:
+        name: ユーザー名
+        description: InfluxDB データベースの有効なユーザー名。
+      password:
+        name: パスワード
+        description: InfluxDB データベースユーザーの有効なパスワード。
+      database:
+        name: データベース
+        description: 使用するデータベース名。デフォルトは sigenergy。
+      org:
+        name: 組織
+        description: InfluxDB v2 組織名または ID。指定しない場合は v1 API が使用されます。
+      token:
+        name: トークン
+        description: InfluxDB v2 認証トークン。指定された場合、v2 API が優先的に使用されます。
+      bucket:
+        name: バケット
+        description: InfluxDB v2 バケット名。指定しない場合は 'database' の値が v2 バケット名として使用されます。
+      include:
+        name: 含める
+        description: InfluxDB への公開時に含めるセンサーのリスト。完全または部分的なエンティティ ID、センサークラス名、または正規表現を使用できます。指定しない場合、すべてのセンサーが含まれます。
+        fields:
+          sensor:
+            name: センサー
+            description: InfluxDB への公開時に含めるセンサー。
+      exclude:
+        name: 除外する
+        description: InfluxDB への公開時に除外するセンサーのリスト。完全または部分的なエンティティ ID、センサークラス名、または正規表現を使用できます。指定しない場合、除外されるセンサーはありません。
+        fields:
+          sensor:
+            name: センサー
+            description: InfluxDB への公開時に除外するセンサー。
   smartport:
     name: サードパーティインバーター連携
     description: Smart-Port 経由のサードパーティインバーター連携

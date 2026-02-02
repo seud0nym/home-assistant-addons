@@ -134,7 +134,7 @@ configuration:
       no_remote_ems:
         name: 禁用远程 EMS
         description: 隐藏远程 EMS 的读写传感器。
-      no_remote_ems_check:
+      no_ems_mode_check:
         name: 禁用远程 EMS 检查
         description: 禁用 ESS 限制验证。
       edit_pct_box:
@@ -183,6 +183,54 @@ configuration:
       mqtt:
         name: MQTT
         description: paho.mqtt 日志级别。
+      influxdb:
+        name: InfluxDB
+        description: InfluxDB 日志级别。
+  influxdb:
+    name: InfluxDB 配置
+    description: 用于将传感器数据写入 InfluxDB 数据库的配置。（这与 Home Assistant 的 InfluxDB 集成不同，后者仅发布启用的传感器，且不发布重复数据。）
+    fields:
+      enabled:
+        name: 启用 InfluxDB
+        description: 启用向 InfluxDB 发布传感器数据。
+      host:
+        name: 主机
+        description: InfluxDB 数据库的主机名或 IP 地址。默认为 'a0d7b954-influxdb'（InfluxDB Home Assistant 附加组件的主机名）。
+      port:
+        name: 端口
+        description: InfluxDB 数据库的监听端口。默认为 8086。
+      username:
+        name: 用户名
+        description: InfluxDB 数据库的有效用户名。
+      password:
+        name: 密码
+        description: InfluxDB 数据库用户的有效密码。
+      database:
+        name: 数据库
+        description: 要使用的数据库名称。默认为 sigenergy。
+      org:
+        name: 组织
+        description: InfluxDB v2 组织名称或 ID。如果未指定，将使用 v1 API。
+      token:
+        name: 令牌
+        description: InfluxDB v2 认证令牌。如果提供，将优先使用 v2 API。
+      bucket:
+        name: 存储桶
+        description: InfluxDB v2 存储桶名称。如果未指定，将使用 'database' 的值作为 v2 存储桶名称。
+      include:
+        name: 包含
+        description: 发布到 InfluxDB 时要包含的传感器列表，使用完整或部分实体 ID、传感器类名或正则表达式。如果未指定，将包含所有传感器。
+        fields:
+          sensor:
+            name: 传感器
+            description: 发布到 InfluxDB 时要包含的传感器。
+      exclude:
+        name: 排除
+        description: 发布到 InfluxDB 时要排除的传感器列表，使用完整或部分实体 ID、传感器类名或正则表达式。如果未指定，不会排除任何传感器。
+        fields:
+          sensor:
+            name: 传感器
+            description: 发布到 InfluxDB 时要排除的传感器。
   smartport:
     name: 第三方逆变器集成
     description: 通过 Smart-Port 集成第三方逆变器
