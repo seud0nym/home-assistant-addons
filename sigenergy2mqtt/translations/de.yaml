@@ -146,21 +146,19 @@ configuration:
       sanity_check_default_kw:
         name: Standard-kW für Plausibilitätsprüfung
         description: Standardwert in kW für Plausibilitätsprüfungen. Standard 500 kW.
-      device_name_prefix:
-        name: Gerätename-Präfix
-        description: Präfix für Home Assistant-Entitätsnamen.
-      entity_id_prefix:
-        name: Entitäts-ID-Präfix
-        description: Präfix für Home Assistant-Entitäts-IDs. Standard 'sigen'.
-      unique_id_prefix:
-        name: Unique-ID-Präfix
-        description: Präfix für Unique-IDs. NIEMALS ändern nach Einstellung!
-      discovery_prefix:
-        name: Discovery-Präfix
-        description: MQTT Discovery-Topic-Präfix. Standard 'homeassistant'.
       language:
         name: Sprache
         description: Die für sigenergy2mqtt zu verwendende Sprache. Der Standardwert ist die in Einstellungen → System → Sprache definierte Sprache. Wenn diese Sprache nicht unterstützt wird, ist der Standardwert Englisch.
+      envvars:
+        name: Umgebungsvariablen
+        description: Ermöglicht die Konfiguration erweiterter Umgebungsvariablen für den sigenergy2mqtt-Dienst. Die vollständige Liste der verfügbaren Umgebungsvariablen finden Sie unter https://github.com/seud0nym/sigenergy2mqtt/blob/main/resources/configuration/ENV.md#environment-variables
+        fields:
+          name:
+            name: Name
+            description: Der Name der Umgebungsvariablen.
+          value:
+            name: Wert
+            description: Der Wert der Umgebungsvariablen.
   logging:
     name: Protokollierungskonfiguration
     description: Konfiguration der Protokollierungsstufen
@@ -231,31 +229,3 @@ configuration:
           sensor:
             name: Messfühler
             description: Der bei der Veröffentlichung an InfluxDB auszuschließende Sensor.
-  smartport:
-    name: Drittanbieter-Wechselrichter-Integration
-    description: Integration für Drittanbieter-Wechselrichter über Smart-Port
-    fields:
-      enabled:
-        name: Aktivieren
-        description: Drittanbieter-Wechselrichter-Integration aktivieren.
-      module_name:
-        name: Modulname
-        description: Modulname für Produktionsdaten. (Nur 'enphase' unterstützt.)
-      host:
-        name: Host-Adresse
-        description: IP-Adresse oder Hostname des Wechselrichters.
-      username:
-        name: Benutzername
-        description: Benutzername für Authentifizierung.
-      password:
-        name: Passwort
-        description: Passwort für Authentifizierung.
-      pv_power:
-        name: PV-Leistung
-        description: Sensorklasse für Produktionsdaten. (Nur 'EnphasePVPower' unterstützt.)
-      mqtt_topic:
-        name: MQTT-Topic
-        description: MQTT-Topic für Produktionsdaten.
-      mqtt_gain:
-        name: MQTT-Verstärkung
-        description: Verstärkung für Produktionsdaten. Standard 1 (Watt).

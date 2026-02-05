@@ -149,18 +149,16 @@ configuration:
       language:
         name: Taal
         description: De taal die voor sigenergy2mqtt moet worden gebruikt. De standaard is die gedefinieerd in Instellingen → Systeem → Taal, of als die taal niet wordt ondersteund, is de standaard Engels.
-      device_name_prefix:
-        name: Apparaatnaam prefix
-        description: Prefix voor Home Assistant entiteitsnamen.
-      entity_id_prefix:
-        name: Entiteit-ID prefix
-        description: Prefix voor Home Assistant entiteit-ID's. Standaard 'sigen'.
-      unique_id_prefix:
-        name: Unieke-ID prefix
-        description: Prefix voor unieke ID's. NOOIT wijzigen na configuratie!
-      discovery_prefix:
-        name: Discovery prefix
-        description: MQTT Discovery topic prefix. Standaard 'homeassistant'.
+      envvars:
+        name: Omgevingsvariabelen
+        description: Hiermee kunt u geavanceerde omgevingsvariabelen configureren voor de sigenergy2mqtt-service. De volledige lijst met beschikbare omgevingsvariabelen is te vinden op https://github.com/seud0nym/sigenergy2mqtt/blob/main/resources/configuration/ENV.md#environment-variables
+        fields:
+          name:
+            name: Naam
+            description: De naam van de omgevingsvariabele.
+          value:
+            name: Waarde
+            description: De waarde van de omgevingsvariabele.
   logging:
     name: Logconfiguratie
     description: Configuratie van logniveaus
@@ -231,31 +229,3 @@ configuration:
           sensor:
             name: Meetvoeler
             description: De sensor om uit te sluiten bij publicatie naar InfluxDB.
-  smartport:
-    name: Derde partij omvormer integratie
-    description: Integratie van derde partij omvormer via Smart-Port
-    fields:
-      enabled:
-        name: Inschakelen
-        description: Derde partij omvormer integratie inschakelen.
-      module_name:
-        name: Modulenaam
-        description: Modulenaam voor productiegegevens. (Alleen 'enphase' ondersteund.)
-      host:
-        name: Hostadres
-        description: IP-adres of hostnaam van de omvormer.
-      username:
-        name: Gebruikersnaam
-        description: Gebruikersnaam voor authenticatie.
-      password:
-        name: Wachtwoord
-        description: Wachtwoord voor authenticatie.
-      pv_power:
-        name: PV-vermogen
-        description: Sensorklasse voor productiegegevens. (Alleen 'EnphasePVPower' ondersteund.)
-      mqtt_topic:
-        name: MQTT-onderwerp
-        description: MQTT topic voor productiegegevens.
-      mqtt_gain:
-        name: MQTT versterking
-        description: Versterking voor productiegegevens. Standaard 1 (Watt).

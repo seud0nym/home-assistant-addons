@@ -146,21 +146,19 @@ configuration:
       sanity_check_default_kw:
         name: 验证默认 kW
         description: 验证用的默认值（kW）。默认 500 kW。
-      device_name_prefix:
-        name: 设备名称前缀
-        description: Home Assistant 实体名称的前缀。
-      entity_id_prefix:
-        name: 实体 ID 前缀
-        description: Home Assistant 实体 ID 的前缀。默认 'sigen'。
-      unique_id_prefix:
-        name: 唯一 ID 前缀
-        description: 唯一 ID 的前缀。设置后切勿更改！
-      discovery_prefix:
-        name: 发现前缀
-        description: 覆盖要使用的Home Assistant MQTT发现主题前缀。只有在Home Assistant的MQTT设置中已经更改过才更改此项。默认值为'homeassistant'。
       language:
         name: 语言
         description: sigenergy2mqtt使用的语言。默认值为“设置”→“系统”→“语言”中定义的语言，如果不支持该语言，则默认为英语。
+      envvars:
+        name: 环境变量
+        description: 允许您为 sigenergy2mqtt 服务配置高级环境变量。可用环境变量的完整列表可在 https://github.com/seud0nym/sigenergy2mqtt/blob/main/resources/configuration/ENV.md#environment-variables 找到
+        fields:
+          name:
+            name: 名称
+            description: 环境变量的名称。
+          value:
+            name: 值
+            description: 环境变量的值。
   logging:
     name: 日志配置
     description: 日志级别配置
@@ -231,31 +229,3 @@ configuration:
           sensor:
             name: 传感器
             description: 发布到 InfluxDB 时要排除的传感器。
-  smartport:
-    name: 第三方逆变器集成
-    description: 通过 Smart-Port 集成第三方逆变器
-    fields:
-      enabled:
-        name: 启用
-        description: 启用第三方逆变器集成。
-      module_name:
-        name: 模块名称
-        description: 用于生产数据的模块名称。（仅支持 'enphase'）
-      host:
-        name: 主机地址
-        description: 逆变器的 IP 地址或主机名。
-      username:
-        name: 用户名
-        description: 认证用户名。
-      password:
-        name: 密码
-        description: 认证密码。
-      pv_power:
-        name: PV 功率
-        description: 用于生产数据的传感器类。（仅支持 'EnphasePVPower'）
-      mqtt_topic:
-        name: MQTT 主题
-        description: 用于生产数据的 MQTT 主题。
-      mqtt_gain:
-        name: MQTT 增益
-        description: 生产数据的增益。默认 1（瓦特）。

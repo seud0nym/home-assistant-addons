@@ -146,21 +146,19 @@ configuration:
       sanity_check_default_kw:
         name: サニティチェックのデフォルト kW
         description: サニティチェック用のデフォルト値（kW）。デフォルトは500 kW。
-      device_name_prefix:
-        name: デバイス名プレフィックス
-        description: Home Assistant エンティティ名のプレフィックス。
-      entity_id_prefix:
-        name: エンティティIDプレフィックス
-        description: Home Assistant エンティティIDのプレフィックス。デフォルトは 'sigen'。
-      unique_id_prefix:
-        name: 一意IDプレフィックス
-        description: 一意IDのプレフィックス。設定後は絶対に変更しないでください！
-      discovery_prefix:
-        name: 検出プレフィックス
-        description: 使用する Home Assistant MQTT ディスカバリートピックのプレフィックスを上書きします。Home Assistant の MQTT 設定ですでにこれを変更している場合にのみ変更してください。デフォルトは 'homeassistant' です。
       language:
         name: 言語
         description: sigenergy2mqtt に使用する言語。デフォルトは「設定」→「システム」→「言語」で定義されたものです。その言語がサポートされていない場合、デフォルトは英語になります。
+      envvars:
+        name: 環境変数
+        description: sigenergy2mqttサービスの高度な環境変数を設定できます。利用可能な環境変数の完全なリストは、https://github.com/seud0nym/sigenergy2mqtt/blob/main/resources/configuration/ENV.md#environment-variables にあります。
+        fields:
+          name:
+            name: 名前
+            description: 環境変数の名前。
+          value:
+            name: 値
+            description: 環境変数の値。
   logging:
     name: ログ設定
     description: ログレベルの設定
@@ -231,31 +229,3 @@ configuration:
           sensor:
             name: センサー
             description: InfluxDB への公開時に除外するセンサー。
-  smartport:
-    name: サードパーティインバーター連携
-    description: Smart-Port 経由のサードパーティインバーター連携
-    fields:
-      enabled:
-        name: 有効化
-        description: サードパーティインバーター連携を有効にします。
-      module_name:
-        name: モジュール名
-        description: 発電データ用のモジュール名。（'enphase' のみサポート）
-      host:
-        name: ホストアドレス
-        description: インバーターのIPアドレスまたはホスト名。
-      username:
-        name: ユーザー名
-        description: 認証用のユーザー名。
-      password:
-        name: パスワード
-        description: 認証用のパスワード。
-      pv_power:
-        name: PV 電力
-        description: 発電データ用のセンサークラス。（'EnphasePVPower' のみサポート）
-      mqtt_topic:
-        name: MQTT トピック
-        description: 発電データ用の MQTT トピック。
-      mqtt_gain:
-        name: MQTT ゲイン
-        description: 発電データ用のゲイン。デフォルトは1（ワット）。

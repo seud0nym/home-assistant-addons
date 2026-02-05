@@ -146,21 +146,19 @@ configuration:
       sanity_check_default_kw:
         name: kW predeterminado para verificación
         description: Valor predeterminado en kW para verificaciones. Por defecto 500 kW.
-      device_name_prefix:
-        name: Prefijo de nombre de dispositivo
-        description: Prefijo para nombres de entidad de Home Assistant.
-      entity_id_prefix:
-        name: Prefijo de ID de entidad
-        description: Prefijo para IDs de entidad de Home Assistant. Por defecto 'sigen'.
-      unique_id_prefix:
-        name: Prefijo de ID único
-        description: Prefijo para IDs únicos. ¡NUNCA cambiar después de configurar!
-      discovery_prefix:
-        name: Prefijo de Descubrimiento
-        description: Anula el prefijo del tema de descubrimiento MQTT de Home Assistant a utilizar. Solo cambie esto si ya lo ha cambiado en la configuración de MQTT en Home Assistant. El valor predeterminado es 'homeassistant'.
       language:
         name: Idioma
         description: El idioma que se utilizará para sigenergy2mqtt. El valor predeterminado es el definido en Ajustes → Sistema → Idioma, o si ese idioma no es compatible, el valor predeterminado es inglés.
+      envvars:
+        name: Variables de entorno
+        description: Permite configurar variables de entorno avanzadas para el servicio sigenergy2mqtt. La lista completa de variables de entorno disponibles se encuentra en https://github.com/seud0nym/sigenergy2mqtt/blob/main/resources/configuration/ENV.md#environment-variables
+        fields:
+          name:
+            name: Nombre
+            description: El nombre de la variable de entorno.
+          value:
+            name: Valor
+            description: El valor de la variable de entorno.
   logging:
     name: Configuración de registro
     description: Configuración de niveles de registro
@@ -231,31 +229,3 @@ configuration:
           sensor:
             name: Medidor
             description: El sensor a excluir al publicar en InfluxDB.
-  smartport:
-    name: Integración de inversor de terceros
-    description: Integración de inversor de terceros vía Smart-Port
-    fields:
-      enabled:
-        name: Habilitar
-        description: Habilitar integración de inversor de terceros.
-      module_name:
-        name: Nombre del módulo
-        description: Nombre del módulo para datos de producción. (Solo 'enphase' soportado.)
-      host:
-        name: Dirección del host
-        description: Dirección IP o nombre de host del inversor.
-      username:
-        name: Nombre de usuario
-        description: Nombre de usuario para autenticación.
-      password:
-        name: Contraseña
-        description: Contraseña para autenticación.
-      pv_power:
-        name: Potencia PV
-        description: Clase de sensor para datos de producción. (Solo 'EnphasePVPower' soportado.)
-      mqtt_topic:
-        name: Tema MQTT
-        description: Tema MQTT para datos de producción.
-      mqtt_gain:
-        name: Ganancia MQTT
-        description: Ganancia para datos de producción. Por defecto 1 (Vatios).

@@ -146,21 +146,19 @@ configuration:
       sanity_check_default_kw:
         name: kW par défaut pour vérification
         description: Valeur par défaut en kW pour les vérifications. Par défaut 500 kW.
-      device_name_prefix:
-        name: Préfixe du nom de l'appareil
-        description: Préfixe pour les noms d'entité Home Assistant.
-      entity_id_prefix:
-        name: Préfixe d'ID d'entité
-        description: Préfixe pour les ID d'entité Home Assistant. Par défaut 'sigen'.
-      unique_id_prefix:
-        name: Préfixe d'ID unique
-        description: Préfixe pour les ID uniques. NE JAMAIS changer après configuration !
-      discovery_prefix:
-        name: Préfixe de Découverte
-        description: Remplacer le préfixe du sujet de découverte MQTT de Home Assistant à utiliser. Ne modifiez ceci que si vous l'avez déjà modifié dans les paramètres MQTT de Home Assistant. La valeur par défaut est 'homeassistant'.
       language:
         name: Langue
         description: La langue à utiliser pour sigenergy2mqtt. La valeur par défaut est celle définie dans Paramètres → Système → Langue, ou si cette langue n'est pas prise en charge, la valeur par défaut est l'anglais.
+      envvars:
+        name: Variables d'environnement
+        description: Permet de configurer des variables d'environnement avancées pour le service sigenergy2mqtt. La liste complète des variables d'environnement disponibles se trouve sur https://github.com/seud0nym/sigenergy2mqtt/blob/main/resources/configuration/ENV.md#environment-variables
+        fields:
+          name:
+            name: Nom
+            description: Le nom de la variable d'environnement.
+          value:
+            name: Valeur
+            description: La valeur de la variable d'environnement.
   logging:
     name: Configuration de journalisation
     description: Configuration des niveaux de journalisation
@@ -231,31 +229,3 @@ configuration:
           sensor:
             name: Capteur
             description: Le capteur à exclure lors de la publication vers InfluxDB.
-  smartport:
-    name: Intégration d'onduleur tiers
-    description: Intégration d'onduleur tiers via Smart-Port
-    fields:
-      enabled:
-        name: Activer
-        description: Activer l'intégration d'onduleur tiers.
-      module_name:
-        name: Nom du module
-        description: Nom du module pour les données de production. (Seul 'enphase' supporté.)
-      host:
-        name: Adresse de l'hôte
-        description: Adresse IP ou nom d'hôte de l'onduleur.
-      username:
-        name: Nom d'utilisateur
-        description: Nom d'utilisateur pour l'authentification.
-      password:
-        name: Mot de passe
-        description: Mot de passe pour l'authentification.
-      pv_power:
-        name: Puissance PV
-        description: Classe de capteur pour les données de production. (Seul 'EnphasePVPower' supporté.)
-      mqtt_topic:
-        name: Sujet MQTT
-        description: Sujet MQTT pour les données de production.
-      mqtt_gain:
-        name: Gain MQTT
-        description: Gain pour les données de production. Par défaut 1 (Watts).

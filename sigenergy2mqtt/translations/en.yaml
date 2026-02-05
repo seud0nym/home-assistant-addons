@@ -146,21 +146,19 @@ configuration:
       sanity_check_default_kw:
         name: Sanity Check Default kW
         description: The default value in kW used for sanity checks to validate the maximum and minimum values for actual value of power sensors and the delta value of energy sensors. The default value is 500 kW per second, meaning readings outside the range ±500 are ignored.
-      device_name_prefix:
-        name: Device Name Prefix
-        description: The prefix to use for Home Assistant entity names. e.g. A prefix of 'prefix' will prepend 'prefix ' to entity names. The default is no prefix.
-      entity_id_prefix:
-        name: Entity ID Prefix
-        description: The prefix to use for Home Assistant entity IDs. e.g. A prefix of 'prefix' will prepend 'prefix_' to entity IDs. If you don't specify a prefix, the entity ID will be prefixed with 'sigen'.
-      unique_id_prefix:
-        description: The prefix to use for Home Assistant unique IDs. e.g. A prefix of 'prefix' will prepend 'prefix_' to unique IDs. Once you have set this, you should NEVER change it, as it will break existing entities in Home Assistant. If you don't specify a prefix, the entity ID will be prefixed with 'sigen'.
-        name: Unique ID Prefix
-      discovery_prefix:
-        name: Discovery Prefix
-        description: Override the Home Assistant MQTT Discovery topic prefix to use. Only change this if you have already changed it in the MQTT settings in Home Assistant. The default is 'homeassistant'.
       language:
         name: Language
         description: The language to use for sigenergy2mqtt. The default is the language defined in Settings → System → Language, or if that language is not supported, the default is English.
+      envvars:
+        name: Environment Variables
+        description: Allows you to configure advanced environment variables for the sigenergy2mqtt service. The full list of available environment variables can be found at https://github.com/seud0nym/sigenergy2mqtt/blob/main/resources/configuration/ENV.md#environment-variables
+        fields:
+          name:
+            name: Name
+            description: The name of the environment variable.
+          value:
+            name: Value
+            description: The value of the environment variable.
   logging:
     name: Logging Configuration
     description: Configuration for logging levels of various components
@@ -231,34 +229,6 @@ configuration:
           sensor:
             name: Sensor
             description: The sensor to exclude when publishing to InfluxDB.
-  smartport:
-    name: Third-Party Inverter Integration
-    description: Configuration for integrating a third-party inverter via Smart-Port to obtain production data
-    fields:
-      enabled:
-        name: Enable
-        description: Enable integration of a third-party inverter for production data.
-      module_name:
-        name: Module Name
-        description: The name of the module which will be used to obtain third-party inverter production data. (Currently only 'enphase' is supported.)
-      host:
-        name: Host Address
-        description: The IP address or hostname of the third-party inverter.
-      username:
-        name: User Name
-        description: The user name to authenticate to the third-party inverter.
-      password:
-        name: Password
-        description: The password to authenticate to the third-party inverter.
-      pv_power:
-        name: PV power
-        description: The sensor class to hold the production data obtained from the third-party inverter. (Currently only 'EnphasePVPower' is supported.)
-      mqtt_topic:
-        name: MQTT topic
-        description: The MQTT topic to which to subscribe to obtain the production data for the third-party inverter. This is an alternative to using module/host/username/password to connect directly to the inverter.
-      mqtt_gain:
-        name: MQTT gain
-        description: The gain to be applied to the production data for the third-party inverter obtained from the MQTT topic. (e.g. 1000 if the data is in kW) Default is 1 (Watts).
   # Deprecated options left in for backward compatibility. The run script will migrate them to their replacements if found.
   consumption_method:
     description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.

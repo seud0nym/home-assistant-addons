@@ -146,21 +146,19 @@ configuration:
       sanity_check_default_kw:
         name: 검증용 기본 kW
         description: 검증용 기본값(kW). 기본값 500 kW.
-      device_name_prefix:
-        name: 기기 이름 접두사
-        description: Home Assistant 엔티티 이름의 접두사.
-      entity_id_prefix:
-        name: 엔티티 ID 접두사
-        description: Home Assistant 엔티티 ID의 접두사. 기본값 'sigen'.
-      unique_id_prefix:
-        name: 고유 ID 접두사
-        description: 고유 ID의 접두사. 설정 후 절대 변경하지 마세요!
-      discovery_prefix:
-        name: 검색 접두사
-        description: 사용할 Home Assistant MQTT 검색 토픽 접두사를 덮어씁니다. Home Assistant의 MQTT 설정에서 이미 변경한 경우에만 변경하세요. 기본값은 'homeassistant'입니다.
       language:
         name: 언어
         description: sigenergy2mqtt에 사용할 언어입니다. 기본값은 설정 → 시스템 → 언어에 정의된 값이며, 해당 언어가 지원되지 않는 경우 기본값은 영어입니다.
+      envvars:
+        name: 환경 변수
+        description: sigenergy2mqtt 서비스에 대한 고급 환경 변수를 구성할 수 있습니다. 사용 가능한 환경 변수의 전체 목록은 https://github.com/seud0nym/sigenergy2mqtt/blob/main/resources/configuration/ENV.md#environment-variables 에서 확인할 수 있습니다.
+        fields:
+          name:
+            name: 이름
+            description: 환경 변수의 이름입니다.
+          value:
+            name: 값
+            description: 환경 변수의 값입니다.
   logging:
     name: 로깅 설정
     description: 로깅 레벨 설정
@@ -231,31 +229,3 @@ configuration:
           sensor:
             name: 센서
             description: InfluxDB에 게시할 때 제외할 센서.
-  smartport:
-    name: 서드파티 인버터 통합
-    description: Smart-Port를 통한 서드파티 인버터 통합
-    fields:
-      enabled:
-        name: 활성화
-        description: 서드파티 인버터 통합 활성화.
-      module_name:
-        name: 모듈 이름
-        description: 생산 데이터용 모듈 이름. ('enphase'만 지원)
-      host:
-        name: 호스트 주소
-        description: 인버터의 IP 주소 또는 호스트 이름.
-      username:
-        name: 사용자 이름
-        description: 인증용 사용자 이름.
-      password:
-        name: 비밀번호
-        description: 인증용 비밀번호.
-      pv_power:
-        name: PV 전력
-        description: 생산 데이터용 센서 클래스. ('EnphasePVPower'만 지원)
-      mqtt_topic:
-        name: MQTT 토픽
-        description: 생산 데이터용 MQTT 토픽.
-      mqtt_gain:
-        name: MQTT 게인
-        description: 생산 데이터용 게인. 기본값 1(와트).
