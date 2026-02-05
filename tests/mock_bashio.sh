@@ -21,8 +21,8 @@ function bashio::log.level() {
             ;;
     esac
 }
-function bashio::log.debug() {   [[ "${__BASHIO_LOG_LEVEL:-info}" == "debug" ]] && echo "[DEBUG] $1"; }
-function bashio::log.info() {    echo "[INFO]  $1"; }
+function bashio::log.debug() {   [[ "${__BASHIO_LOG_LEVEL:-info}" == "debug" ]] && echo "[DEBUG] $1" >&2; }
+function bashio::log.info() {    echo "[INFO]  $1" >&2; }
 function bashio::log.warning() { echo "[WARN]  $1" >&2; }
 function bashio::log.fatal() {   echo "[FATAL] $1" >&2; }
 
@@ -37,9 +37,10 @@ fi
 
 # Usage: bashio::config <key>
 function bashio::config() {
-    local key=$1
+    local key=${1:-}
     local value=$(yq ".$key" "$MOCK_OPTIONS_PATH" | tr -d '\n''"')
     [ "$value" == "null" ] && value=""
+    bashio::log.debug "··· bashio::config() - key '$key' has value '$value'"
     echo "$value"
 }
 
@@ -47,6 +48,7 @@ function bashio::config() {
 function bashio::config.exists() {
     local key=$1
     local value="$(yq ".$key" "$MOCK_OPTIONS_PATH")"
+    bashio::log.debug "··· bashio::config.exists() - key '$key' has value $value"
     if [[ -n "$value" && $value != "null" ]]; then
         return 0 # True (exists and is non-empty)
     else
@@ -62,27 +64,31 @@ function bashio::config.has_value() {
 
 # --- Options file manipulation functions ---
 function bashio::config.set() {
-    local key=$1
-    local value=$2
-    local type
-    if [[ "$value" =~ ^(true|false)$ ]]; then 
-        type="boolean"
-    elif [[ "$value" =~ ^-?[0-9]+$ ]]; then 
-        type="integer"
-    elif [[ "$value" =~ ^-?[0-9]+([.][0-9]+)?$ ]]; then
-        type="float"
-    else
-        type="string" 
-        value="\"$value\""
-    fi
-    yq -i ".$key = $value" "$MOCK_OPTIONS_PATH" 
+  local key="$1"
+  local value="$2"
+  local assignment="="
+
+  if [[ "$value" =~ ^\{.*\}$ && $key =~ \[\]$ ]]; then 
+    key="${key%[]}"
+    value="[ $value ]"
+    assignment="+="
+  elif [[ "$value" =~ ^(true|false)$ ]]; then 
+    :
+  elif [[ "$value" =~ ^-?[0-9]+$ ]]; then 
+    :
+  elif [[ "$value" =~ ^-?[0-9]+([.][0-9]+)?$ ]]; then
+    :
+  else
+    value="\"$value\""
+  fi
+
+  bashio::log.debug "··· bashio::config.set() - Setting key '$key' $assignment '$value'"
+  yq -i ".${key} ${assignment} ${value}" "$MOCK_OPTIONS_PATH"
 }
 
 function bashio::config.remove() {
     local key=$1
-
-    # Delete the key from the YAML file in place
-    # --style=... is often needed with v3 delete to keep file clean
+    bashio::log.debug "··· bashio::config.remove() - Removing key '$key' from config"
     yq -i "del(.$key)" "$MOCK_OPTIONS_PATH"
 }
 

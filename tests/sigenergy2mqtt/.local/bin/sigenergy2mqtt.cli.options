@@ -12,10 +12,12 @@ hass-unique-id-prefix
 hass-use-simplified-topics
 influxdb-bucket
 influxdb-database
+influxdb-default-measurement
 influxdb-enabled
 influxdb-exclude
 influxdb-host
 influxdb-include
+influxdb-load-hass-history
 influxdb-log-level
 influxdb-org
 influxdb-password

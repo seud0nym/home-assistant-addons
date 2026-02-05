@@ -9,16 +9,37 @@ export MOCK_OPTIONS_PATH="/tmp/${TEST_NAME}.yaml"
 cat << EOF > $MOCK_OPTIONS_PATH
 advanced:
     consumption_method: Total Load
-    device_name_prefix: device
-    discovery_prefix: discover
     edit_pct_box: true
-    entity_id_prefix: entity
     metrics_enabled: true
     no_remote_ems: true
     no_ems_mode_check: true
     read_only: true
     sanity_check_default_kw: 495
-    unique_id_prefix: unique
+    envvars:
+        - name: SIGENERGY2MQTT_HASS_DEVICE_NAME_PREFIX
+          value: device
+        - name:  SIGENERGY2MQTT_HASS_ENTITY_ID_PREFIX
+          value: entity
+        - name:  SIGENERGY2MQTT_HASS_DISCOVERY_PREFIX
+          value: discover
+        - name:  SIGENERGY2MQTT_HASS_UNIQUE_ID_PREFIX
+          value: unique
+        - name: SIGENERGY2MQTT_SMARTPORT_ENABLED
+          value: "true"
+        - name: SIGENERGY2MQTT_SMARTPORT_HOST
+          value: 192.168.192.224
+        - name: SIGENERGY2MQTT_SMARTPORT_MODULE_NAME
+          value: enphase
+        - name: SIGENERGY2MQTT_SMARTPORT_MQTT_GAIN
+          value: "1000"
+        - name: SIGENERGY2MQTT_SMARTPORT_MQTT_TOPIC
+          value: mqtt/smartport
+        - name: SIGENERGY2MQTT_SMARTPORT_PASSWORD
+          value: test_enphase_password
+        - name: SIGENERGY2MQTT_SMARTPORT_PV_POWER
+          value: EnphasePVPower
+        - name: SIGENERGY2MQTT_SMARTPORT_USERNAME
+          value: test_enphase_user
 auto_discovery:
     force: false
     ping_timeout: 1
@@ -80,41 +101,27 @@ scan_interval:
     low: 300
     medium: 30
     realtime: 1
-smartport:
-    enabled: true
-    host: 192.168.192.224
-    module_name: enphase
-    mqtt_gain: 1000
-    mqtt_topic: mqtt/smartport
-    password: test_enphase_password
-    pv_power: EnphasePVPower
-    username: test_enphase_user
 EOF
 #endregion
 
 #region Prepare expected assertions
 declare -A ASSERTIONS=(
-    ["language"]="en"
     ["consumption"]="total"
     ["debug-sensor"]="any"
-    ["hass-device-name-prefix"]="device"
-    ["hass-discovery-prefix"]="discover"
     ["hass-edit-pct-box"]="true"
     ["hass-enabled"]="true"
-    ["hass-entity-id-prefix"]="entity"
-    ["hass-unique-id-prefix"]="unique"
-    ["influxdb-enabled"]="true"
-    ["influxdb-host"]="127.0.0.1"
-    ["influxdb-log-level"]="WARNING"
-    ["influxdb-port"]="8686"
-    ["influxdb-password"]="test_influxdb_password"
-    ["influxdb-token"]="test_influxdb_token"
-    ["influxdb-database"]="test_influxdb_database"
-    ["influxdb-org"]="test_influxdb_organization"
     ["influxdb-bucket"]="test_influxdb_bucket"
-    ["influxdb-include"]="test_influxdb_include1|test_influxdb_include2"
+    ["influxdb-database"]="test_influxdb_database"
+    ["influxdb-enabled"]="true"
     ["influxdb-exclude"]="test_influxdb_exclude1|test_influxdb_exclude2"
+    ["influxdb-host"]="127.0.0.1"
+    ["influxdb-include"]="test_influxdb_include1|test_influxdb_include2"
     ["influxdb-log-level"]="CRITICAL"
+    ["influxdb-org"]="test_influxdb_organization"
+    ["influxdb-password"]="test_influxdb_password"
+    ["influxdb-port"]="8686"
+    ["influxdb-token"]="test_influxdb_token"
+    ["language"]="en"
     ["log-level"]="DEBUG"
     ["modbus-accharger-device-id"]="2|4"
     ["modbus-dccharger-device-id"]="1"
@@ -149,14 +156,18 @@ declare -A ASSERTIONS=(
     ["scan-interval-low"]="300"
     ["scan-interval-medium"]="30"
     ["scan-interval-realtime"]="1"
-    ["smartport-enabled"]="true"
-    ["smartport-host"]="192.168.192.224"
-    ["smartport-module-name"]="enphase"
-    ["smartport-mqtt-gain"]="1000"
-    ["smartport-mqtt-topic"]="mqtt/smartport"
-    ["smartport-password"]="test_enphase_password"
-    ["smartport-pv-power"]="EnphasePVPower"
-    ["smartport-username"]="test_enphase_user"
+    ["SIGENERGY2MQTT_HASS_DEVICE_NAME_PREFIX"]="device"
+    ["SIGENERGY2MQTT_HASS_DISCOVERY_PREFIX"]="discover"
+    ["SIGENERGY2MQTT_HASS_ENTITY_ID_PREFIX"]="entity"
+    ["SIGENERGY2MQTT_HASS_UNIQUE_ID_PREFIX"]="unique"
+    ["SIGENERGY2MQTT_SMARTPORT_ENABLED"]="true"
+    ["SIGENERGY2MQTT_SMARTPORT_HOST"]="192.168.192.224"
+    ["SIGENERGY2MQTT_SMARTPORT_MODULE_NAME"]="enphase"
+    ["SIGENERGY2MQTT_SMARTPORT_MQTT_GAIN"]="1000"
+    ["SIGENERGY2MQTT_SMARTPORT_MQTT_TOPIC"]="mqtt/smartport"
+    ["SIGENERGY2MQTT_SMARTPORT_PASSWORD"]="test_enphase_password"
+    ["SIGENERGY2MQTT_SMARTPORT_PV_POWER"]="EnphasePVPower"
+    ["SIGENERGY2MQTT_SMARTPORT_USERNAME"]="test_enphase_user"
 )
 #endregion
 

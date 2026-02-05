@@ -2,14 +2,18 @@
 
 declare -A SIGENERGY2MQTT_PARAMETERS    # associative array for options
 declare -A LIST_OPTS                    # options that accept multiple values
-declare -A VALID_OPTS                   # valid options allow-list  
+declare -A VALID_CLI_OPTS               # valid options allow-list  
+declare -A VALID_ENV_VAR                # valid environment variables allow-list  
 
 for opt in $(cat $(dirname $0)/sigenergy2mqtt.cli.options); do
-    VALID_OPTS[$opt]=1
+    VALID_CLI_OPTS[$opt]=1
+done
+for env in $(cat $(dirname $0)/sigenergy2mqtt.env.vars); do
+    VALID_ENV_VAR[$env]=1
 done
 
 for opt in influxdb-exclude influxdb-include modbus-accharger-device-id modbus-dccharger-device-id modbus-inverter-device-id; do
-    if [[ -n "${VALID_OPTS[$opt]}" ]]; then
+    if [[ -n "${VALID_CLI_OPTS[$opt]}" ]]; then
         LIST_OPTS[$opt]=1
     else
         echo "ERROR: Attempted to declare unknown option '$opt' as a list option"
@@ -22,6 +26,7 @@ if [ -n "$TEST_NAME" ]; then
   echo "SIGENERGY2MQTT_CALL: $@" >> /tmp/${TEST_NAME}_calls.log
 fi
 
+# Process CLI options
 while [[ $# -gt 0 ]]; do
     arg="$1"
 
@@ -32,7 +37,7 @@ while [[ $# -gt 0 ]]; do
             key="${key#--}"
             value="${arg#*=}"
             
-            if [[ -z "${VALID_OPTS[$key]}" ]]; then
+            if [[ -z "${VALID_CLI_OPTS[$key]}" ]]; then
                 echo "ERROR: Unknown argument: $key"
                 exit 1
             fi
@@ -50,7 +55,7 @@ while [[ $# -gt 0 ]]; do
             key="${arg#--}"
             shift
 
-            if [[ -z "${VALID_OPTS[$key]}" ]]; then
+            if [[ -z "${VALID_CLI_OPTS[$key]}" ]]; then
                 echo "ERROR: Unknown argument: $key"
                 exit 1
             fi
@@ -82,6 +87,17 @@ while [[ $# -gt 0 ]]; do
             ;;
     esac
 done
+
+# Process ENV options
+while IFS='=' read -r key value; do
+    if [[ $key == SIGENERGY2MQTT_* ]]; then
+        if [[ -z "${VALID_ENV_VAR[$key]}" ]]; then
+            echo "ERROR: Unknown environment variable: $key"
+            exit 1
+        fi
+        SIGENERGY2MQTT_PARAMETERS["$key"]="$value"
+    fi
+done < <(env)
 
 # Validate parsed options against expected assertions
 if [[ -n "${ASSERTIONS_SERIALIZED}" ]]; then
