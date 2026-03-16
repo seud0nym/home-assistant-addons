@@ -1,4 +1,3 @@
-# https://developers.home-assistant.io/docs/add-ons/repository#repository-configuration
-name: seud0nym's Home Assistant App Repository
-url: 'https://github.com/seud0nym/home-assistant-addons'
+name: seud0nym's Home Assistant App Repository (Beta)
+url: 'https://github.com/seud0nym/home-assistant-addons#beta'
 maintainer: seud0nym@yahoo.com

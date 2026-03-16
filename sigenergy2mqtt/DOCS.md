@@ -1,4 +1,4 @@
-# Home Assistant Add-on: sigenergy2mqtt
+# Home Assistant App: sigenergy2mqtt
 
 ## Pre-Requisites
 
@@ -8,19 +8,19 @@ Your Sigenergy ESS must be configured to act as a Modbus server. This is an inst
 
 ### MQTT
 
-The `sigenergy2mqtt` add-on requires an MQTT broker to operate. 
+The `sigenergy2mqtt` app requires an MQTT broker to operate. 
 
-You must either have installed the Home Assistant [Mosquitto broker add-on](https://github.com/home-assistant/addons/blob/master/mosquitto/DOCS.md) or have an existing MQTT broker that you have already integrated with Home Assistant.
+You must either have installed the Home Assistant [Mosquitto broker app](https://github.com/home-assistant/addons/blob/master/mosquitto/DOCS.md) or have an existing MQTT broker that you have already integrated with Home Assistant.
 
 ## Configuration
 
-There are two ways to configure the add-on. You can provide configuration through the Configuration tab and/or you can upload a Configuration file.
+There are two ways to configure the app. You can provide configuration through the Configuration tab and/or you can upload a Configuration file.
 
 ### Configuration File
 
 You can upload a [configuration file](https://github.com/seud0nym/sigenergy2mqtt/blob/main/sigenergy2mqtt.yaml) to the addon_configs directory on your Home Assistant server for more advanced configuration options. The file _must_ be named `sigenergy2mqtt.yaml`, and placed inside the `addon_configs/4cee8162_sigenergy2mqtt` directory.
 
-**NOTE:** If you provide _both_ an advanced configuration file _and_ enter options into the Configuration tab, the Configuration tab will **override** any identical settings in the configuration file. If you are using the Mosquitto Broker addon, the MQTT host, port, username and password will _always_ override what is the configuration file. 
+**NOTE:** If you provide _both_ an advanced configuration file _and_ enter options into the Configuration tab, the Configuration tab will **override** any identical settings in the configuration file. If you are using the Mosquitto Broker app, the MQTT host, port, username and password will _always_ override what is the configuration file. 
 
 When using the configuration file, the default is to _not_ automatically publish the Sigenergy devices and entities in Home Assistant. If you wish that to occur, you must include the following option in your file:
 
@@ -37,20 +37,20 @@ home-assistant:
 
 | Option | Description |
 |--------|-------------|
-| `Force Auto-Discovery` | Enable to force the automatic discovery of Sigenergy Modbus hosts and associated Device IDs. You only need enable this if you have previously auto-discovered hosts/device IDs and your network or devices have changed. Once auto-discovery has been forced, this option will be reset to disabled. However, this may _not_ be reflected in the Configuration User Interface until your refresh the screen. |
+| `Force Auto-Discovery` | Enable to force the automatic discovery of Sigenergy Modbus hosts and associated Device IDs. You only need enable this if you have previously auto-discovered hosts/device IDs and your network or devices have changed. Once auto-discovery has been forced, this option will be reset to disabled. However, this may _not_ be reflected in the Configuration User Interface until you refresh the screen. |
 | `Ping Timeout` | The ping timeout, in seconds, to use when performing auto-discovery of Sigenergy devices on the network. The default is **0.5** (seconds). |
 | `Modbus Timeout` | The Modbus timeout, in seconds, to use when performing auto-discovery of Sigenergy devices on the network. The default is **0.25** (seconds). |
 | `Maximum Retries` | The maximum retry count to use when performing auto-discovery of Sigenergy devices on the network. The default is **0**.
 
 #### Manual Sigenergy Device Configuration
 
-The Sigenergy Modbus Host and the Device IDs for Inverters, AC Chargers, and DC Chargers will be automatically discovered, or you may enter them manually. If your host is not listening on the default port 502, your _must_ enter the **Modbus Port**
+The Sigenergy Modbus Host and the Device IDs for Inverters, AC Chargers, and DC Chargers will be automatically discovered, or you may enter them manually. If your host is not listening on the default port 502, you _must_ enter the **Modbus Port**
 
 | Option | Description |
 |--------|-------------|
 | `Host Address` | The hostname or IP address of the Sigenergy device. If you do not specify the host, auto-discovery will be attempted. If a host is auto-discovered, all associated Device IDs will also be auto-discovered. Auto-discovery results are cached, so you only need to force auto-discovery if anything has changed. |
 | `Modbus Port` | The Sigenergy device Modbus port number. The default is **502** |
-| `Inverter Device ID` | The Sigenergy Inverter Modbus Device ID. This defaults to **1** if not specified, *OR* it will be determined automatically during auto-discovery. |
+| `Inverter Device ID` | The Sigenergy Inverter Modbus Device ID. This defaults to **1** if not specified, *OR* it will be determined automatically during auto-discovery. If you have multiple inverters, you can specify a space-separated list of IDs. |
 | `AC-Charger Device ID` | The Sigenergy AC Charger Modbus Device ID. Auto-discovery will identify AC Charger devices. |
 | `DC-Charger Device ID` | The Sigenergy DC Charger Modbus Device ID. Auto-discovery will identify DC Charger devices. The `DC-Charger Device ID` is normally the same as the `Inverter Device ID`. |
 
@@ -96,7 +96,7 @@ If your donation status is current, the Battery Power, SoC, Usable Capacity, and
 
 You can define time periods so that `sigenergy2mqtt` can upload exports and imports into their correct tariff time slot (peak, off-peak, shoulder and high-shoulder).
 
-Unfortunately, the relative complexity of the data makes it unsuitable for defining through the Home Assistant Add-on Configuration screen. Therefore, you must define these time periods in the configuration file.
+Unfortunately, the relative complexity of the data makes it unsuitable for defining through the Home Assistant App Configuration screen. Therefore, you must define these time periods in the configuration file.
 
 Create (or update) your configuration file, which must be called `sigenergy2mqtt.yaml` and must be located in the `addon_configs/4cee8162_sigenergy2mqtt` directory. The following is a basic example of the file contents:
 
@@ -166,7 +166,7 @@ If plans or time periods overlap, the first match will be used.
 
 ##### PVOutput Temperature
 
-You can publish temperature to PVOutput. As an add-on, `sigenergy2mqtt` does not have direct access to the Home Assistant sensors. It can only consume temperature that has been published to MQTT.
+You can publish temperature to PVOutput. As an app, `sigenergy2mqtt` does not have direct access to the Home Assistant sensors. It can only consume temperature that has been published to MQTT.
 
 If your Home Assistant weather integration does not publish the temperature to MQTT, you can create an automation that will publish the temperature whenever it changes. This is an example (you will need to modify the `entity_id` to match your location):
 
@@ -202,7 +202,7 @@ If you specify an Energy sensor class, the value sent to PVOutput will be the <i
 
 #### MQTT Broker Configuration
 
-If you are using the [Mosquitto Broker](https://github.com/home-assistant/addons/tree/master/mosquitto) Home Assistant Add-on, you can skip the MQTT configuration options. `sigenergy2mqtt` will retrieve them automatically.
+If you are using the [Mosquitto Broker](https://github.com/home-assistant/addons/tree/master/mosquitto) Home Assistant App, you can skip the MQTT configuration options. `sigenergy2mqtt` will retrieve them automatically.
 
 Otherwise, you _must_ enter the IP address or host name of the **MQTT Broker**, the **MQTT Port** (if it is not listening on the default port 1883), and if the broker requires authentication, the **MQTT User Name** and **MQTT Password**.
 
@@ -214,6 +214,34 @@ Otherwise, you _must_ enter the IP address or host name of the **MQTT Broker**, 
 | `User Name` | A valid user name for the MQTT broker. |
 | `Password` | A valid password for the MQTT broker username. |
 
+#### InfluxDB Configuration
+
+The `sigenergy2mqtt` app for writing sensor data to your InfluxDB database is different from using the [InfluxDB App](https://github.com/hassio-addons/addon-influxdb). The InfluxDB App only publishes enabled sensors and does not publish repeating data. The `sigenergy2mqtt` app publishes _all_ sensor data (unless includes or excludes are specified), _including_ repeating data, meaning that there are no gaps in the data. The data is published into a different database (`sigenergy` by default) to that used by InfluxDB App, which is usually 'homeassistant'.
+
+The InfluxDB App configuration and credentials are _not_ accessible to the `sigenergy2mqtt` app, so you _must_ configure these options in `sigenergy2mqtt`.
+
+| Option | Description |
+|--------|-------------|
+| `Enable InfluxDB` | Enable the publication of sensor data to InfluxDB. |
+| `Host` | The hostname or IP address of your InfluxDB database. The default is 'a0d7b954-influxdb' (the hostname of the InfluxDB Home Assistant app). |
+| `Port` | The listening port of the InfluxDB database. The default is **8086**. |
+| `User Name` | A valid user name for the InfluxDB database. |
+| `Password` | A valid password for the InfluxDB database username. |
+| `Database` | The name of the database to use. The default is **sigenergy**. |
+| `Organization` | The InfluxDB v2 organization name or ID. If not specified, the v1 API will be used. |
+| `Token` | The InfluxDB v2 authentication token. If supplied, v2 APIs will be used in preference to v1. |
+| `Bucket` | The InfluxDB v2 bucket name. If not specified, the value of 'database' will be used as the v2 bucket name. |
+| `Include` | A list of sensors to include when publishing to InfluxDB, using either the full or partial entity id or sensor class name, or a regular expression to be matched against the entity id or sensor class name. If not specified, all sensors will be included. |
+| `Exclude` | A list of sensors to exclude when publishing to InfluxDB, using either the full or partial entity id or sensor class name, or a regular expression to be matched against the entity id or sensor class name. If not specified, no sensors will be excluded. |
+
+##### InfluxDB API Version
+
+The app supports both InfluxDB v1 and v2 APIs:
+
+- **InfluxDB v1**: Provide `Host`, `Port`, `User Name`, `Password`, and `Database`. Leave `Organization` and `Token` empty.
+- **InfluxDB v2**: Provide `Host`, `Port`, `Organization`, `Token`, and optionally `Bucket`. If `Bucket` is not specified, the `Database` value will be used as the bucket name.
+
+If both v1 credentials (username/password) and v2 credentials (token) are provided, the v2 API will be used in preference.
 
 #### Advanced Settings
 
@@ -227,11 +255,8 @@ Otherwise, you _must_ enter the IP address or host name of the **MQTT Broker**, 
 | `Enable Metrics` | Enable the publication of sigenergy2mqtt metrics to Home Assistant. |
 | `Consumption Method` | Set the method of calculating the `Plant Consumed Power` sensor. Valid values are:<br>`Calculated` (consumption is calculated from other sensors, using the algorithm: TotalPVPower &plus; GridSensorActivePower &minus; BatteryPower &minus; ACChargerChargingPower &minus; DCChargerOutputPower),<br>`Total Load` (use `Total Load Power` sensor which is general household load plus AC/DC Charger load), or<br>`General Load` (use the `General Load Power` sensor, which is household load only).<br>The default is **Calculated** on firmware earlier than that supporting Modbus Protocol V2.8 and cannot be changed. On firmware supporting Modbus Protocol V2.8, the default is `Total Load`. |
 | `Sanity Check Default kW` | The default value in kW used for sanity checks to validate the maximum and minimum values for actual value of power sensors and the delta value of energy sensors. The default value is **500** kW per second, meaning readings outside the range ±500 are ignored. |
-| `Device Name Prefix` | The prefix to use for Home Assistant entity names. e.g. A prefix of 'prefix' will prepend 'prefix ' to entity names. The default is no prefix. |
-| `Entity ID Prefix` | The prefix to use for Home Assistant entity IDs. e.g. A prefix of 'prefix' will prepend 'prefix_' to entity IDs. If you don't specify a prefix, the entity ID will be prefixed with 'sigen'.  |
-| `Unique ID Prefix` | The prefix to use for Home Assistant unique IDs. e.g. A prefix of 'prefix' will prepend 'prefix_' to unique IDs. Once you have set this, you should NEVER change it, as it will break existing entities in Home Assistant. If you don't specify a prefix, the entity ID will be prefixed with 'sigen'. |
-| `Discovery Prefix` | Override the Home Assistant MQTT Discovery topic prefix to use. Only change this if you have already changed it in the MQTT settings in Home Assistant. The default is 'homeassistant'. |
 | `Language` | The language to use for `sigenergy2mqtt`. The default is the language defined in Settings → System → Language, or if that language is not supported, the default is English. |
+| `Environment Variables` | Allows you to configure advanced environment variables for the sigenergy2mqtt service. The full list of available environment variables can be found [here](https://github.com/seud0nym/sigenergy2mqtt/blob/main/resources/configuration/ENV.md#environment-variables). |
 
 #### Logging Configuration
 
@@ -239,26 +264,9 @@ Otherwise, you _must_ enter the IP address or host name of the **MQTT Broker**, 
 |--------|-------------|
 | `sigenergy2mqtt` | Use to set the `sigenergy2mqtt` log level. By default, only WARNING messages are logged. |
 | `Sensor to Debug` | Specify a sensor to be debugged using either the full entity id, a partial entity id, the full sensor class name, or a partial sensor class name. You can also use regular expressions. For example, specifying 'daily' would match all sensors with daily in their entity name. If specified, `Logging Level` is also forced to **DEBUG**. |
-| `Add-on Run Script` | Set the add-on run script log level. **WARNING!** Setting this to ALL, TRACE or DEBUG will produce very verbose output. |
+| `App Run Script` | Set the app run script log level. **WARNING!** Setting this to ALL, TRACE or DEBUG will produce very verbose output. |
 | `Modbus` | Set the pymodbus logging level. **WARNING!** Setting this to DEBUG will produce very verbose output. |
 | `PVOutput` | Set the PVOutput services logging level. |
 | `MQTT` | Set the paho.mqtt logging level. **WARNING!** Setting this to DEBUG will produce very verbose output. |
-
-
-#### Third-Party PV Production Configuration
-
-Third-party PV is an optional configuration if you wish faster updates than the Sigenergy Modbus Third-party PC sensors provide.
-
-At this time, only Enphase Envoy with firmware versions prefixed with D7 and D8 can be directly integrated. Other third-party PV systems may be integrated if their data can be derived via MQTT.
-
-| Option | Condition | Description |
-|--------|-----------|-------------|
-| `Enable` | Enable interrogation of a third-party device for production data. |
-| `Module Name` | The name of the module which will be used to obtain third-party device production data. (Currently only 'enphase' is supported.) |
-| `Host Address` | The IP address or hostname of the third-party device. |
-| `User Name` | The user name to authenticate to the third-party device. |
-| `Password` | The password to authenticate to the third-party device. |
-| `PV power` | The sensor class to hold the production data obtained from the third-party device. (Currently only 'EnphasePVPower' is supported.) |
-| `MQTT topic` | The MQTT topic to which to subscribe to obtain the production data for the third-party device. |
-| `MQTT gain` | The gain to be applied to the production data for the third-party device obtained from the MQTT topic. (e.g. 1000 if the data is in kW) Default is 1 (Watts). |
+| `InfluxDB` | Set the InfluxDB logging level. **WARNING!** Setting this to DEBUG may produce very verbose output. |
 

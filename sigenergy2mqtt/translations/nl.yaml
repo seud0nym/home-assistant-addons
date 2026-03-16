@@ -169,9 +169,9 @@ configuration:
       debug_sensor:
         name: Te debuggen sensor
         description: Specificeer een sensor om te debuggen.
-      addon:
-        name: Add-on uitvoerscript
-        description: Logniveau van het add-on script.
+      app:
+        name: App uitvoerscript
+        description: Logniveau van het app script.
       modbus:
         name: Modbus
         description: pymodbus logniveau.
@@ -193,7 +193,7 @@ configuration:
         description: Publicatie van sensorgegevens naar InfluxDB inschakelen.
       host:
         name: Serveradres
-        description: Hostnaam of IP-adres van uw InfluxDB-database. Standaard is 'a0d7b954-influxdb' (hostnaam van de InfluxDB Home Assistant add-on).
+        description: Hostnaam of IP-adres van uw InfluxDB-database. Standaard is 'a0d7b954-influxdb' (hostnaam van de InfluxDB Home Assistant app).
       port:
         name: Poort
         description: Luisterpoort van de InfluxDB-database. Standaard is 8086.

@@ -169,9 +169,9 @@ configuration:
       debug_sensor:
         name: Capteur à déboguer
         description: Spécifier un capteur à déboguer.
-      addon:
-        name: Script d'exécution de l'add-on
-        description: Niveau de journalisation du script de l'add-on.
+      app:
+        name: Script d'exécution de l'app
+        description: Niveau de journalisation du script de l'app.
       modbus:
         name: Modbus
         description: Niveau de journalisation de pymodbus.
@@ -193,7 +193,7 @@ configuration:
         description: Activer la publication des données des capteurs vers InfluxDB.
       host:
         name: Hôte
-        description: Nom d'hôte ou adresse IP de votre base de données InfluxDB. Par défaut 'a0d7b954-influxdb' (nom d'hôte de l'add-on InfluxDB de Home Assistant).
+        description: Nom d'hôte ou adresse IP de votre base de données InfluxDB. Par défaut 'a0d7b954-influxdb' (nom d'hôte de l'app InfluxDB de Home Assistant).
       port:
         name: Numéro de port
         description: Port d'écoute de la base de données InfluxDB. Par défaut 8086.

@@ -101,7 +101,7 @@ configuration:
         description: The MQTT topic to which to subscribe to obtain the current temperature data for PVOutput. If specified, the temperature will be sent to PVOutput.
   mqtt:
     name: MQTT Configuration
-    description: Configuration for connecting to your MQTT broker. You do not need to configure this section if you are using the Home Assistant MQTT add-on.
+    description: Configuration for connecting to your MQTT broker. You do not need to configure this section if you are using the Home Assistant MQTT app.
     fields:  
       broker:
         name: Broker Address
@@ -169,9 +169,9 @@ configuration:
       debug_sensor:
         name: Sensor to Debug
         description: Specify a sensor to be debugged using either the full entity id, a partial entity id, the full sensor class name, or a partial sensor class name. You can also use regular expressions. For example, specifying 'daily' would match all sensors with daily in their entity name. If specified, sigenergy2mqtt logging is also forced to DEBUG.
-      addon:
-        name: Add-on Run Script
-        description: Set the add-on run script log level. WARNING! Setting this to ALL, TRACE or DEBUG will produce very verbose output.
+      app:
+        name: App Run Script
+        description: Set the app run script log level. WARNING! Setting this to ALL, TRACE or DEBUG will produce very verbose output.
       modbus:
         name: Modbus
         description: Set the pymodbus logging level. WARNING! Setting this to DEBUG will produce very verbose output.
@@ -193,7 +193,7 @@ configuration:
         description: Enable the publication of sensor data to InfluxDB.
       host:
         name: Host
-        description: The hostname or IP address of your InfluxDB database. The default is 'a0d7b954-influxdb' (the hostname of the InfluxDB Home Assistant add-on).
+        description: The hostname or IP address of your InfluxDB database. The default is 'a0d7b954-influxdb' (the hostname of the InfluxDB Home Assistant app).
       port:
         name: Port
         description: The listening port of the InfluxDB database. The default is 8086.

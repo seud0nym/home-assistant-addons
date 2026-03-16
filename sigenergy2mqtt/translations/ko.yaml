@@ -169,7 +169,7 @@ configuration:
       debug_sensor:
         name: 디버그할 센서
         description: 디버그할 센서 지정.
-      addon:
+      app:
         name: 애드온 실행 스크립트
         description: 애드온 스크립트의 로깅 레벨.
       modbus:

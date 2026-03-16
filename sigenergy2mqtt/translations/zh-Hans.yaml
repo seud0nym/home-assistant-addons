@@ -169,7 +169,7 @@ configuration:
       debug_sensor:
         name: 要调试的传感器
         description: 指定要调试的传感器。
-      addon:
+      app:
         name: 附加组件运行脚本
         description: 附加组件脚本的日志级别。
       modbus:

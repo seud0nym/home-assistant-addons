@@ -169,7 +169,7 @@ configuration:
       debug_sensor:
         name: デバッグするセンサー
         description: デバッグするセンサーを指定します。
-      addon:
+      app:
         name: アドオン実行スクリプト
         description: アドオンスクリプトのログレベル。
       modbus:

@@ -169,9 +169,9 @@ configuration:
       debug_sensor:
         name: Zu debuggender Sensor
         description: Sensor zum Debuggen angeben.
-      addon:
-        name: Add-on-Ausführungsskript
-        description: Protokollierungsstufe des Add-on-Skripts.
+      app:
+        name: App-Ausführungsskript
+        description: Protokollierungsstufe des App-Skripts.
       modbus:
         name: Modbus
         description: pymodbus-Protokollierungsstufe.
@@ -193,7 +193,7 @@ configuration:
         description: Veröffentlichung von Sensordaten an InfluxDB aktivieren.
       host:
         name: Hostadresse
-        description: Hostname oder IP-Adresse Ihrer InfluxDB-Datenbank. Standard ist 'a0d7b954-influxdb' (Hostname des InfluxDB Home Assistant Add-ons).
+        description: Hostname oder IP-Adresse Ihrer InfluxDB-Datenbank. Standard ist 'a0d7b954-influxdb' (Hostname des InfluxDB Home Assistant Apps).
       port:
         name: Anschluss
         description: Listening-Port der InfluxDB-Datenbank. Standard ist 8086.
