@@ -1,585 +1,627 @@
-<!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
+# Changelog
 
-## 2026.1.20
+## [2026.1.20] - 2026-01-20
 
-### What's Fixed
+### Added
 
-* Fixed maximum number of PV strings assertion that caused issues on new inverter models supporting up to 36 PV Strings
-* Fixed Unit of Measurement for Plant Max Apparent Power (Protocol specifies kVar but Apparent Power should be kVA) 
-* Fixed bug in auto-discovery that could assume a server exists in edge cases
-* Fixed auto-discovery logic to prevent premature exit when a serial number retrieval fails, ensuring all device types (DC chargers, Inverters, AC chargers) are correctly checked
-* Fixed automatic disabling of future publishing of an updatable Sensor if the write fails, and always force publishing of the sensor after update even if the update fails
-* Fixed bug that could cause metrics to be published even if they were disabled
-* Fixed bug that allowed Derived Sensors to be added to a device when their protocol version (or the protocol version of any of the source sensors) was greater than the protocol version of the device
-* Fixed various issues relating to running against older firmware than expected ([#96](https://github.com/seud0nym/sigenergy2mqtt/issues/96))
-* Documentation correctly stated that minimum of all scan intervals was 1 second, but Configuration User Interface still had old minimums configured ([#93](https://github.com/seud0nym/sigenergy2mqtt/issues/93))
+- New option to turn off the validation that disables ESS Max Charging/Discharging and PV Max Power limits when Remote EMS is enabled and Remote EMS Control Mode is not Command Charging/Discharging ([#78](https://github.com/seud0nym/sigenergy2mqtt/discussions/78))
+- New Monitor service that runs when debugging is enabled to verify MQTT publishes
 
-### What's Changed
+### Changed
 
-* The Configuration options have been completely reorganised into groups to make finding options easier (existing configuration will be automatically migrated to the new structure on first run after upgrading). The deprecated options will remain in "unused optional configuration options" at the moment to support the migration, but they should not be used and they will be removed in a future release.
-* The default source for Consumed Power is now "Total Load" on firmware supporting Modbus Protocol V2.8 (previous firmware will continue to use the "Calculated" method)
-* Implemented enhancement request to consistently format timestamps in log lines ([#92](https://github.com/seud0nym/sigenergy2mqtt/issues/92))
-* Added undocumented EMSWorkMode for VPP Scheduling (https://github.com/TypQxQ/Sigenergy-Local-Modbus/pull/289)
-* Increased size of Modbus pre-reads to improve performance and reduce Modbus requests
-* Minimum Python version is now 3.12
-* Refactored Sensor class hierarchy and applied typing rules to improve code quality and robustness
-* Refactored Metrics service to use standard Sensor instances 
-* Refactored common classes to reduce incidence of cyclical imports
-* Increased code testing coverage to over 90%
+- Configuration options completely reorganised into groups; existing configuration is automatically migrated to the new structure on first run after upgrading
+- Default source for Consumed Power is now "Total Load" on firmware supporting Modbus Protocol V2.8 (previous firmware continues to use the "Calculated" method)
+- Timestamps in log lines are now consistently formatted ([#92](https://github.com/seud0nym/sigenergy2mqtt/issues/92))
+- Added undocumented EMSWorkMode for VPP Scheduling ([TypQxQ/Sigenergy-Local-Modbus#289](https://github.com/TypQxQ/Sigenergy-Local-Modbus/pull/289))
+- Increased size of Modbus pre-reads to improve performance and reduce Modbus requests
+- Minimum Python version is now 3.12
+- Refactored Sensor class hierarchy with typing rules to improve code quality and robustness
+- Refactored Metrics service to use standard Sensor instances
+- Refactored common classes to reduce cyclical imports
+- Increased code test coverage to over 90%
 
-### What's New?
+### Fixed
 
-* Added a new option to turn off the validation that disables ESS Max Charging/Discharging and PV Max Power limits when Remote EMS is enabled and Remote EMS Control Mode is not Command Charging/Discharging (this setting does not comply with the Sigenergy Modbus Protocol documentation, and may lead to changes not being applied in some instances) ([#78](https://github.com/seud0nym/sigenergy2mqtt/discussions/78))
-* Added new Monitor service that runs when debugging enabled to verify MQTT publishes
+- Fixed maximum number of PV strings assertion that caused issues on new inverter models supporting up to 36 PV strings
+- Fixed Unit of Measurement for Plant Max Apparent Power (should be kVA, not kVar)
+- Fixed bug in auto-discovery that could incorrectly assume a server exists in edge cases
+- Fixed auto-discovery logic to prevent premature exit when a serial number retrieval fails, ensuring all device types are correctly checked
+- Fixed automatic disabling of future publishing of an updatable sensor on write failure; sensor is now always force-published after an update attempt even if it fails
+- Fixed bug that could cause metrics to be published even when disabled
+- Fixed bug that allowed Derived Sensors to be added to a device when their protocol version exceeded the device's protocol version
+- Fixed various issues relating to running against older firmware than expected ([#96](https://github.com/seud0nym/sigenergy2mqtt/issues/96))
+- Configuration User Interface now correctly enforces the documented minimum scan interval of 1 second ([#93](https://github.com/seud0nym/sigenergy2mqtt/issues/93))
 
+---
 
-## 2026.1.3
+## [2026.1.3] - 2026-01-03
 
-### What's Fixed
+### Changed
 
-* Fixed bug that caused external MQTT broker configuration to always default to 127.0.0.1 and therefore failed to connect ([#88](https://github.com/seud0nym/sigenergy2mqtt/issues/88))
-* Fixed minor bugs revealed by new integration and unit tests
+- Minor code changes to support integration and unit testing
+- Removed unused classes
+- Upgraded `psutil` from 7.2.0 to 7.2.1
+- Upgraded `scapy` from 2.6.1 to 2.7.0
+- Upgraded `ruamel-yaml` from 0.18.17 to 0.19.1
 
-### What's Changed
+### Fixed
 
-* Minor code changes to support integration and unit testing
-* Removed unused classes
-* Upgraded dependencies:
-  * psutil: 7.2.0 → 7.2.1
-  * scapy: 2.6.1 → 2.7.0
-  * ruamel-yaml: 0.18.17 → 0.19.1
+- Fixed bug that caused external MQTT broker configuration to always default to 127.0.0.1 ([#88](https://github.com/seud0nym/sigenergy2mqtt/issues/88))
+- Fixed minor bugs revealed by new integration and unit tests
 
+---
 
-## 2025.12.29
+## [2025.12.29] - 2025-12-29
 
-### What's Fixed
+### Changed
 
-* Fixed RuntimeWarning about coroutines not being awaited that broke PVOutput uploads and setting sensor values ([#84](https://github.com/seud0nym/sigenergy2mqtt/issues/84))
-* Fixed sanity check on power sensors that did not have gain=1000 ([#85](https://github.com/seud0nym/sigenergy2mqtt/issues/85))
-* Fixed variable access outside of scope error message that occurred occasionally when handling a PVOutput upload failure ([#84](https://github.com/seud0nym/sigenergy2mqtt/issues/84))
-* Maximum number of Modbus registers read in a single scan should be 124, not 125
+- Removed Grid Phase Current/Voltage sensors that were in the pre-release V2.8 protocol but not in the final release (these registers always returned ILLEGAL DATA ADDRESS)
 
-### What's Changed
+### Fixed
 
-* Removed Grid Phase Current/Voltage sensors that were in the pre-release V2.8 protocol, but not in the final release (these sensors were never available because their registers always returned ILLEGAL DATA ADDRESS)
+- Fixed `RuntimeWarning` about coroutines not being awaited that broke PVOutput uploads and setting sensor values ([#84](https://github.com/seud0nym/sigenergy2mqtt/issues/84))
+- Fixed sanity check on power sensors that did not have `gain=1000` ([#85](https://github.com/seud0nym/sigenergy2mqtt/issues/85))
+- Fixed variable access outside of scope error that occurred occasionally when handling a PVOutput upload failure ([#84](https://github.com/seud0nym/sigenergy2mqtt/issues/84))
+- Maximum number of Modbus registers read in a single scan corrected to 124 (not 125)
 
+---
 
-## 2025.12.27
+## [2025.12.27] - 2025-12-27
 
-### What's Fixed
+### Fixed
 
-* Write-only controls (AC/DC-Charger Start/Stop, and Plant/Inverter Power On/Off) were not working ([#83](https://github.com/seud0nym/sigenergy2mqtt/issues/83))
-* AC-Charger Total Energy Consumed state class should be TOTAL_INCREASING ([#83](https://github.com/seud0nym/sigenergy2mqtt/issues/83))
+- Write-only controls (AC/DC-Charger Start/Stop, and Plant/Inverter Power On/Off) were not working ([#83](https://github.com/seud0nym/sigenergy2mqtt/issues/83))
+- AC-Charger Total Energy Consumed state class corrected to `TOTAL_INCREASING` ([#83](https://github.com/seud0nym/sigenergy2mqtt/issues/83))
 
+---
 
-## 2025.12.25🎄
+## [2025.12.25] - 2025-12-25
 
-### What's Fixed
+### Changed
 
-* Fixed some issues with minimum/maximum validation
-* Fixed error 'expected float for dictionary value @ data['min']' when processing MQTT discovery message topic ([#81](https://github.com/seud0nym/sigenergy2mqtt/issues/81))
-* Fixed potential issue with creating battery sensors if both Hybrid and PV inverter installed in same Plant
+- Increased maximum allowed value of LVRT Negative Sequence Reactive Power Compensation Factor to at least 20.0 (previously 10.0 as documented) ([#80](https://github.com/seud0nym/sigenergy2mqtt/issues/80#issuecomment-3689277867))
+- Upgraded `psutil` from 7.1.3 to 7.2.0
 
-### What's Changed
+### Fixed
 
-* Changed maximum allowed value of LVRT Negative Sequence Reactive Power Compensation Factor, which appears to be at least 20.0 rather than 10.0 as documented ([#80](https://github.com/seud0nym/sigenergy2mqtt/issues/80#issuecomment-3689277867))
-* Upgraded dependencies:
-  * psutil: 7.1.3 → 7.2.0
+- Fixed various minimum/maximum validation issues
+- Fixed error `expected float for dictionary value @ data['min']` when processing MQTT discovery message topic ([#81](https://github.com/seud0nym/sigenergy2mqtt/issues/81))
+- Fixed potential issue creating battery sensors when both Hybrid and PV inverters are installed in the same Plant
 
+---
 
-## 2025.12.23
+## [2025.12.23] - 2025-12-23
 
-### What's Fixed
+### Added
 
-* Removed clean of devices on upgrade as it caused associated statistics helper entities to get removed ([#77](https://github.com/seud0nym/sigenergy2mqtt/discussions/77))
-* Do not start sensor scan group task if all sensors unpublishable ([#79](https://github.com/seud0nym/sigenergy2mqtt/discussions/79))
-* Fixed handling of systems that do not have battery modules attached ([#80](https://github.com/seud0nym/sigenergy2mqtt/issues/80))
+- New option to replace percentage sliders with number edit boxes
 
-### What's Changed
+### Changed
 
-* More optimisation of Modbus register pre-reads during sensor scanning
-* Refactored code to remove unnecessary properties
+- Further optimisation of Modbus register pre-reads during sensor scanning
+- Refactored code to remove unnecessary properties
 
-### What's New?
+### Fixed
 
-* New option to allow percentage sliders to be replaced with number edit boxes
+- Removed clean of devices on upgrade, which was causing associated statistics helper entities to be removed ([#77](https://github.com/seud0nym/sigenergy2mqtt/discussions/77))
+- Sensor scan group tasks no longer start if all sensors are unpublishable ([#79](https://github.com/seud0nym/sigenergy2mqtt/discussions/79))
+- Fixed handling of systems without battery modules attached ([#80](https://github.com/seud0nym/sigenergy2mqtt/issues/80))
 
+---
 
-## 2025.12.20
+## [2025.12.20] - 2025-12-20
 
-### What's Fixed
+### Added
 
-* DC-Charger power was not included in consumption calculation after the entity id was renamed in 2025.12.16 ([#74](https://github.com/seud0nym/sigenergy2mqtt/issues/74))
-* Fixed UnboundLocalError during initialisation when second inverter found
+- Option to use either of the new V2.8 Total/General Load Power sensors as the source for the Plant Consumed Power sensor, instead of calculating from multiple inputs
+- Cache hits percentage metric
 
-### What's Changed
+### Changed
 
-* Modified handling of sensors defined in the protocol that fail with ILLEGAL DATA ADDRESS errors in case they are available on some devices (previously they were permanently marked as unpublishable)
-* Upgraded dependencies:
-  * ruamel-yaml: 0.18.16 → 0.18.17
+- Modified handling of sensors that fail with ILLEGAL DATA ADDRESS errors — they are no longer permanently marked as unpublishable
+- Upgraded `ruamel-yaml` from 0.18.16 to 0.18.17
 
-### What's New?
+### Fixed
 
-* Added an option to use either of the new V2.8 Total/General Load Power sensors as the source for the Plant Consumed Power sensor, instead of calculating consumption from multiple inputs
-* Added cache hits percentage metric
+- DC-Charger power was not included in consumption calculation after the entity id rename in 2025.12.16 ([#74](https://github.com/seud0nym/sigenergy2mqtt/issues/74))
+- Fixed `UnboundLocalError` during initialisation when a second inverter was found
 
+---
 
-## 2025.12.18
+## [2025.12.18] - 2025-12-18
 
-### What's Fixed
+### Fixed
 
-* Fixed bug that prevented switch sensors (e.g. Remote EMS) from being toggled
-* Fixed bug in register count calculation for non-contiguous read optimisation plus minor adjustments to contiguous read optimisation
+- Fixed bug that prevented switch sensors (e.g. Remote EMS) from being toggled
+- Fixed register count calculation for non-contiguous read optimisation, plus minor adjustments to contiguous read optimisation
 
+---
 
-## 2025.12.16
+## [2025.12.16] - 2025-12-16
 
-### What's Fixed
+### Added
 
-* Improved performance of non-contiguous multi-register scans
-* Improved write performance and subsequent read/publish of updated value
-* Fixed data points randomly missing in upload to PVOutput ([#65](https://github.com/seud0nym/sigenergy2mqtt/discussions/65))
-* Fixed issue where sum of PVOutput export/import time period values might not sum to total exports/imports
-* Fixed decimals on maximum value (was 4294967.0 but should have been 4294967.29) of these updatable Plant sensors:
-  * PV Max Power Limit
-  * Grid Max Export Limit
-  * Grid Max Import Limit
-  * PCS Max Export Limit
-  * PCS Max Import Limit
-* Fixed entity ids of DC Charger sensors that were incorrectly and inconsistently named as Plant sensors: i.e. (actual ids depend on Device ID of inverter)
-  * `sigen_0_plant_vehicle_battery_voltage` → `sigen_0_dc_charger_1_vehicle_battery_voltage`
-  * `sigen_0_plant_vehicle_charging_current` → `sigen_0_dc_charger_1_vehicle_charging_current`
-  * `sigen_0_plant_dc_charger_output_power` → `sigen_0_dc_charger_1_output_power`
-  * `sigen_0_plant_vehicle_soc` → `sigen_0_dc_charger_1_vehicle_soc`
-  * `sigen_0_plant_dc_charger_current_charging_capacity` → `sigen_0_dc_charger_1_current_charging_capacity`
-  * `sigen_0_plant_dc_charger_current_charging_duration` → `sigen_0_dc_charger_1_current_charging_duration`
-* Fixed Max Charge Limit, Max Discharge Limit, and PV Max Power Limit controls that should only be available if the relevant Remote EMS mode (e.g. Command Charging or Command Discharging) is active
-* Fixed controls for values associated with Independent Phase Power Control that should only be available when Independent Phase Power Control was enabled 
+- Implemented Sigenergy Modbus Protocol V2.8 (2025-11-20), including:
+  - New Sigenergy Plant Grid Code device for managing HVRT, LVRT, and Over/Under-frequency settings
+  - Plant-level alarm sensors
+  - Plant General/Total Load Power sensors
+  - Plant Grid Sensor phase current and voltage sensors
+  - Plant Active Power Regulation Gradient control
+  - DC Charger Running State
+  - Support for new inverter models with up to 36 PV strings
 
-### What's Changed?
+### Changed
 
-* All sensors are now Modbus Protocol version aware, and are only scanned and published if the firmware supports the protocol version
-* Write operations are now validated before committing, and failed validations will be logged
-* Upgraded dependencies:
-  * pymodbus: 3.11.3 → 3.11.4
+- All sensors are now Modbus Protocol version aware and only scanned/published if the firmware supports that protocol version
+- Sensor changes from Protocol V2.8 will not be published until appropriate firmware is installed
+- Write operations are now validated before committing; failed validations are logged
+- Upgraded `pymodbus` from 3.11.3 to 3.11.4
+- Improved performance of non-contiguous multi-register scans
+- Improved write performance and subsequent read/publish of updated value
 
-### What's New?
+### Removed
 
-* Implemented Sigenergy Modbus Protocol V2.8 (2025-11-20), although sensor changes will not be published until the appropriate firmware has been installed:
-  * New Sigenergy Plant Grid Code device to manage HVRT, LVRT, and Over/Under-frequency settings
-  * Plant-level alarm sensors
-  * Plant General/Total Load Power sensors
-  * Plant Grid Sensor phase current and phase voltage sensors
-  * Plant Active Power Regulation Gradient control
-  * DC Charger Running State
-  * Added support for new inverter models that can have up to 36 PV strings
-  * Removed sensors that are not available to some specific inverter models (does not affect SigenStor or Sigen Hybrid)
+- Sensors not available on some specific inverter models (does not affect SigenStor or Sigen Hybrid)
 
+### Fixed
 
-## 2025.11.23
+- Fixed data points randomly missing in uploads to PVOutput
+- Fixed issue where sum of PVOutput export/import time period values might not equal total exports/imports
+- Fixed decimal precision on maximum value of updatable Plant sensors: PV Max Power Limit, Grid Max Export/Import Limit, PCS Max Export/Import Limit
+- Fixed entity ids of DC Charger sensors that were incorrectly named as Plant sensors (e.g. `sigen_0_plant_vehicle_battery_voltage` → `sigen_0_dc_charger_1_vehicle_battery_voltage`)
+- Fixed Max Charge Limit, Max Discharge Limit, and PV Max Power Limit controls to only be available when the relevant Remote EMS mode is active
+- Fixed controls for Independent Phase Power Control values to only be available when that mode is enabled
 
-### What's Fixed
+---
 
-* Fixed errors found during an audit of the sensors against the Modbus Protocol document:
-  * Missing sensor: InverterPowerFactorAdjustmentFeedback
-  * ACChargerChargingPower was being incorrectly decoded as an unsigned value but should be a signed value
-  * ACChargerRatedVoltage was being incorrectly decoded as a signed value but should be an unsigned value
-  * Inverter PhaseCurrent was being incorrectly decoded as an unsigned value but should be a signed value
+## [2025.11.23] - 2025-11-23
 
-### What's New?
+### Added
 
-* Added new options for specifying which Voltage value is uploaded to PVOutput ([#61](https://github.com/seud0nym/sigenergy2mqtt/issues/61))
+- New options for specifying which voltage value is uploaded to PVOutput ([#61](https://github.com/seud0nym/sigenergy2mqtt/issues/61))
 
-## 2025.11.19
+### Fixed
 
-### What's Fixed
+- Added missing sensor: `InverterPowerFactorAdjustmentFeedback`
+- `ACChargerChargingPower` was incorrectly decoded as unsigned; corrected to signed
+- `ACChargerRatedVoltage` was incorrectly decoded as signed; corrected to unsigned
+- Inverter `PhaseCurrent` was incorrectly decoded as unsigned; corrected to signed
 
-* Fixed handling of decimal places on PVOutput extended data ([#59](https://github.com/seud0nym/sigenergy2mqtt/issues/59))
-* Modified Inverter Power Factor error handling so that when an invalid value (such as 64536) is read from the Modbus interface, the actual Power Factor will be calculated from Active Power and Reactive Power and then published, rather than just ignoring the invalid value
+---
 
-### What's New?
+## [2025.11.19] - 2025-11-19
 
-* You can now define time periods (which must match the tariff time periods defined in PVOutput) for uploading exports and imports in the correct tariff slot (peak, off-peak, shoulder and high-shoulder)
+### Added
 
+- Support for defining time periods matching PVOutput tariff slots (peak, off-peak, shoulder, high-shoulder) for uploading exports and imports to the correct tariff slot
 
-## 2025.11.11
+### Fixed
 
-### What's Fixed
+- Fixed handling of decimal places on PVOutput extended data ([#59](https://github.com/seud0nym/sigenergy2mqtt/issues/59))
+- Modified Inverter Power Factor error handling: when an invalid value is read from Modbus, the actual Power Factor is now calculated from Active Power and Reactive Power and published, rather than discarding the value
 
-* Fixed missing device class that caused enumeration values to not be available in Home Assistant (https://whrl.pl/RgRDwB)
-* Fixed missing data type in derived sensors that caused `sigenergy2mqtt` to crash on start when they were used as PVOutput extended data ([#59](https://github.com/seud0nym/sigenergy2mqtt/issues/59))
+---
 
-### What's Changed
+## [2025.11.11] - 2025-11-11
 
-* Modified verification of end-of-day PVOutput updates to try and work around issue where PVOutput will silently ignore uploads
-* Upgraded dependencies:
-  * psutil: 7.1.1 → 7.1.3
-  * ruamel-yaml: 0.18.15 → 0.18.16 
+### Added
 
-### What's New?
+- New optional configuration options to control ping timeouts, and Modbus timeouts and retries, during auto-discovery
 
-* Added new optional configuration options that control ping timeouts, and Modbus timeouts and retries, during auto-discovery
+### Changed
 
+- Modified verification of end-of-day PVOutput updates to work around an issue where PVOutput silently ignores uploads
+- Upgraded `psutil` from 7.1.1 to 7.1.3
+- Upgraded `ruamel-yaml` from 0.18.15 to 0.18.16
 
-## 2025.10.21
+### Fixed
 
-### What's Fixed
+- Fixed missing device class that caused enumeration values to not be available in Home Assistant ([whrl.pl/RgRDwB](https://whrl.pl/RgRDwB))
+- Fixed missing data type in derived sensors that caused a crash on start when they were used as PVOutput extended data ([#59](https://github.com/seud0nym/sigenergy2mqtt/issues/59))
 
-* Changed the way that the random MQTT Client ID was generated because of issues with entropy in Docker containers ([#47](https://github.com/seud0nym/sigenergy2mqtt/issues/47))
-* Now exits gracefully with an appropriate error message if auto-discovery fails to find a device, rather than just crashing ([#49](https://github.com/seud0nym/sigenergy2mqtt/issues/49))
-* Fixed bug in detection of PVOutput donation status that caused it to always be false, so extended data fields were never uploaded
-* Data errors in PVOutput uploads are now reported correctly and do not trigger a retry of the upload
-* During a grid outage, AC/DC charger power will be ignored in the calculation of Plant Consumed Power because if these devices are not backed up, the absence of data causes consumption to not be published
+---
 
-### What's Changed
+## [2025.10.21] - 2025-10-21
 
-* All scan intervals now have a minimum interval of 1 second
-* Generation and consumption uploaded to PVOutput is now the power value over the status interval (rather than uploading lifetime energy and letting PVOutput calculate power) so that the system will show correctly in Live Outputs
-* If an energy sensor is specified in the PVOutput extended data fields, the value sent to PVOutput will be the power value over the status interval for consistency with other PVOutput uploads
-* The entity id can now be used to specify PVOutput extended data fields (sensor class name can still be used)
-* Upgraded dependencies:
-  * psutil: 7.1.0 → 7.1.1
+### Added
 
-### What's New?
+- PVOutput battery data support (for donators): status updates now automatically include Battery Power, SoC, Usable Capacity, and Lifetime Charge/Discharge
 
-* PVOutput now supports battery data (for donators only), so status updates will now automatically include Battery Power, SoC, Usable Capacity, and Lifetime Charge/Discharge
+### Changed
 
+- All scan intervals now have a minimum of 1 second
+- Generation and consumption uploaded to PVOutput is now the power value over the status interval (rather than lifetime energy), so the system shows correctly in Live Outputs
+- Energy sensor values in PVOutput extended data fields now send the power value over the status interval for consistency
+- The entity id can now be used to specify PVOutput extended data fields (sensor class name still supported)
+- Changed random MQTT Client ID generation to resolve entropy issues in Docker containers ([#47](https://github.com/seud0nym/sigenergy2mqtt/issues/47))
+- Upgraded `psutil` from 7.1.0 to 7.1.1
 
-## 2025.10.12
+### Fixed
 
-### What's Fixed
+- Fixed graceful exit with an appropriate error message when auto-discovery fails to find a device ([#49](https://github.com/seud0nym/sigenergy2mqtt/issues/49))
+- Fixed bug in detection of PVOutput donation status that caused it to always be false, preventing extended data fields from being uploaded
+- Data errors in PVOutput uploads are now reported correctly and no longer trigger a retry
+- During a grid outage, AC/DC charger power is now excluded from Plant Consumed Power calculation
 
-* Fixed default_entity_id missing platform prefix in Home Assistant MQTT auto-discovery that caused all sensors to be named `unnamed_device_xx_xxx` ([#44](https://github.com/seud0nym/sigenergy2mqtt/issues/44)/[#45](https://github.com/seud0nym/sigenergy2mqtt/issues/45)) for _new_ installs
+---
 
-### What's Changed
+## [2025.10.12] - 2025-10-12
 
-* Internal code refactoring in PVOutput services
+### Changed
 
+- Internal code refactoring in PVOutput services
 
-## 2025.10.5
+### Fixed
 
-### Known Issues
+- Fixed `default_entity_id` missing platform prefix in Home Assistant MQTT auto-discovery, which caused all sensors to be named `unnamed_device_xx_xxx` on new installs ([#44](https://github.com/seud0nym/sigenergy2mqtt/issues/44), [#45](https://github.com/seud0nym/sigenergy2mqtt/issues/45))
 
-1. Invalid Inverter Power Factor values outside of the valid range of 0.0 to 1.0 have been ignored and not published since Release 2025.9.24 (although a warning log message is generated). Nonsensical values like 64.5 have been reported to Sigenergy with detailed logs.
-1. The PVOutput end-of-day output upload (exports, imports, and peak power) sometimes appears to fail with no reason. Peak power gets recorded, but exports and imports do not appear in the Daily Standard or Details views in PVOutput. No error is reported by PVOutput. This problem is still under investigation.
+---
 
-### What's Fixed
+## [2025.10.5] - 2025-10-05
 
-* Corrected the state class for Total Consumption on Smart Load ports (should be TOTAL INCREASING, not TOTAL) [(#39)](https://github.com/seud0nym/sigenergy2mqtt/pull/39) - Thanks to @3432
-* Home Assistant MQTT auto-discovery requires "default_entity_id" as of Core 2025.10
+### Added
 
-### What's Changed?
+- PVOutput donators can now specify up to six numeric sensor classes as extended data
+- Verification of PVOutput daily upload with retry if not recorded correctly
+- Tracing of Modbus packets when sensor debugging is enabled
 
-* Reworked PVOutput upload to try and fix several issues:
-  * Changed scheduling logic because end-of-day output upload (export/import/peak power) could drift past midnight [(#36)](https://github.com/seud0nym/sigenergy2mqtt/issues/36)
-  * Upload of exports and imports can now be disabled (in addition to consumption which was already optional)
-  * End of day totals upload can now be scheduled to run at same interval as status updates, which means that export/import/peak power changes are visible during the day, rather than having to wait until next day
-  * Under some circumstances, some data was missing from the uploads
-* Auto-discovery changes:
-  * Modbus devices with lowest latency will be scanned first, to try and detect the Ethernet connection in preference to the Wi-Fi connection
-  * Already detected serial numbers will be ignored to prevent duplication of devices that have both Ethernet and Wi-Fi connectivity 
-* Retry failed MQTT connection on start-up 3 times at 30 second intervals before failing
-* Upgraded dependencies:
-  * pymodbus: 3.11.2 → 3.11.3
+### Changed
 
-### What's New?
+- Reworked PVOutput upload scheduling to fix end-of-day drift past midnight ([#36](https://github.com/seud0nym/sigenergy2mqtt/issues/36))
+- Upload of exports and imports can now be disabled (consumption was already optional)
+- End-of-day totals upload can now run at the same interval as status updates, making export/import/peak power changes visible during the day
+- Auto-discovery now scans Modbus devices with the lowest latency first to prefer Ethernet over Wi-Fi
+- Auto-discovery now ignores already detected serial numbers to prevent duplication on devices with both Ethernet and Wi-Fi
+- MQTT connection on start-up now retries 3 times at 30-second intervals before failing
+- Upgraded `pymodbus` from 3.11.2 to 3.11.3
 
-* Added tracing of Modbus packets when sensor debugging enabled
+### Fixed
 
+- Fixed state class for Total Consumption on Smart Load ports (corrected to `TOTAL_INCREASING`) ([#39](https://github.com/seud0nym/sigenergy2mqtt/pull/39))
+- Home Assistant MQTT auto-discovery now includes `default_entity_id` as required by Core 2025.10
+- Fixed various cases where some data was missing from PVOutput uploads
 
-## 2025.9.24-1
+---
 
-### What's Fixed?
+## [2025.9.24-1] - 2025-09-24
 
-* Installations with multiple inverters were _still_ not able to manually define multiple device ids [(#36)](https://github.com/seud0nym/sigenergy2mqtt/issues/36)
+### Fixed
 
+- Fixed an issue where installations with multiple inverters were still unable to manually define multiple device IDs ([#36](https://github.com/seud0nym/sigenergy2mqtt/issues/36))
 
-## 2025.9.24
+---
 
-### What's Fixed?
+## [2025.9.24] - 2025-09-24
 
-* Installations with multiple inverters were not able to enter multiple device ids [(#36)](https://github.com/seud0nym/sigenergy2mqtt/issues/36)
-* Auto-discovery could not be over-ridden by manually configuring a `Sigenergy Modbus Host` [(#36)](https://github.com/seud0nym/sigenergy2mqtt/issues/36)
-* Auto-discovery could duplicate plant and inverters when connected to LAN by both ethernet and Wi-Fi [(#36)](https://github.com/seud0nym/sigenergy2mqtt/issues/36)
-* AC/DC Charger Start/Stop actions reversed
-* MQTT subscriptions were not being renewed on reconnection to the MQTT broker (e.g. after updating the Mosquitto add-on), so no control value changes were being processed and no data was uploaded to PVOutput until add-on was restarted
-* Status uploads are now only sent to PVOutput if the source sensors are being updated
-* Improved documentation
+### Added
 
-### What's New?
+- PVOutput donators can now specify up to six numeric sensor classes as extended data
+- Verification of PVOutput daily upload with retry if not recorded correctly
 
-* PVOutput donators can now specify up to six numeric sensor classes to be uploaded as extended data
-* Verification of PVOutput daily upload and retry if not recorded correctly
+### Changed
 
-### What's Changed?
+- Refactored Phase sensors and sensors with string values to remove code duplication
+- Refactored sensor publishing locking strategy
+- Refactored Modbus handling to reduce the number of reads and improve performance at high-frequency scan intervals
+- Added sanity checks to inverter power factor and temperature sensors
+- Upgraded `home-assistant/builder` from 2025.03.0 to 2025.09.0
+- Upgraded `pymodbus` from 3.11.1 to 3.11.2
+- Upgraded `psutil` from 7.0.0 to 7.1.0
 
-* Refactored Phase sensors and sensors that have string values to remove code duplication
-* Refactored sensor publishing locking strategy
-* Refactored Modbus handling to reduce number of reads and improve performance at high-frequency scan intervals
-* Added sanity checks to inverter power factor and temperature sensors
-* Upgraded home-assistant/builder: 2025.03.0 → 2025.09.0
-* Upgraded dependencies:
-  * pymodbus: 3.11.1 → 3.11.2
-  * psutil: 7.0.0 → 7.1.0
+### Fixed
 
+- Fixed installations with multiple inverters being unable to enter multiple device IDs ([#36](https://github.com/seud0nym/sigenergy2mqtt/issues/36))
+- Fixed auto-discovery not being overridable by manually configuring a Sigenergy Modbus Host ([#36](https://github.com/seud0nym/sigenergy2mqtt/issues/36))
+- Fixed auto-discovery duplicating plant and inverters when connected via both Ethernet and Wi-Fi ([#36](https://github.com/seud0nym/sigenergy2mqtt/issues/36))
+- Fixed AC/DC Charger Start/Stop actions being reversed
+- Fixed MQTT subscriptions not being renewed on reconnection to the broker, preventing control changes and PVOutput uploads until restart
+- Status uploads to PVOutput are now only sent if source sensors are being updated
 
-## 2025.8.31
+---
 
-### What's Fixed?
+## [2025.8.31] - 2025-08-31
 
-* Fixed bug in resetting calculated daily sensors on restart
-* Fixed names of AC/DC Charger Start/Stop buttons (previously labelled as Power On/Off)
+### Added
 
-### What's New?
+- Auto-discovery of Sigenergy Modbus hosts and device IDs (runs by default when no host is specified, or can be forced manually)
+- `CRITICAL` logging level for PVOutput, MQTT, and Modbus to suppress all non-fatal log messages
 
-* Auto-discovery of Sigenergy Modbus hosts and device IDs. This will happen by default if no Sigenergy Modbus Host is specified in the Configuration, or you may optionally force it.
+### Changed
 
-### What's Changed?
+- Upgraded `pymodbus` from 3.11.0 to 3.11.1
+- Upgraded `requests` from 2.32.4 to 2.32.5
+- Upgraded `ruamel.yaml` from 0.18.14 to 0.18.15
+- Alarm sensor values are now capped at the Home Assistant limit of 255 characters
+- `.yaml` files are now excluded from stale file clean-up
 
-* Upgraded dependencies:
-  * pymodbus: 3.11.0 → 3.11.1
-  * requests: 2.32.4 → 2.32.5
-  * ruamel.yaml: 0.18.14 → 0.18.15
-* Added CRITICAL logging level for PVOutput, MQTT and Modbus to eliminate all log messages except those that are fatal
-* Ensure the length of combined alarm sensor values does not exceed HA limit of 255 characters
-* Exclude .yaml files from stale file clean-up
+### Fixed
 
+- Fixed bug in resetting calculated daily sensors on restart
+- Fixed names of AC/DC Charger Start/Stop buttons (previously labelled as Power On/Off)
 
-## 2025.8.15
+---
 
-### What's Fixed?
+## [2025.8.15] - 2025-08-15
 
-* Fixed AssertionError when creating AC Charger device
+### Fixed
 
+- Fixed `AssertionError` when creating AC Charger device
 
-## 2025.8.11
+---
 
-### What's Fixed?
+## [2025.8.11] - 2025-08-11
 
-* Smart Load Power sensors (01-24) had incorrect Unit of Measurement (kWh should be kW) and Device Class (Energy should be Power) ([#20](https://github.com/seud0nym/sigenergy2mqtt/issues/20))
+### Added
 
-### What's Changed?
+- MQTT broker communication can now be configured to use TLS/SSL encryption ([#19](https://github.com/seud0nym/sigenergy2mqtt/issues/19))
 
-* Sensor attributes now contain source for derived (calculated) sensors and any relevant comments from the Modbus Protocol document
-* Consumed Power now includes AC/DC Charger output power
-* Alarms and AC/DC Charger power sensors are now refreshed at the 'realtime' scan interval (default = 5s)
-* Upgraded to pymodbus 3.11.0
-* Add-on now built from same wheel as Docker build, rather than pulling latest version from PyPi
+### Changed
 
-### What's New?
+- Sensor attributes now include the source for derived (calculated) sensors and relevant comments from the Modbus Protocol document
+- Consumed Power now includes AC/DC Charger output power
+- Alarms and AC/DC Charger power sensors are now refreshed at the realtime scan interval (default: 5s)
+- Upgraded to `pymodbus` 3.11.0
+- App is now built from the same wheel as the Docker build, rather than pulling from PyPI
 
-* MQTT broker communication can now be configured to use TSL/SSL encryption if the configured broker supports it ([#19](https://github.com/seud0nym/sigenergy2mqtt/issues/19))
+### Fixed
 
+- Smart Load Power sensors (01–24) had incorrect Unit of Measurement (kWh → kW) and Device Class (Energy → Power) ([#20](https://github.com/seud0nym/sigenergy2mqtt/issues/20))
 
-## 2025.8.5
+---
 
-### What's Fixed?
+## [2025.8.5] - 2025-08-05
 
-* Fixed 'dictionary changed size during iteration' error in PVOutput services ([#16](https://github.com/seud0nym/sigenergy2mqtt/issues/16))
-* Fixed infinite loop on error in PVOutput services ([#16](https://github.com/seud0nym/sigenergy2mqtt/issues/16))
-* Fixed incorrect device class and state class for inverter `Reactive Power Fixed Value Adjustment Feedback`
-* Fixed 'Lock bound to different event loop' error during metrics publish
-* Logged failure to connect to MQTT broker rather than silently failing
+### Changed
 
-### What's Changed?
+- Improved accuracy of sensor scanning intervals
+- Improved general exception logging
+- PVOutput last-updated warnings now appear at most once per hour
 
-* Improved accuracy of sensor scanning intervals
-* Improved general exception logging with improved representation of error
-* PVOutput last updated warnings will only appear at most once per hour
+### Fixed
 
+- Fixed `dictionary changed size during iteration` error in PVOutput services ([#16](https://github.com/seud0nym/sigenergy2mqtt/issues/16))
+- Fixed infinite loop on error in PVOutput services ([#16](https://github.com/seud0nym/sigenergy2mqtt/issues/16))
+- Fixed incorrect device class and state class for inverter `Reactive Power Fixed Value Adjustment Feedback`
+- Fixed `Lock bound to different event loop` error during metrics publish
+- Logged failure to connect to MQTT broker rather than failing silently
 
-## 2025.8.3
+---
 
-### What's Fixed?
+## [2025.8.3] - 2025-08-03
 
-* Fixed merging of add-on configuration when a configuration file was used ([#14](https://github.com/seud0nym/sigenergy2mqtt/issues/14))
+### Fixed
 
+- Fixed merging of app configuration when a configuration file was used ([#14](https://github.com/seud0nym/sigenergy2mqtt/issues/14))
 
-## 2025.8.2-1
+---
 
-### What's Fixed?
+## [2025.8.2-1] - 2025-08-02
 
-* Fixed bug introduced in 2025.8.2 when handling command line options ([#15](https://github.com/seud0nym/sigenergy2mqtt/issues/15))
+### Fixed
 
+- Fixed bug introduced in 2025.8.2 when handling command line options ([#15](https://github.com/seud0nym/sigenergy2mqtt/issues/15))
 
-## 2025.8.2
+---
 
-### What's Fixed?
+## [2025.8.2] - 2025-08-02
 
-* Fixed Max Charge Limit, Max Discharge Limit and PV Max Power Limit not available when Remote EMS enabled ([#12](https://github.com/seud0nym/sigenergy2mqtt/issues/12))
-* Fixed incorrect publishing of unpublishable sensors on Home Assistant restart
-* Fixed warning log messages when saved state files contain initial `None` value
-* Fixed Sigenergy Modbus Protocol version in Plant Device Info (was showing V2.5 but should be V2.7)
-* Fixed Inverter Device Info hardware version not updating after firmware update
-* Workaround for alarm values returned as a list rather than single UINT16
-* Fixed handling of Modbus connection failure and reduced associated log spamming
+### Added
 
-### What's New?
+- New `Sigenergy Metrics` device with Modbus read/write metrics (disabled by default; controlled by new `Enable sigenergy2mqtt Metrics` option)
+- Added several inverter sensors that threw ILLEGAL DATA ADDRESS errors prior to Firmware V100R001C00SPC110 (disabled by default): Active Power Fixed Value Adjustment Feedback, Reactive Power Fixed Value Adjustment Feedback, Active Power Percentage Adjustment Feedback, Reactive Power Percentage Adjustment Feedback
+- Updatable sensor attributes now include the update topic for use in automations
+- Warning log message if PVOutput source topics are not updated within the last update interval
 
-* Added a new `Sigenergy Metrics` device containing some `sigenergy2mqtt` Modbus read/write metrics
-  * By default this is disabled, but there is a new configuration option called `Enable sigenergy2mqtt Metrics` which can be used to control the publication of the metrics
-* Added some inverter sensors that threw ILLEGAL DATA ADDRESS errors prior to Firmware V100R001C00SPC110 (these sensors will not be enabled by default):
-  * Active Power Fixed Value Adjustment Feedback
-  * Reactive Power Fixed Value Adjustment Feedback
-  * Active Power Percentage Adjustment Feedback
-  * Reactive Power Percentage Adjustment Feedback
-* The attributes of updatable sensors now contains the update topic for use in automations 
-* Added warning log message if PVOutput source topics not updated within last update interval
+### Removed
 
-### What's Gone?
+- `PVOutput Interval` configuration option (Status Interval is now determined from pvoutput.org via the API)
+- AC/DC Charger statistics are no longer published if no chargers are defined
 
-* The `PVOutput Interval` configuration option has been removed because the Status Interval is now determined from the settings on pvoutput.org via the PVOutput API
-* AC/DC Charger statistics will not be published if no chargers defined
+### Changed
 
-### What's Changed?
+- Upgraded `paho-mqtt` from 1.6.1 to 2.1.0
+- Upgraded `pymodbus` from 3.8.4 to 3.10.0
+- Upgraded `requests` from 2.32.3 to 2.32.4
+- Upgraded `ruamel.yaml` from 0.18.6 to 0.18.14
+- Cleaned up informational messages that were only used for debugging
+- Removed stale persistent state files on initialisation
 
-* Upgraded dependencies:
-  * paho-mqtt: 1.6.1 → 2.1.0
-  * pymodbus: 3.8.4 → 3.10.0
-  * requests: 2.32.3 → 2.32.4
-  * ruamel.yaml: 0.18.6 → 0.18.14
-* Cleaned up some informational messages that were only used for debugging
-* Removed stale persistent state files on initialisation
+### Fixed
 
-## 2025.7.19
+- Fixed Max Charge Limit, Max Discharge Limit, and PV Max Power Limit not being available when Remote EMS is enabled ([#12](https://github.com/seud0nym/sigenergy2mqtt/issues/12))
+- Fixed incorrect publishing of unpublishable sensors on Home Assistant restart
+- Fixed warning log messages when saved state files contain an initial `None` value
+- Fixed Sigenergy Modbus Protocol version in Plant Device Info (was V2.5, should be V2.7)
+- Fixed Inverter Device Info hardware version not updating after a firmware update
+- Added workaround for alarm values returned as a list rather than a single UINT16
+- Fixed handling of Modbus connection failure and reduced associated log spamming
 
-* Fixed bug that caused some write operations to fail ([#9](https://github.com/seud0nym/sigenergy2mqtt/issues/9))
-* Fixed potential issue with installations that have multiple inverters
-* Added average voltage across PV strings to PVOutput status updates
-* Added ability to optionally add temperature to PVOutput status updates by defining an MQTT topic from which current temperature can be obtained
+---
 
-## 2025.7.13-1
+## [2025.7.19] - 2025-07-19
 
-* Fixed bug that caused DailyChargeEnergy, DailyDischargeEnergy, TotalLoadDailyConsumption, and InverterPVDailyGeneration to be disabled at midnight when they reset to zero ([Discussion #6](https://github.com/seud0nym/sigenergy2mqtt/discussions/6))
+### Added
 
+- Average voltage across PV strings added to PVOutput status updates
+- Ability to optionally add temperature to PVOutput status updates via an MQTT topic
 
-## 2025.7.13
+### Fixed
 
-* Fixed bug that prevented PVOutput peak-power reporting
-* Fixed bug that caused PVOutput values to be incorrect by factor of 10
-  * Because of the way that PVOutput validates uploaded data, the remaining updates for the day you install this fix may not be recorded
-* Minor fixes to aid debugging
+- Fixed bug that caused some write operations to fail ([#9](https://github.com/seud0nym/sigenergy2mqtt/issues/9))
+- Fixed potential issue with installations that have multiple inverters
 
-## 2025.7.10
+---
 
-> [!WARNING]  
-> All accumulation sensors that were previously calculated by `sigenergy2mqtt` and have now been replaced by values read from the Modbus interface will probably record a large increase or decrease after installing this release, reflecting the change from an estimated value to the real value as provided by the Modbus interface.
+## [2025.7.13-1] - 2025-07-13
 
-> [!WARNING]  
-> All daily sensors that were previously derived from a calculated accumulation sensor will also reflect a large increase or decrease, as they are calculated from the accumulation sensor value as at the previous midnight. You can adjust the daily figures manually through the provided "Set Daily ..." controls, or they will update correctly on the next day.
+### Fixed
 
-* Fixed stepping on the percentage sliders so that they increment/decrement by 1 rather than fractions
-* Added default sanity checks on all power and energy sensors
-  * The sanity check value can be modified through the Add-on configuration
-  * The default value is 100:
-    * Power sensor values that are outside the range of ±100 kW per second (measured by scan interval) will be ignored
-    * Changes in energy sensor values that are outside the range of ±100 kWh per second (measured by scan interval) will be ignored
-  * Sanity check minimum/maximum values for individual sensors can be set using a configuration file
+- Fixed bug that caused `DailyChargeEnergy`, `DailyDischargeEnergy`, `TotalLoadDailyConsumption`, and `InverterPVDailyGeneration` to be disabled at midnight when they reset to zero ([Discussion #6](https://github.com/seud0nym/sigenergy2mqtt/discussions/6))
 
-* Implemented Sigenergy Modbus Protocol V2.6
-  * Replaced calculated plant running info sensors with values now supplied by the Modbus interface: 
-    * Lifetime PV Production
-    * Daily Consumption
-    * Lifetime Consumption 
-  * Added new plant sensors for Smart Load 01-24 Total Consumption and Power
-  * Ability to set battery Backup SoC, Charge Cut-Off SoC, and Discharge Cut-Off SoC
-  * Replaced calculated inverter sensors with values supplied by the Modbus interface: 
-    * Daily PV Production
-    * Lifetime PV Production
-    
-* Implemented Sigenergy Modbus Protocol V2.7
-  * New sensors for Third-Party PV Power and Lifetime PV Energy supplied by the Modbus interface
-      * These sensor can replace the `sigenergy2mqtt` Smart-Port configuration (although they do appear to be updated less frequently)
-  * Replaced calculated plant running info sensors with values now supplied by the Modbus interface: 
-    * Lifetime Charge Energy
-    * Lifetime Discharge Energy
-    * Lifetime Imported Energy
-    * Lifetime Exported Energy
-  * Added new accumulation sensors now supplied by the Modbus interface:
-    * Lifetime DC EV Charge Energy
-    * Lifetime DC EV Discharge Energy
-    * Lifetime Generator Output Energy
-  * Added new Plant Statistics device for the new Modbus energy statistics interface to distinguish them from the legacy lifetime sensors
-    * Sensor values supplied by the Modbus interface: 
-      * Total Common Load Consumption
-      * Total AC EV Charge Energy
-      * Total Self PV Generation
-      * Total Third-Party PV Generation
-      * Total Charge Energy
-      * Total Discharge Energy
-      * Total DC EV Charge Energy
-      * Total DC EV Discharge Energy
-      * Total Imported Energy
-      * Total Exported Energy
-      * Total Generator Output Energy
-      
-> [!IMPORTANT]
-> For the new energy statistics interface from Modbus Protocol V2.7, after upgrading the device firmware to support this interface, the sensor values will reset to 0 and start fresh counting without inheriting historical data. They may therefore differ from the legacy sensors on the Plant device.
+---
 
+## [2025.7.13] - 2025-07-13
 
-## 2025.6.14
+### Fixed
 
-* Firmware V100R001C00SPC109 added new EMS Work Mode 'Time-Based Control'
-* Fixed Inverter Device Info not updating after firmware update
-* Ignored spurious peak power values for PVOutput outside of daylight hours
-* Ignored empty payloads from subscribed MQTT topics ([#4](https://github.com/seud0nym/sigenergy2mqtt/issues/4))
-* Changed wait timeout for Home Assistant discovery acknowledgement to 10s
+- Fixed bug that prevented PVOutput peak power reporting
+- Fixed bug that caused PVOutput values to be incorrect by a factor of 10
+- Minor fixes to aid debugging
 
-## 2025.6.11
+---
 
-* Added configuration options to allow scanning interval frequencies to be overridden
-* Fixed bug in scheduling next days PVOutput peak power update
+## [2025.7.10] - 2025-07-10
 
-## 2025.6.5
+> **Warning:** Accumulation sensors previously calculated by `sigenergy2mqtt` that have been replaced by Modbus values will likely record a large jump after this release, reflecting the change from an estimated to a real value.
 
-* Fixed PVOutput service losing daily peak power when service restarted
-* Refactored PVOutput services to remove code duplication
-* Refactored Modbus locking to implement timeouts
+> **Warning:** Daily sensors derived from a calculated accumulation sensor will also show a large change. These can be manually adjusted via the provided "Set Daily …" controls, or they will correct themselves on the next day.
 
-## 2025.5.31
+### Added
 
-Note: There is a version mismatch with this release. The actual version of `sigenergy2mqtt` included with this release of the add-on is 2025.6.1.
+- Implemented Sigenergy Modbus Protocol V2.6:
+  - Replaced calculated plant running info sensors with Modbus-sourced values: Lifetime PV Production, Daily Consumption, Lifetime Consumption
+  - New plant sensors for Smart Load 01–24 Total Consumption and Power
+  - Ability to set battery Backup SoC, Charge Cut-Off SoC, and Discharge Cut-Off SoC
+  - Replaced calculated inverter sensors: Daily PV Production, Lifetime PV Production
+- Implemented Sigenergy Modbus Protocol V2.7:
+  - New sensors for Third-Party PV Power and Lifetime PV Energy from Modbus
+  - Replaced calculated plant running info sensors: Lifetime Charge Energy, Lifetime Discharge Energy, Lifetime Imported Energy, Lifetime Exported Energy
+  - New accumulation sensors: Lifetime DC EV Charge Energy, Lifetime DC EV Discharge Energy, Lifetime Generator Output Energy
+  - New Plant Statistics device for the Modbus energy statistics interface, including: Total Common Load Consumption, Total AC/DC EV Charge Energy, Total Self/Third-Party PV Generation, Total Charge/Discharge Energy, Total Imported/Exported Energy, Total Generator Output Energy
+- Default sanity checks on all power and energy sensors (default ±100 kW or kWh per second); can be modified via configuration
 
-* Fixed bug in calculation of PV string power ([#2](https://github.com/seud0nym/sigenergy2mqtt/issues/2))
-* Fixed bug where Remote EMS availability was incorrectly applied to inverter R/W sensors, causing them to be unavailable for updates unless Remote EMS was enabled
-* Fixed bug in resetting daily accumulation totals
-* Fixed bug that prevented Enphase Smart-Port daily PV energy from being updated
-* Improved handling of negatives when accumulating energy lifetime statistics ([#2](https://github.com/seud0nym/home-assistant-addons/issues/2))
-* Added sanity check to ignore negative consumption ([#2](https://github.com/seud0nym/home-assistant-addons/issues/2))
-* Added new configuration option to allow all Remote EMS-related sensors to be hidden
-* Added new configuration option to log debug messages from a sensor (or from multiple sensors whose names contain the same string)
+### Fixed
 
-## 2025.5.30-1
+- Fixed stepping on percentage sliders so they increment/decrement by 1
 
-* Fix for failed start on 3 phase installations ([#3](https://github.com/seud0nym/home-assistant-addons/issues/3))
+> **Important:** After upgrading firmware to support the V2.7 energy statistics interface, sensor values will reset to 0 and begin counting fresh, without inheriting historical data.
 
-## 2025.5.30
+---
 
-* Fixed bug that caused all writes to Modbus registers to fail silently
-* Fixed bug that caused sensors that were only applicable to a PV inverter to be added to a Hybrid inverter, and vice-versa
-* Fixed bug that caused some sensors that are only applicable to 3 phase setups to be published for single phase installations
-* Fixed issues with precision when publishing derived sensors
-* Fixed bug that prevented PVOutput to be configured via Home Assistant Add-On, command line options and environment variables
-* Fixed handling of some environment variables and command line options that were documented but not fully implemented
-* Added capability to set sanity checking limits on values read from the Modbus registers via sensor overrides
-  * Added sanity check on `GridSensorActivePower` to ignore readings ±100kW ([#1](https://github.com/seud0nym/home-assistant-addons/issues/1))
-* Fixed logging level of some warnings that were incorrectly logged as errors ([#2](https://github.com/seud0nym/home-assistant-addons/issues/2))
+## [2025.6.14] - 2025-06-14
 
-## 2025.5.24
+### Changed
 
-* Daily Peak PV Power will now be automatically updated on PVOutput at 21:45 each day
-* Minor bug fixes
+- Added support for new EMS Work Mode `Time-Based Control` introduced in Firmware V100R001C00SPC109
+- Changed wait timeout for Home Assistant discovery acknowledgement to 10 seconds
 
-## 2025.5.18
+### Fixed
 
-* Fixed bug in applying device sensor publishable overrides
-* Fixed bug in initialisation of AC-Charger device
-* Added new configuration option to allow configuring for read-only access to the Modbus interface
+- Fixed Inverter Device Info not updating after a firmware update
+- Ignored spurious PVOutput peak power values outside of daylight hours
+- Ignored empty payloads from subscribed MQTT topics ([#4](https://github.com/seud0nym/sigenergy2mqtt/issues/4))
 
-## 2025.5.16-1
+---
 
-* Fixed validation issues and handling of multiple device IDs
+## [2025.6.11] - 2025-06-11
 
-## 2025.5.16
+### Added
 
-* Initial release
+- Configuration options to override scanning interval frequencies
+
+### Fixed
+
+- Fixed bug in scheduling the next day's PVOutput peak power update
+
+---
+
+## [2025.6.5] - 2025-06-05
+
+### Changed
+
+- Refactored PVOutput services to remove code duplication
+- Refactored Modbus locking to implement timeouts
+
+### Fixed
+
+- Fixed PVOutput service losing daily peak power when restarted
+
+---
+
+## [2025.5.31] - 2025-05-31
+
+### Added
+
+- New configuration option to allow all Remote EMS-related sensors to be hidden
+- New configuration option to log debug messages from a specific sensor or group of sensors
+
+### Changed
+
+- Improved handling of negatives when accumulating energy lifetime statistics ([#2](https://github.com/seud0nym/home-assistant-addons/issues/2))
+- Added sanity check to ignore negative consumption ([#2](https://github.com/seud0nym/home-assistant-addons/issues/2))
+
+### Fixed
+
+- Fixed bug in calculation of PV string power ([#2](https://github.com/seud0nym/sigenergy2mqtt/issues/2))
+- Fixed bug where Remote EMS availability was incorrectly applied to inverter R/W sensors, making them unavailable for updates unless Remote EMS was enabled
+- Fixed bug in resetting daily accumulation totals
+- Fixed bug that prevented Enphase Smart-Port daily PV energy from being updated
+
+---
+
+## [2025.5.30-1] - 2025-05-30
+
+### Fixed
+
+- Fixed failed start on 3-phase installations ([#3](https://github.com/seud0nym/home-assistant-addons/issues/3))
+
+---
+
+## [2025.5.30] - 2025-05-30
+
+### Added
+
+- Ability to set sanity checking limits on Modbus register values via sensor overrides
+- Sanity check on `GridSensorActivePower` to ignore readings outside ±100 kW ([#1](https://github.com/seud0nym/home-assistant-addons/issues/1))
+
+### Changed
+
+- Fixed logging level of some warnings that were incorrectly logged as errors ([#2](https://github.com/seud0nym/home-assistant-addons/issues/2))
+
+### Fixed
+
+- Fixed bug that caused all writes to Modbus registers to fail silently
+- Fixed bug causing sensors only applicable to PV inverters to be added to Hybrid inverters, and vice versa
+- Fixed bug causing some 3-phase-only sensors to be published for single-phase installations
+- Fixed precision issues when publishing derived sensors
+- Fixed bug that prevented PVOutput from being configured via the Home Assistant App, command line options, and environment variables
+- Fixed handling of some environment variables and command line options that were documented but not fully implemented
+
+---
+
+## [2025.5.24] - 2025-05-24
+
+### Added
+
+- Daily Peak PV Power is now automatically updated on PVOutput at 21:45 each day
+
+### Fixed
+
+- Minor bug fixes
+
+---
+
+## [2025.5.18] - 2025-05-18
+
+### Added
+
+- New configuration option for read-only access to the Modbus interface
+
+### Fixed
+
+- Fixed bug in applying device sensor publishable overrides
+- Fixed bug in initialisation of AC-Charger device
+
+---
+
+## [2025.5.16-1] - 2025-05-16
+
+### Fixed
+
+- Fixed validation issues and handling of multiple device IDs
+
+---
+
+## [2025.5.16] - 2025-05-16
+
+- Initial release
