@@ -8,6 +8,7 @@ hass-discovery-prefix
 hass-edit-pct-box
 hass-enabled
 hass-entity-id-prefix
+hass-sigenergy-local-modbus-naming
 hass-unique-id-prefix
 hass-use-simplified-topics
 influxdb-batch-size

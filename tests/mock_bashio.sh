@@ -21,7 +21,7 @@ function bashio::log.level() {
             ;;
     esac
 }
-function bashio::log.debug() {   [[ "${__BASHIO_LOG_LEVEL:-info}" == "debug" ]] && echo "[DEBUG] $1" >&2; }
+function bashio::log.debug() {   [[ "${__BASHIO_LOG_LEVEL:-info}" == "debug" ]] && echo "[DEBUG] $1" >&2 || true; }
 function bashio::log.info() {    echo "[INFO]  $1" >&2; }
 function bashio::log.warning() { echo "[WARN]  $1" >&2; }
 function bashio::log.fatal() {   echo "[FATAL] $1" >&2; }
