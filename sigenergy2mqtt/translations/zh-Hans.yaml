@@ -140,6 +140,9 @@ configuration:
       edit_pct_box:
         name: 启用百分比框编辑器
         description: 对百分比传感器使用数字输入框而非滑块。
+      sigenergy_local_modbus_naming:
+        name: Sigenergy-Local-Modbus 命名
+        description: 启用后将对传感器使用 TypQxQ/Sigenergy-Local-Modbus 实体命名规范。（更改此选项时，您还应启用 MQTT 消息清理，否则 Home Assistant 将忽略新的实体名称。）
       metrics_enabled:
         name: 启用指标
         description: 发布 sigenergy2mqtt 指标。

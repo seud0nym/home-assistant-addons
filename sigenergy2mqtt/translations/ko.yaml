@@ -140,6 +140,9 @@ configuration:
       edit_pct_box:
         name: 퍼센트 박스 편집기 활성화
         description: 퍼센트 센서에 슬라이더 대신 숫자 입력 박스 사용.
+      sigenergy_local_modbus_naming:
+        name: Sigenergy-Local-Modbus 명명
+        description: 센서에 TypQxQ/Sigenergy-Local-Modbus 엔티티 명명 규칙을 사용하려면 활성화하세요. (이 옵션을 변경할 때 MQTT 메시지 정리도 활성화해야 합니다. 그렇지 않으면 새 엔티티 이름이 Home Assistant에서 무시됩니다.)
       metrics_enabled:
         name: 메트릭 활성화
         description: sigenergy2mqtt 메트릭 게시.

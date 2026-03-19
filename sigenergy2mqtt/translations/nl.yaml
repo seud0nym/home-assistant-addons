@@ -140,6 +140,9 @@ configuration:
       edit_pct_box:
         name: Percentage box editor inschakelen
         description: Numeriek invoerveld gebruiken in plaats van schuifregelaar voor percentagesensoren.
+      sigenergy_local_modbus_naming:
+        name: Sigenergy-Local-Modbus Naamgeving
+        description: Inschakelen om de TypQxQ/Sigenergy-Local-Modbus entiteitsnaamgevingsconventie voor sensoren te gebruiken. (U moet ook het opschonen van MQTT-berichten inschakelen bij het wijzigen van deze optie, anders worden de nieuwe entiteitsnamen genegeerd door Home Assistant.)
       metrics_enabled:
         name: Metriek inschakelen
         description: sigenergy2mqtt metrieken publiceren.

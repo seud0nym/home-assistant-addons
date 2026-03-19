@@ -140,6 +140,9 @@ configuration:
       edit_pct_box:
         name: Enable Percentage Box Editor
         description: Enable to use a numeric entry box to change the value of percentage sensors or leave disabled to use a slider to change the value.
+      sigenergy_local_modbus_naming:
+        name: Sigenergy-Local-Modbus Naming
+        description: Enable to use the TypQxQ/Sigenergy-Local_Modbus entity naming convention for sensors. (You should also enable cleaning of MQTT messages when changing this option, otherwise the new entity names will be ignored by Home Assistant)
       metrics_enabled:
         name: Enable Metrics
         description: Enable the publication of sigenergy2mqtt metrics to Home Assistant.

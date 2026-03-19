@@ -140,6 +140,9 @@ configuration:
       edit_pct_box:
         name: Habilitar editor de caja de porcentaje
         description: Usar cuadro de entrada numérico en lugar de deslizador para sensores de porcentaje.
+      sigenergy_local_modbus_naming:
+        name: Nomenclatura Sigenergy-Local-Modbus
+        description: Activar para usar la convención de nomenclatura de entidades TypQxQ/Sigenergy-Local-Modbus para los sensores. (También deberías activar la limpieza de mensajes MQTT al cambiar esta opción, de lo contrario los nuevos nombres de entidad serán ignorados por Home Assistant.)
       metrics_enabled:
         name: Habilitar métricas
         description: Publicar métricas de sigenergy2mqtt.

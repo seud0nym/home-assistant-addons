@@ -140,6 +140,9 @@ configuration:
       edit_pct_box:
         name: Prozent-Box-Editor aktivieren
         description: Numerisches Eingabefeld statt Schieberegler für Prozentsensoren.
+      sigenergy_local_modbus_naming:
+        name: Sigenergy-Local-Modbus Benennung
+        description: Aktivieren, um die TypQxQ/Sigenergy-Local-Modbus-Entitätsbenennungskonvention für Sensoren zu verwenden. (Sie sollten auch die Bereinigung von MQTT-Nachrichten aktivieren, wenn Sie diese Option ändern, da andernfalls die neuen Entitätsnamen von Home Assistant ignoriert werden.)
       metrics_enabled:
         name: Metriken aktivieren
         description: sigenergy2mqtt-Metriken veröffentlichen.
