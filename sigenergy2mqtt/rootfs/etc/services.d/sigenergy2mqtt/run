@@ -4,289 +4,696 @@
 # s6-overlay docs: https://github.com/just-containers/s6-overlay
 # ==============================================================================
 
+# Timestamp must be set before any log output so that even fatal
+# messages emitted during log-level validation carry the correct format.
 # https://github.com/seud0nym/sigenergy2mqtt/issues/92
 __BASHIO_LOG_TIMESTAMP="%Y-%m-%d %H:%M:%S"
 
-bashio::log.info "Version $(bashio::addon.version)"
+# Single definition of the sentinel that means "use the built-in
+# default; skip emitting this parameter on the command line".
+readonly SKIP_SENTINEL="Default"
 
-bashio::log.info "Checking options..."
-# Migrate legacy options to grouped layout
-declare -A OPTIONS=(
-  ["modbus_force_auto_discovery"]="auto_discovery.force"
-  ["modbus_auto_discovery_ping_timeout"]="auto_discovery.ping_timeout"
-  ["modbus_auto_discovery_retries"]="auto_discovery.retries"
-  ["modbus_auto_discovery_timeout"]="auto_discovery.timeout"
-  ["modbus_host"]="manual_config.host"
-  ["modbus_port"]="manual_config.port"
-  ["modbus_slave"]="manual_config.inverter_device_id"
-  ["modbus_accharger_slave"]="manual_config.accharger_device_id"
-  ["modbus_dccharger_slave"]="manual_config.dccharger_device_id"
-  ["scan_interval_low"]="scan_interval.low"
-  ["scan_interval_medium"]="scan_interval.medium"
-  ["scan_interval_high"]="scan_interval.high"
-  ["scan_interval_realtime"]="scan_interval.realtime"
-  ["pvoutput_enabled"]="pvoutput.enabled"
-  ["pvoutput_api_key"]="pvoutput.api_key"
-  ["pvoutput_system_id"]="pvoutput.system_id"
-  ["pvoutput_consumption"]="pvoutput.consumption"
-  ["pvoutput_exports"]="pvoutput.exports"
-  ["pvoutput_imports"]="pvoutput.imports"
-  ["pvoutput_eod_update"]="pvoutput.eod_update"
-  ["pvoutput_voltage"]="pvoutput.voltage"
-  ["pvoutput_ext_v7"]="pvoutput.ext_v7"
-  ["pvoutput_ext_v8"]="pvoutput.ext_v8"
-  ["pvoutput_ext_v9"]="pvoutput.ext_v9"
-  ["pvoutput_ext_v10"]="pvoutput.ext_v10"
-  ["pvoutput_ext_v11"]="pvoutput.ext_v11"
-  ["pvoutput_ext_v12"]="pvoutput.ext_v12"
-  ["pvoutput_temp_topic"]="pvoutput.temp_topic"
-  ["mqtt_broker"]="mqtt.broker"
-  ["mqtt_port"]="mqtt.port"
-  ["mqtt_tls"]="mqtt.tls"
-  ["mqtt_username"]="mqtt.username"
-  ["mqtt_password"]="mqtt.password"
-  ["modbus_read_only"]="advanced.read_only"
-  ["modbus_no_remote_ems"]="advanced.no_remote_ems"
-  ["no_remote_ems_check"]="advanced.no_remote_ems_check"
-  ["consumption_method"]="advanced.consumption_method"
-  ["edit_pct_box"]="advanced.edit_pct_box"
-  ["sanity_check_default_kw"]="advanced.sanity_check_default_kw"
-  ["metrics_enabled"]="advanced.metrics_enabled"
-  ["device_name_prefix"]="advanced.device_name_prefix"
-  ["entity_id_prefix"]="advanced.entity_id_prefix"
-  ["unique_id_prefix"]="advanced.unique_id_prefix"
-  ["discovery_prefix"]="advanced.discovery_prefix"
-  ["debug_sensor"]="logging.debug_sensor"
-  ["log_level"]="logging.sigenergy2mqtt"
-  ["modbus_log_level"]="logging.modbus"
-  ["pvoutput_log_level"]="logging.pvoutput"
-  ["mqtt_log_level"]="logging.mqtt"
-  ["smartport_enabled"]="smartport.enabled"
-  ["smartport_module_name"]="smartport.module_name"
-  ["smartport_host"]="smartport.host"
-  ["smartport_username"]="smartport.username"
-  ["smartport_password"]="smartport.password"
-  ["smartport_pv_power"]="smartport.pv_power"
-  ["smartport_mqtt_topic"]="smartport.mqtt_topic"
-  ["smartport_mqtt_gain"]="smartport.mqtt_gain"
-)
-for legacy_option in "${!OPTIONS[@]}"; do
-  grouped_option="${OPTIONS[$legacy_option]}"
-  if bashio::config.has_value "${legacy_option}"; then
-    value="$(bashio::config "${legacy_option}")"
-    [[ "${value}" == "null" || -z "${value}" ]] && continue
-    bashio::log.info " → Migrating legacy option '${legacy_option}' to grouped option '${grouped_option}' with value '${value}'"
-    bashio::addon.option "${legacy_option}"
-    bashio::addon.option "${grouped_option}" "${value}"
+# HAS_CONFIG is written by config_file_check() and read by
+# add_mqtt_parameters(). Declare it here so the dependency is explicit and
+# a future reordering of the main-body calls is caught immediately.
+HAS_CONFIG=0
+
+if bashio::config.has_value 'logging.app'; then
+  log_level="$(bashio::config 'logging.app')"
+  if [[ $log_level != "$SKIP_SENTINEL" ]]; then
+    if [[ $log_level == ALL || $log_level == TRACE || $log_level == DEBUG || $log_level == INFO || $log_level == NOTICE || $log_level == WARNING || $log_level == ERROR || $log_level == CRITICAL || $log_level == OFF ]]; then
+      bashio::log.level "$log_level"
+    else
+      bashio::log.fatal "Invalid log level '$log_level' for parameter 'logging.app'"
+      exit 1
+    fi
   fi
-done
-# Remove obsolete options
-if bashio::config.exists 'pvoutput_interval'; then
-  bashio::log.info " → Removing obsolete option 'pvoutput_interval' from configuration"
-  bashio::addon.option 'pvoutput_interval'
 fi
 
-bashio::log.info "Configuring sigenergy2mqtt service options..."
-CMD_PARAMETERS=()
+log_value() {
+  local name_lc=${1,,}
+  local value="$2"
+  local quoted="${3:-true}"
+  if [[ "$name_lc" == *password* || "$name_lc" == *api[-_]key* || "$name_lc" == *token* ]]; then
+    echo -n "[REDACTED: ${#value} chars]"
+  else
+    if [[ "$quoted" == "true" ]]; then
+      echo -n "'$value'"
+    else
+      echo -n "$value"
+    fi
+  fi
+}
 
-if [[ -e /config/sigenergy2mqtt.yaml ]]; then
-  bashio::log.info "Configuration file found, using: /config/sigenergy2mqtt.yaml"
-  CMD_PARAMETERS+=(--config="/config/sigenergy2mqtt.yaml")
-  HAS_CONFIG=1
-else
-  bashio::log.info "No configuration file found, enabling Home Assistant discovery by default."
-  CMD_PARAMETERS+=(--hass-enabled)
-  HAS_CONFIG=0
-fi
+log_param() {
+  local param="$1"
+  local key="${param%%=*}"
+  local value="${param#*=}"
+  if [[ "$key" == *password* || "$key" == *api[-_]key* || "$key" == *token* ]]; then
+    echo -n "${key}=[REDACTED]"
+  else
+    echo -n "${param}"
+  fi
+}
 
-# Get logging and debugging parameters from the configuration
-bashio::config.has_value 'logging.sigenergy2mqtt' && CMD_PARAMETERS+=(--log-level="$(bashio::config 'logging.sigenergy2mqtt')")
-bashio::config.has_value 'logging.debug_sensor' && CMD_PARAMETERS+=(--debug-sensor="$(bashio::config 'logging.debug_sensor')")
 
-# Get Home Assistant parameters from the configuration
-bashio::config.has_value 'advanced.discovery_prefix' && CMD_PARAMETERS+=(--hass-discovery-prefix="$(bashio::config 'advanced.discovery_prefix')")
-bashio::config.has_value 'advanced.entity_id_prefix' && CMD_PARAMETERS+=(--hass-entity-id-prefix="$(bashio::config 'advanced.entity_id_prefix')")
-bashio::config.has_value 'advanced.unique_id_prefix' && CMD_PARAMETERS+=(--hass-unique-id-prefix="$(bashio::config 'advanced.unique_id_prefix')")
-bashio::config.has_value 'advanced.device_name_prefix' && CMD_PARAMETERS+=(--hass-device-name-prefix="$(bashio::config 'advanced.device_name_prefix')")
-bashio::config.has_value 'advanced.edit_pct_box' && [[ "$(bashio::config 'advanced.edit_pct_box')" == "true" ]] && CMD_PARAMETERS+=(--hass-edit-pct-box)
+#region Command line parameter helpers
+declare -a CMD_PARAMETERS=()
 
-# Get MQTT parameters from the MQTT add-on
-MQTT_BROKER=""
-MQTT_PASSWORD=""
-MQTT_PORT=1883
-MQTT_USERNAME=""
-if bashio::services.available "mqtt"; then
-  MQTT_BROKER="$(bashio::services "mqtt" "host")"
-  MQTT_PORT="$(bashio::services "mqtt" "port")"
-  MQTT_USERNAME="$(bashio::services "mqtt" "username")"
-  MQTT_PASSWORD="$(bashio::services "mqtt" "password")"
-  bashio::log.info "MQTT service available, using broker: ${MQTT_BROKER}, port: ${MQTT_PORT}, username: ${MQTT_USERNAME}, password: [REDACTED: ${#MQTT_PASSWORD} chars]"
-fi
-# Override the default MQTT parameters if the user has provided values
-bashio::log.info "Checking for MQTT overrides in the add-on configuration..."
-bashio::config.has_value 'mqtt.broker' && { MQTT_BROKER="$(bashio::config 'mqtt.broker')"; bashio::log.info "Overriding MQTT broker: '${MQTT_BROKER}'"; }
-bashio::config.has_value 'mqtt.port' && { MQTT_PORT="$(bashio::config 'mqtt.port')"; bashio::log.info "Overriding MQTT port: '${MQTT_PORT}'"; }
-bashio::config.has_value 'mqtt.username' && { MQTT_USERNAME="$(bashio::config 'mqtt.username')"; bashio::log.info "Overriding MQTT username: '${MQTT_USERNAME}'"; }
-bashio::config.has_value 'mqtt.password' && { MQTT_PASSWORD="$(bashio::config 'mqtt.password')"; bashio::log.info "Overriding MQTT password: [REDACTED: ${#MQTT_PASSWORD} chars]"; }
-bashio::config.has_value 'mqtt.tls' && { MQTT_TLS="$(bashio::config 'mqtt.tls')"; bashio::log.info "MQTT TLS Communication enabled: '${MQTT_TLS}'"; } || MQTT_TLS="false"
-bashio::config.has_value 'logging.mqtt' && CMD_PARAMETERS+=(--mqtt-log-level="$(bashio::config 'logging.mqtt')")
-[[ ! -z "${MQTT_BROKER}" ]] && CMD_PARAMETERS+=(--mqtt-broker="${MQTT_BROKER}")
-[[ ! -z "${MQTT_PORT}" ]] && CMD_PARAMETERS+=(--mqtt-port="${MQTT_PORT}")
-[[ "${MQTT_TLS}" == "true" ]] && CMD_PARAMETERS+=(--mqtt-tls)
-[[ ! -z "${MQTT_USERNAME}" ]] && CMD_PARAMETERS+=(--mqtt-username="${MQTT_USERNAME}")
-[[ ! -z "${MQTT_PASSWORD}" ]] && CMD_PARAMETERS+=(--mqtt-password="${MQTT_PASSWORD}")
-[[ -z "${MQTT_USERNAME}${MQTT_PASSWORD}" && $HAS_CONFIG == 0 ]] && CMD_PARAMETERS+=(--mqtt-anonymous)
+add_boolean_cmd_parameter() {
+  local parameter="$1"
+  local value="${2:-false}"
+  local add_if="${3:-true}"
+  if [[ "$value" == "$add_if" ]]; then
+    bashio::log.debug "*** Parameter '$parameter' added"
+    CMD_PARAMETERS+=($parameter)
+  else
+    bashio::log.debug "### Parameter '$parameter' SKIPPED (value=$value)"
+  fi
+}
 
-# Get Modbus parameters from the configuration
-bashio::config.has_value 'auto_discovery.force' && MODBUS_AUTO_DISCOVERY="$(bashio::config 'auto_discovery.force')" || MODBUS_AUTO_DISCOVERY='false'
-bashio::config.has_value 'manual_config.host' && MODBUS_HOST="$(bashio::config 'manual_config.host')" || MODBUS_HOST=""
-if [[ "$MODBUS_HOST" == "" && "${MODBUS_AUTO_DISCOVERY}" == "true" ]]; then
-  bashio::log.info "Forcing Modbus auto-discovery"
-  CMD_PARAMETERS+=(--modbus-auto-discovery=force)
-  bashio::addon.option 'auto_discovery.force' 'false'
-  bashio::log.info "Reset auto_discovery.force=$(bashio::config 'auto_discovery.force')"
-elif [[ "$MODBUS_HOST" == "" && -e /data/sigenergy2mqtt/auto-discovery.yaml ]]; then
-  bashio::log.info "Enabling Modbus auto-discovery because auto-discovery cache file exists and no host specified"
-  CMD_PARAMETERS+=(--modbus-auto-discovery=once)
-elif [[ "$MODBUS_HOST" == "" ]]; then
-  bashio::log.info "Enabling Modbus auto-discovery because no Modbus host specified"
-  CMD_PARAMETERS+=(--modbus-auto-discovery=once)
-else
-  if [[ "${MODBUS_AUTO_DISCOVERY}" == "true" ]]; then
-    bashio::log.warning "IGNORED forced Modbus auto-discovery, because a Modbus host is specified (${MODBUS_HOST})."
+add_boolean_cmd_parameter_from_config() {
+  local parameter="$1"
+  local key="$2"
+  local add_if="${3:-true}"
+  # When add_if==false the caller wants the flag emitted only when the config
+  # key is explicitly set to false (i.e. "disable this feature").  We evaluate
+  # even when the key is absent so that a missing key is treated identically to
+  # an explicit false value — bashio::config returns "" in that case, which
+  # does not match add_if ("false"), so the parameter is correctly skipped.
+  if bashio::config.has_value "$key" || [[ "$add_if" == "false" ]]; then
+    value="$(bashio::config "$key")"
+    add_boolean_cmd_parameter "$parameter" "$value" "$add_if"
+  else
+    bashio::log.debug "### Parameter '$parameter' SKIPPED ($key not found)"
+  fi
+}
+
+add_value_cmd_parameter() {
+  local parameter="$1"
+  local value="$2"
+  if [[ -z "${value}" || "${value}" == "null" ]]; then
+    bashio::log.debug "### Parameter '${parameter}' is empty or null, SKIPPING"
+  else
+    local -a values
+    read -ra values <<< "$value"
+    for v in "${values[@]}"; do
+      CMD_PARAMETERS+=("${parameter}=${v}")
+      bashio::log.debug "*** Parameter '${parameter}=$(log_value "$parameter" "$v" false)' added"
+    done
+  fi
+}
+
+add_value_cmd_parameter_from_config() {
+  local parameter="$1"
+  local key="$2"
+  if bashio::config.has_value "$key"; then
+    value="$(bashio::config "$key")"
+    if [[ "$value" == "$SKIP_SENTINEL" ]]; then
+      bashio::log.debug "### Parameter '${parameter}' SKIPPED (value '$value' == '$SKIP_SENTINEL')"
+    else
+      add_value_cmd_parameter "$parameter" "$value"
+    fi
+  else
+    bashio::log.debug "### Parameter '${parameter}' is empty or null, SKIPPING"
+  fi
+}
+#endregion
+
+
+#region Parameter processing functions
+add_advanced_parameters() {
+  bashio::log.debug ">>> Entering add_advanced_parameters()"
+  add_boolean_cmd_parameter_from_config --hass-edit-pct-box 'advanced.edit_pct_box'
+  add_boolean_cmd_parameter_from_config --hass-sigenergy-local-modbus-naming 'advanced.sigenergy_local_modbus_naming' true
+  add_boolean_cmd_parameter_from_config --no-metrics 'advanced.metrics_enabled' false
+  add_value_cmd_parameter_from_config --sanity-check-default-kw 'advanced.sanity_check_default_kw'
+  if bashio::config.has_value 'advanced.consumption_method'; then
+    case "$(bashio::config 'advanced.consumption_method')" in
+      "Total Load")       add_value_cmd_parameter --consumption total;;
+      "General Load")     add_value_cmd_parameter --consumption general;;
+      "Calculated")       add_value_cmd_parameter --consumption calculated;;
+    esac
+  fi
+  bashio::log.debug "<<< Exiting add_advanced_parameters()"
+}
+
+add_influxdb_parameters() {
+  bashio::log.debug ">>> Entering add_influxdb_parameters()"
+  local INFLUXDB_ENABLED
+  local INFLUXDB_HOST
+  local INFLUXDB_USERNAME
+  local INFLUXDB_PASSWORD
+  local INFLUXDB_TOKEN
+  local OPTION
+  if bashio::config.has_value 'influxdb.enabled'; then
+    INFLUXDB_ENABLED="$(bashio::config 'influxdb.enabled')"
+    if [[ "${INFLUXDB_ENABLED}" == "true" ]]; then
+      INFLUXDB_HOST=""
+      bashio::config.has_value 'influxdb.host' && INFLUXDB_HOST="$(bashio::config 'influxdb.host')"
+      if [[ -z "${INFLUXDB_HOST}" ]]; then
+        bashio::log.fatal "InfluxDB enabled, but host not configured; cannot continue."
+        exit 1
+      fi
+      # Read credentials
+      INFLUXDB_USERNAME=""
+      INFLUXDB_PASSWORD=""
+      INFLUXDB_TOKEN=""
+      bashio::config.has_value 'influxdb.username' && INFLUXDB_USERNAME="$(bashio::config 'influxdb.username')"
+      bashio::config.has_value 'influxdb.password' && INFLUXDB_PASSWORD="$(bashio::config 'influxdb.password')"
+      bashio::config.has_value 'influxdb.token' && INFLUXDB_TOKEN="$(bashio::config 'influxdb.token')"
+      # Validate credentials: need either username+password (v1) or token (v2)
+      if [[ -z "${INFLUXDB_USERNAME}" && -z "${INFLUXDB_TOKEN}" ]]; then
+        if [[ -n "${INFLUXDB_PASSWORD}" ]]; then
+          # Assume password is actually a token if no username or token specified
+          bashio::log.info "InfluxDB: No username or token specified but password supplied; treating password as v2 token."
+          INFLUXDB_TOKEN="${INFLUXDB_PASSWORD}"
+          INFLUXDB_PASSWORD=""
+        else
+          bashio::log.fatal "InfluxDB enabled, but no valid credentials configured; supply username+password (v1) or token (v2)."
+          exit 1
+        fi
+      fi
+      if [[ -n "${INFLUXDB_USERNAME}" && -z "${INFLUXDB_PASSWORD}" ]]; then
+        bashio::log.fatal "InfluxDB enabled with username but no password configured; cannot continue."
+        exit 1
+      fi
+      # Read database/org/bucket configuration
+      local INFLUXDB_DATABASE=""
+      local INFLUXDB_ORG=""
+      local INFLUXDB_BUCKET=""
+      bashio::config.has_value 'influxdb.database' && INFLUXDB_DATABASE="$(bashio::config 'influxdb.database')"
+      bashio::config.has_value 'influxdb.org' && INFLUXDB_ORG="$(bashio::config 'influxdb.org')"
+      bashio::config.has_value 'influxdb.bucket' && INFLUXDB_BUCKET="$(bashio::config 'influxdb.bucket')"
+      # Validate database/org/bucket based on version
+      if [[ -n "${INFLUXDB_TOKEN}" ]]; then
+        # v2: requires org, bucket defaults to database if not specified
+        if [[ -z "${INFLUXDB_ORG}" ]]; then
+          bashio::log.fatal "InfluxDB v2 enabled (token configured), but org not configured; cannot continue."
+          exit 1
+        fi
+        if [[ -z "${INFLUXDB_BUCKET}" ]]; then
+          if [[ -n "${INFLUXDB_DATABASE}" ]]; then
+            bashio::log.info "InfluxDB v2: No bucket specified; using database name '${INFLUXDB_DATABASE}' as bucket."
+            INFLUXDB_BUCKET="${INFLUXDB_DATABASE}"
+          else
+            bashio::log.fatal "InfluxDB v2 enabled (token configured), but neither bucket nor database configured; cannot continue."
+            exit 1
+          fi
+        fi
+      else
+        # v1: requires database
+        if [[ -z "${INFLUXDB_DATABASE}" ]]; then
+          bashio::log.fatal "InfluxDB v1 enabled (username/password configured), but database not configured; cannot continue."
+          exit 1
+        fi
+      fi
+      add_boolean_cmd_parameter --influxdb-enabled true
+      add_value_cmd_parameter --influxdb-host "${INFLUXDB_HOST}"
+      add_value_cmd_parameter_from_config --influxdb-port "influxdb.port"
+      [[ -n "${INFLUXDB_USERNAME}" ]] && add_value_cmd_parameter --influxdb-username "${INFLUXDB_USERNAME}"
+      [[ -n "${INFLUXDB_PASSWORD}" ]] && add_value_cmd_parameter --influxdb-password "${INFLUXDB_PASSWORD}"
+      [[ -n "${INFLUXDB_TOKEN}" ]] && add_value_cmd_parameter --influxdb-token "${INFLUXDB_TOKEN}"
+      [[ -n "${INFLUXDB_DATABASE}" ]] && add_value_cmd_parameter --influxdb-database "${INFLUXDB_DATABASE}"
+      [[ -n "${INFLUXDB_ORG}" ]] && add_value_cmd_parameter --influxdb-org "${INFLUXDB_ORG}"
+      [[ -n "${INFLUXDB_BUCKET}" ]] && add_value_cmd_parameter --influxdb-bucket "${INFLUXDB_BUCKET}"
+      # Handle include list
+      if bashio::config.has_value 'influxdb.include'; then
+        local INCLUDE_COUNT
+        INCLUDE_COUNT=$(bashio::config 'influxdb.include | length')
+        for (( i=0; i<INCLUDE_COUNT; i++ )); do
+          local SENSOR
+          SENSOR=$(bashio::config "influxdb.include[${i}].sensor")
+          if [[ -n "${SENSOR}" && "${SENSOR}" != "null" ]]; then
+            add_value_cmd_parameter --influxdb-include "${SENSOR}"
+          fi
+        done
+      fi
+      # Handle exclude list
+      if bashio::config.has_value 'influxdb.exclude'; then
+        local EXCLUDE_COUNT
+        EXCLUDE_COUNT=$(bashio::config 'influxdb.exclude | length')
+        for (( i=0; i<EXCLUDE_COUNT; i++ )); do
+          local SENSOR
+          SENSOR=$(bashio::config "influxdb.exclude[${i}].sensor")
+          if [[ -n "${SENSOR}" && "${SENSOR}" != "null" ]]; then
+            add_value_cmd_parameter --influxdb-exclude "${SENSOR}"
+          fi
+        done
+      fi
+    else
+      bashio::log.debug "### InfluxDB disabled, skipping InfluxDB parameters"
+    fi
+  else
+    bashio::log.debug "### InfluxDB not configured, skipping InfluxDB parameters"
+  fi
+  bashio::log.debug "<<< Exiting add_influxdb_parameters()"
+}
+
+add_language_parameter() {
+  bashio::log.debug ">>> Entering add_language_parameter()"
+  local api_url="http://supervisor/core/api/config"
+  local token="$SUPERVISOR_TOKEN"
+  local config_file="/config/.storage/core.config"
+  local lang=""
+  if bashio::config.has_value 'advanced.language'; then
+    local name="$(bashio::config 'advanced.language')"
+    case "$name" in
+      "Deutsch") lang="de" ;;
+      "English") lang="en" ;;
+      "Español") lang="es" ;;
+      "Français") lang="fr" ;;
+      "Italiano") lang="it" ;;
+      "日本語") lang="ja" ;;
+      "한국어") lang="ko" ;;
+      "Nederlands") lang="nl" ;;
+      "Português") lang="pt" ;;
+      "中文") lang="zh-Hans" ;;
+      *) lang="" ;;
+    esac
+    bashio::log.debug "*** Read language '$name' from configuration ($lang)"
+  fi
+  if [[ -z "${lang}" ]]; then
+    # 1. Try Home Assistant API (requires homeassistant_api: true)
+    if [ -n "$token" ]; then
+      bashio::log.debug "*** Reading language from Home Assistant API"
+      local curl_output
+      if curl_output=$(curl -sf -H "Authorization: Bearer $token" "$api_url"); then
+        lang=$(echo "$curl_output" | jq -r '.language // empty')
+      else
+        bashio::log.warning "Failed to reach Home Assistant API (exit code: $?)"
+      fi
+    fi
+    # 2. Default if nothing found
+    if [ -z "$lang" ] || [ "$lang" == "null" ]; then
+        bashio::log.debug "*** Using default language en-US"
+        lang="en-US"
+    fi
+    lang="${lang%%[-_]*}"
+  fi
+  add_value_cmd_parameter --language "${lang}"
+  bashio::log.debug "<<< Exiting add_language_parameter()"
+}
+
+add_logging_parameters() {
+  bashio::log.debug ">>> Entering add_logging_parameters()"
+  local OPTION
+  for OPTION in logging.sigenergy2mqtt:log-level logging.modbus:modbus-log-level logging.mqtt:mqtt-log-level logging.influxdb:influxdb-log-level logging.pvoutput:pvoutput-log-level; do
+    if bashio::config.has_value "${OPTION%%:*}"; then
+      local VALUE="$(bashio::config "${OPTION%%:*}")"
+      local PARAMETER="${OPTION##*:}"
+      if [[ $VALUE == "$SKIP_SENTINEL" ]]; then
+        bashio::log.debug "### Parameter '${PARAMETER}' SKIPPED (value '$VALUE' == '$SKIP_SENTINEL')"
+      elif [[ $VALUE == DEBUG || $VALUE == INFO || $VALUE == WARNING || $VALUE == ERROR || $VALUE == CRITICAL ]]; then
+        add_value_cmd_parameter "--$PARAMETER" "$VALUE"
+      else
+        bashio::log.fatal "Invalid log level '$VALUE' for parameter '${PARAMETER}'"
+        exit 1
+      fi
+    fi
+  done
+  add_value_cmd_parameter_from_config --debug-sensor 'logging.debug_sensor'
+  bashio::log.debug "<<< Exiting add_logging_parameters()"
+}
+
+add_modbus_parameters() {
+  bashio::log.debug ">>> Entering add_modbus_parameters()"
+  local MODBUS_AUTO_DISCOVERY="false"
+  local MODBUS_HOST=""
+  local MODBUS_READ_ONLY="false"
+  local OPTION
+  bashio::config.has_value 'auto_discovery.force' && MODBUS_AUTO_DISCOVERY="$(bashio::config 'auto_discovery.force')"
+  bashio::config.has_value 'manual_config.host' && MODBUS_HOST="$(bashio::config 'manual_config.host')"
+  if [[ "$MODBUS_HOST" == "" && "${MODBUS_AUTO_DISCOVERY}" == "true" ]]; then
+    bashio::log.info "Forcing Modbus auto-discovery"
+    add_value_cmd_parameter --modbus-auto-discovery force
     bashio::addon.option 'auto_discovery.force' 'false'
     bashio::log.info "Reset auto_discovery.force=$(bashio::config 'auto_discovery.force')"
-  fi
-  CMD_PARAMETERS+=(--modbus-host="${MODBUS_HOST}")
-  if bashio::config.has_value 'manual_config.inverter_device_id'; then
-    id=$(bashio::config 'manual_config.inverter_device_id')
-    CMD_PARAMETERS+=(--modbus-inverter-device-id ${id//,/ })
-  fi
-  if bashio::config.has_value 'manual_config.accharger_device_id'; then
-    id=$(bashio::config 'manual_config.accharger_device_id')
-    CMD_PARAMETERS+=(--modbus-accharger-device-id ${id//,/ })
-  fi
-  if bashio::config.has_value 'manual_config.dccharger_device_id'; then
-    id=$(bashio::config 'manual_config.dccharger_device_id')
-    CMD_PARAMETERS+=(--modbus-dccharger-device-id ${id//,/ })
-  fi
-fi
-if echo "${CMD_PARAMETERS[@]}" | grep -qe '--modbus-auto-discovery='; then
-  bashio::config.has_value 'auto_discovery.ping_timeout' && CMD_PARAMETERS+=(--modbus-auto-discovery-ping-timeout="$(bashio::config 'auto_discovery.ping_timeout')")
-  bashio::config.has_value 'auto_discovery.timeout' && CMD_PARAMETERS+=(--modbus-auto-discovery-timeout="$(bashio::config 'auto_discovery.timeout')")
-  bashio::config.has_value 'auto_discovery.retries' && CMD_PARAMETERS+=(--modbus-auto-discovery-retries="$(bashio::config 'auto_discovery.retries')")
-fi
-bashio::config.has_value 'manual_config.port' && CMD_PARAMETERS+=(--modbus-port="$(bashio::config 'manual_config.port')")
-bashio::config.has_value 'logging.modbus' && CMD_PARAMETERS+=(--modbus-log-level="$(bashio::config 'logging.modbus')")
-bashio::config.has_value 'advanced.read_only' && MODBUS_READ_ONLY="$(bashio::config 'advanced.read_only')"
-if [[ "${MODBUS_READ_ONLY}" == "true" ]]; then
-  CMD_PARAMETERS+=(--modbus-readonly) 
-  bashio::log.warning "Read-only mode enabled: No write operations can be performed."
-else
-  if bashio::config.has_value 'advanced.no_remote_ems' && [[ "$(bashio::config 'advanced.no_remote_ems')" == "true" ]]; then
-    CMD_PARAMETERS+=(--modbus-no-remote-ems) 
-    bashio::log.warning "Remote EMS mode disabled: No Remote EMS related sensors will be published."
+  elif [[ "$MODBUS_HOST" == "" && -e /data/sigenergy2mqtt/auto-discovery.yaml ]]; then
+    bashio::log.info "Enabling Modbus auto-discovery because auto-discovery cache file exists and no host specified"
+    add_value_cmd_parameter --modbus-auto-discovery once
+  elif [[ "$MODBUS_HOST" == "" ]]; then
+    bashio::log.info "Enabling Modbus auto-discovery because no Modbus host specified"
+    add_value_cmd_parameter --modbus-auto-discovery once
   else
-    if bashio::config.has_value 'advanced.no_remote_ems_check' && [[ "$(bashio::config 'advanced.no_remote_ems_check')" == "true" ]]; then
-      CMD_PARAMETERS+=(--no-remote-ems-check)
-      bashio::log.warning "Remote EMS checks disabled! ESS Max Charging/Discharging and PV Max Power limits will NOT be disabled when Remote EMS Control Mode is not Command Charging/Discharging."
+    if [[ "${MODBUS_AUTO_DISCOVERY}" == "true" ]]; then
+      bashio::log.warning "IGNORED forced Modbus auto-discovery, because a Modbus host is specified (${MODBUS_HOST})."
+      bashio::addon.option 'auto_discovery.force' 'false'
+      bashio::log.info "Reset auto_discovery.force=$(bashio::config 'auto_discovery.force')"
+    fi
+    add_value_cmd_parameter --modbus-host "${MODBUS_HOST}"
+    if bashio::config.has_value 'manual_config.inverter_device_id'; then
+      id=$(bashio::config 'manual_config.inverter_device_id')
+      add_value_cmd_parameter --modbus-inverter-device-id "${id//,/ }"
+    fi
+    if bashio::config.has_value 'manual_config.accharger_device_id'; then
+      id=$(bashio::config 'manual_config.accharger_device_id')
+      add_value_cmd_parameter --modbus-accharger-device-id "${id//,/ }"
+    fi
+    if bashio::config.has_value 'manual_config.dccharger_device_id'; then
+      id=$(bashio::config 'manual_config.dccharger_device_id')
+      add_value_cmd_parameter --modbus-dccharger-device-id "${id//,/ }"
     fi
   fi
-fi
-
-# Get the scanning interval frequencies from the configuration
-bashio::config.has_value 'scan_interval.low' && CMD_PARAMETERS+=(--scan-interval-low="$(bashio::config 'scan_interval.low')")
-bashio::config.has_value 'scan_interval.medium' && CMD_PARAMETERS+=(--scan-interval-medium="$(bashio::config 'scan_interval.medium')")
-bashio::config.has_value 'scan_interval.high' && CMD_PARAMETERS+=(--scan-interval-high="$(bashio::config 'scan_interval.high')")
-bashio::config.has_value 'scan_interval.realtime' && CMD_PARAMETERS+=(--scan-interval-realtime="$(bashio::config 'scan_interval.realtime')")
-
-# Get the sanity check default kW value from the configuration
-bashio::config.has_value 'advanced.sanity_check_default_kw' && CMD_PARAMETERS+=(--sanity-check-default-kw="$(bashio::config 'advanced.sanity_check_default_kw')")
-
-# Handle consumption method option
-case "$(bashio::config 'advanced.consumption_method')" in
-  "Total Load")             CMD_PARAMETERS+=(--consumption=total);;
-  "General Load")           CMD_PARAMETERS+=(--consumption=general);;
-  *)                        CMD_PARAMETERS+=(--consumption=calculated);;
-esac  
-
-# Get PVOutput parameters from the configuration
-if bashio::config.has_value 'pvoutput.enabled'; then
-  PVOUTPUT_ENABLED="$(bashio::config 'pvoutput.enabled')"
-  if [[ "${PVOUTPUT_ENABLED}" == "true" ]]; then
-    PVOUTPUT_API_KEY=""
-    PVOUTPUT_SYSTEM_ID=""
-    bashio::config.has_value 'pvoutput.api_key' && PVOUTPUT_API_KEY="$(bashio::config 'pvoutput.api_key')"
-    bashio::config.has_value 'pvoutput.system_id' && PVOUTPUT_SYSTEM_ID="$(bashio::config 'pvoutput.system_id')"
-    if [[ -z "${PVOUTPUT_API_KEY}" || -z "${PVOUTPUT_SYSTEM_ID}" ]]; then
-      bashio::log.fatal "PVOutput enabled, but API Key and/or System ID not found; cannot continue."
-      exit 1
-    fi
-    bashio::config.has_value 'pvoutput.consumption' && PVOUTPUT_CONSUMPTION=$(bashio::config 'pvoutput.consumption')
-    bashio::config.has_value 'pvoutput.exports' && PVOUTPUT_EXPORTS=$(bashio::config 'pvoutput.exports')
-    bashio::config.has_value 'pvoutput.imports' && PVOUTPUT_IMPORTS=$(bashio::config 'pvoutput.imports')
-    bashio::config.has_value 'pvoutput.eod_update' && PVOUTPUT_EOD_UPDATE=$(bashio::config 'pvoutput.eod_update')
-    CMD_PARAMETERS+=(--pvoutput-enabled)
-    CMD_PARAMETERS+=(--pvoutput-api-key="${PVOUTPUT_API_KEY}")
-    CMD_PARAMETERS+=(--pvoutput-system-id="${PVOUTPUT_SYSTEM_ID}")
-    [[ "${PVOUTPUT_CONSUMPTION}" == "true" ]] && CMD_PARAMETERS+=(--pvoutput-consumption)
-    [[ "${PVOUTPUT_EXPORTS}" == "true" ]] && CMD_PARAMETERS+=(--pvoutput-exports)
-    [[ "${PVOUTPUT_IMPORTS}" == "true" ]] && CMD_PARAMETERS+=(--pvoutput-imports)
-    case "$(bashio::config 'pvoutput.voltage')" in
-      "Phase A")                CMD_PARAMETERS+=(--pvoutput-voltage=phase-a);;
-      "Phase B")                CMD_PARAMETERS+=(--pvoutput-voltage=phase-b);;
-      "Phase C")                CMD_PARAMETERS+=(--pvoutput-voltage=phase-c);;
-      "Line to Line Average")   CMD_PARAMETERS+=(--pvoutput-voltage=l/l-avg);;
-      "PV Average")             CMD_PARAMETERS+=(--pvoutput-voltage=pv);;
-      *)                        CMD_PARAMETERS+=(--pvoutput-voltage=l/n-avg);;
-    esac
-    [[ "${PVOUTPUT_EOD_UPDATE}" != "true" ]] && CMD_PARAMETERS+=(--pvoutput-output-hour=-1)
-    bashio::config.has_value 'pvoutput.ext_v7' && CMD_PARAMETERS+=(--pvoutput-ext-v7="$(bashio::config 'pvoutput.ext_v7')")
-    bashio::config.has_value 'pvoutput.ext_v8' && CMD_PARAMETERS+=(--pvoutput-ext-v8="$(bashio::config 'pvoutput.ext_v8')")
-    bashio::config.has_value 'pvoutput.ext_v9' && CMD_PARAMETERS+=(--pvoutput-ext-v9="$(bashio::config 'pvoutput.ext_v9')")
-    bashio::config.has_value 'pvoutput.ext_v10' && CMD_PARAMETERS+=(--pvoutput-ext-v10="$(bashio::config 'pvoutput.ext_v10')")
-    bashio::config.has_value 'pvoutput.ext_v11' && CMD_PARAMETERS+=(--pvoutput-ext-v11="$(bashio::config 'pvoutput.ext_v11')")
-    bashio::config.has_value 'pvoutput.ext_v12' && CMD_PARAMETERS+=(--pvoutput-ext-v12="$(bashio::config 'pvoutput.ext_v12')")
-    bashio::config.has_value 'pvoutput.temp_topic' && CMD_PARAMETERS+=(--pvoutput-temp-topic="$(bashio::config 'pvoutput.temp_topic')")
-    bashio::config.has_value 'logging.pvoutput' && CMD_PARAMETERS+=(--pvoutput-log-level="$(bashio::config 'logging.pvoutput')")
+  local has_auto_discovery=false
+  for p in "${CMD_PARAMETERS[@]}"; do
+    [[ "$p" == --modbus-auto-discovery=* ]] && { has_auto_discovery=true; break; }
+  done
+  if [[ "$has_auto_discovery" == true ]]; then
+    for OPTION in auto_discovery.ping_timeout auto_discovery.timeout auto_discovery.retries; do
+      add_value_cmd_parameter_from_config --modbus-auto-discovery-$(echo "${OPTION#auto_discovery.}" | sed 's/_/-/g') "${OPTION}"
+    done
   fi
-fi
-
-# Get the metrics enabled parameter from the configuration
-bashio::config.has_value 'advanced.metrics_enabled' && METRICS_ENABLED="$(bashio::config 'advanced.metrics_enabled')" || METRICS_ENABLED="false"
-if [[ "${METRICS_ENABLED}" != "true" ]]; then
-  CMD_PARAMETERS+=(--no-metrics)
-fi
-
-# Get smart-port parameters from the configuration
-if bashio::config.has_value 'smartport.enabled'; then
-  SMARTPORT_ENABLED="$(bashio::config 'smartport.enabled')"
-  if [[ "${SMARTPORT_ENABLED}" == "true" ]]; then
-    SMARTPORT_MODULE="$(bashio::config 'smartport.module_name')"
-    SMARTPORT_MQTT_TOPIC="$(bashio::config 'smartport.mqtt_topic')"
-    if [[ -z "${SMARTPORT_MODULE}" && -z "${SMARTPORT_MQTT_TOPIC}" ]]; then
-      bashio::log.fatal "Smart-Port enabled, but neither module name or MQTT topic found; cannot continue."
-      exit 1
-    fi
-    CMD_PARAMETERS+=(--smartport-enabled)
-    bashio::config.has_value 'smartport.module_name' && CMD_PARAMETERS+=(--smartport-module-name="${SMARTPORT_MODULE}")
-    bashio::config.has_value 'smartport.host' && CMD_PARAMETERS+=(--smartport-host="$(bashio::config 'smartport.host')")
-    bashio::config.has_value 'smartport.username' && CMD_PARAMETERS+=(--smartport-username="$(bashio::config 'smartport.username')")
-    bashio::config.has_value 'smartport.password' && CMD_PARAMETERS+=(--smartport-password="$(bashio::config 'smartport.password')")
-    bashio::config.has_value 'smartport.pv_power' && CMD_PARAMETERS+=(--smartport-pv-power="$(bashio::config 'smartport.pv_power')")
-    bashio::config.has_value 'smartport.mqtt_topic' && CMD_PARAMETERS+=(--smartport-mqtt-topic="${SMARTPORT_MQTT_TOPIC}")
-    bashio::config.has_value 'smartport.mqtt_gain' && CMD_PARAMETERS+=(--smartport-mqtt-gain="$(bashio::config 'smartport.mqtt_gain')")
-  fi
-fi
-
-# Boot up
-bashio::log.info "Starting sigenergy2mqtt service..."
-for PARAM in "${CMD_PARAMETERS[@]}"; do
-  if [[ "$PARAM" == *"password"* || "$PARAM" == *"api-key"* ]]; then
-    bashio::log.info " → Parameter: "${PARAM%%=*}=[REDACTED]""
+  add_value_cmd_parameter_from_config --modbus-port "manual_config.port"
+  # Modbus advanced options
+  bashio::config.has_value 'advanced.read_only' && MODBUS_READ_ONLY="$(bashio::config 'advanced.read_only')"
+  if [[ "${MODBUS_READ_ONLY}" == "true" ]]; then
+    add_boolean_cmd_parameter --modbus-readonly true
+    bashio::log.warning "Read-only mode enabled: No write operations can be performed."
   else
-    bashio::log.info " → Parameter: ${PARAM}"
+    if bashio::config.has_value 'advanced.no_remote_ems' && [[ "$(bashio::config 'advanced.no_remote_ems')" == "true" ]]; then
+      add_boolean_cmd_parameter --modbus-no-remote-ems true
+      bashio::log.warning "Remote EMS mode disabled: No Remote EMS related sensors will be published."
+    else
+      if bashio::config.has_value 'advanced.no_ems_mode_check' && [[ "$(bashio::config 'advanced.no_ems_mode_check')" == "true" ]]; then
+        add_boolean_cmd_parameter --no-ems-mode-check true
+        bashio::log.warning "Remote EMS checks disabled! ESS Max Charging/Discharging and PV Max Power limits will NOT be disabled when Remote EMS Control Mode is not Command Charging/Discharging."
+      fi
+    fi
   fi
-done
-exec ~/.local/bin/sigenergy2mqtt \
-    "${CMD_PARAMETERS[@]}"
+  bashio::log.debug "<<< Exiting add_modbus_parameters()"
+}
+
+add_mqtt_parameters() {
+  bashio::log.debug ">>> Entering add_mqtt_parameters()"
+  local MQTT_BROKER=""
+  local MQTT_PASSWORD=""
+  local MQTT_PORT=1883
+  local MQTT_USERNAME=""
+  if bashio::services.available "mqtt"; then
+    MQTT_BROKER="$(bashio::services "mqtt" "host")"
+    MQTT_PORT="$(bashio::services "mqtt" "port")"
+    MQTT_USERNAME="$(bashio::services "mqtt" "username")"
+    MQTT_PASSWORD="$(bashio::services "mqtt" "password")"
+    bashio::log.info "MQTT service available: broker=${MQTT_BROKER}, port=${MQTT_PORT}, username=${MQTT_USERNAME}, password=$(log_value 'mqtt.password' "$MQTT_PASSWORD")"
+  fi
+  # Override the default MQTT parameters if the user has provided values
+  bashio::log.info "Checking for MQTT overrides in the app configuration..."
+  bashio::config.has_value 'mqtt.broker' && MQTT_BROKER="$(bashio::config 'mqtt.broker')"
+  bashio::config.has_value 'mqtt.port' && MQTT_PORT="$(bashio::config 'mqtt.port')"
+  bashio::config.has_value 'mqtt.username' && MQTT_USERNAME="$(bashio::config 'mqtt.username')"
+  bashio::config.has_value 'mqtt.password' && MQTT_PASSWORD="$(bashio::config 'mqtt.password')"
+  bashio::config.has_value 'mqtt.tls' && MQTT_TLS="$(bashio::config 'mqtt.tls')" || MQTT_TLS="false"
+  add_value_cmd_parameter --mqtt-broker "${MQTT_BROKER}"
+  add_value_cmd_parameter --mqtt-port "${MQTT_PORT}"
+  add_boolean_cmd_parameter --mqtt-tls "${MQTT_TLS}"
+  add_value_cmd_parameter --mqtt-username "${MQTT_USERNAME}"
+  add_value_cmd_parameter --mqtt-password "${MQTT_PASSWORD}"
+  [[ -z "${MQTT_USERNAME}${MQTT_PASSWORD}" && $HAS_CONFIG == 0 ]] && add_boolean_cmd_parameter --mqtt-anonymous true
+  bashio::log.debug "<<< Exiting add_mqtt_parameters()"
+}
+
+add_pvoutput_parameters() {
+  bashio::log.debug ">>> Entering add_pvoutput_parameters()"
+  local PVOUTPUT_ENABLED="false"
+  local PVOUTPUT_API_KEY=""
+  local PVOUTPUT_SYSTEM_ID=""
+  local PVOUTPUT_EOD_UPDATE="false"
+  local OPTION
+  if bashio::config.has_value 'pvoutput.enabled'; then
+    PVOUTPUT_ENABLED="$(bashio::config 'pvoutput.enabled')"
+    if [[ "${PVOUTPUT_ENABLED}" == "true" ]]; then
+      PVOUTPUT_API_KEY=""
+      PVOUTPUT_SYSTEM_ID=""
+      bashio::config.has_value 'pvoutput.api_key' && PVOUTPUT_API_KEY="$(bashio::config 'pvoutput.api_key')"
+      bashio::config.has_value 'pvoutput.system_id' && PVOUTPUT_SYSTEM_ID="$(bashio::config 'pvoutput.system_id')"
+      if [[ -z "${PVOUTPUT_API_KEY}" || -z "${PVOUTPUT_SYSTEM_ID}" ]]; then
+        bashio::log.fatal "PVOutput enabled, but API Key and/or System ID not configured; cannot continue."
+        exit 1
+      fi
+      add_boolean_cmd_parameter --pvoutput-enabled true
+      add_value_cmd_parameter --pvoutput-api-key "${PVOUTPUT_API_KEY}"
+      add_value_cmd_parameter --pvoutput-system-id "${PVOUTPUT_SYSTEM_ID}"
+      for OPTION in pvoutput.consumption pvoutput.exports pvoutput.imports; do
+        add_boolean_cmd_parameter_from_config --pvoutput-${OPTION#pvoutput.} "${OPTION}"
+      done
+      case "$(bashio::config 'pvoutput.voltage')" in
+        "Phase A")                  add_value_cmd_parameter --pvoutput-voltage phase-a;;
+        "Phase B")                  add_value_cmd_parameter --pvoutput-voltage phase-b;;
+        "Phase C")                  add_value_cmd_parameter --pvoutput-voltage phase-c;;
+        "Line to Line Average")     add_value_cmd_parameter --pvoutput-voltage l/l-avg;;
+        "PV Average")               add_value_cmd_parameter --pvoutput-voltage pv;;
+        "Line to Neutral Average")  add_value_cmd_parameter --pvoutput-voltage l/n-avg;;
+      esac
+      bashio::config.has_value 'pvoutput.eod_update' && PVOUTPUT_EOD_UPDATE=$(bashio::config 'pvoutput.eod_update') || PVOUTPUT_EOD_UPDATE='false'
+      [[ "${PVOUTPUT_EOD_UPDATE}" != "true" ]] && add_value_cmd_parameter --pvoutput-output-hour -1
+      for OPTION in pvoutput.ext_v7 pvoutput.ext_v8 pvoutput.ext_v9 pvoutput.ext_v10 pvoutput.ext_v11 pvoutput.ext_v12 pvoutput.temp_topic; do
+        add_value_cmd_parameter_from_config --$(echo "${OPTION}" | tr '._' '-') "${OPTION}"
+      done
+    else
+      bashio::log.debug "### PVOutput disabled, skipping PVOutput parameters"
+    fi
+  else
+    bashio::log.debug "### PVOutput not configured, skipping PVOutput parameters"
+  fi
+  bashio::log.debug "<<< Exiting add_pvoutput_parameters()"
+}
+
+add_scan_interval_parameters() {
+  bashio::log.debug ">>> Entering add_scan_interval_parameters()"
+  local OPTION
+  for OPTION in scan_interval.low scan_interval.medium scan_interval.high scan_interval.realtime; do
+    add_value_cmd_parameter_from_config --$(echo "${OPTION}" | tr '._' '-') "${OPTION}"
+  done
+  bashio::log.debug "<<< Exiting add_scan_interval_parameters()"
+}
+
+config_file_check() {
+  bashio::log.debug ">>> Entering config_file_check()"
+  if [[ -e /config/sigenergy2mqtt.yaml ]]; then
+    bashio::log.info "Configuration file found, using: /config/sigenergy2mqtt.yaml"
+    add_value_cmd_parameter --config "/config/sigenergy2mqtt.yaml"
+    HAS_CONFIG=1
+    bashio::log.warning "Home Assistant discovery is NOT enabled by default"
+  else
+    bashio::log.info "No configuration file found, enabling Home Assistant discovery"
+    add_boolean_cmd_parameter --hass-enabled true
+    HAS_CONFIG=0
+  fi
+  bashio::log.debug "<<< Exiting config_file_check()"
+}
+#endregion
+
+
+#region Legacy option handling functions
+handle_legacy_options() {
+  bashio::log.debug ">>> Entering handle_legacy_options()"
+  bashio::log.info "Checking options..."
+
+  local -A OPTIONS # Associate array
+  local -a KEYS    # Indexed array
+  local option
+
+  register_migration() {
+    local key="$1"
+    local value="$2"
+    KEYS+=("$key")
+    OPTIONS["$key"]="$value"
+  }
+
+  reset_options() {
+    OPTIONS=()
+    KEYS=()
+  }
+
+  # Phase 1: migrate flat legacy keys to grouped layout (e.g. modbus_host →
+  # manual_config.host).
+  reset_options
+  register_migration "consumption_method" "advanced.consumption_method"
+  register_migration "debug_sensor" "logging.debug_sensor"
+  register_migration "edit_pct_box" "advanced.edit_pct_box"
+  register_migration "log_level" "logging.sigenergy2mqtt"
+  register_migration "metrics_enabled" "advanced.metrics_enabled"
+  register_migration "modbus_accharger_slave" "manual_config.accharger_device_id"
+  register_migration "modbus_auto_discovery_ping_timeout" "auto_discovery.ping_timeout"
+  register_migration "modbus_auto_discovery_retries" "auto_discovery.retries"
+  register_migration "modbus_auto_discovery_timeout" "auto_discovery.timeout"
+  register_migration "modbus_dccharger_slave" "manual_config.dccharger_device_id"
+  register_migration "modbus_force_auto_discovery" "auto_discovery.force"
+  register_migration "modbus_host" "manual_config.host"
+  register_migration "modbus_log_level" "logging.modbus"
+  register_migration "modbus_no_remote_ems" "advanced.no_remote_ems"
+  register_migration "modbus_port" "manual_config.port"
+  register_migration "modbus_read_only" "advanced.read_only"
+  register_migration "modbus_slave" "manual_config.inverter_device_id"
+  register_migration "mqtt_broker" "mqtt.broker"
+  register_migration "mqtt_log_level" "logging.mqtt"
+  register_migration "mqtt_password" "mqtt.password"
+  register_migration "mqtt_port" "mqtt.port"
+  register_migration "mqtt_tls" "mqtt.tls"
+  register_migration "mqtt_username" "mqtt.username"
+  register_migration "no_ems_mode_check" "advanced.no_ems_mode_check"
+  register_migration "pvoutput_api_key" "pvoutput.api_key"
+  register_migration "pvoutput_consumption" "pvoutput.consumption"
+  register_migration "pvoutput_enabled" "pvoutput.enabled"
+  register_migration "pvoutput_eod_update" "pvoutput.eod_update"
+  register_migration "pvoutput_exports" "pvoutput.exports"
+  register_migration "pvoutput_ext_v10" "pvoutput.ext_v10"
+  register_migration "pvoutput_ext_v11" "pvoutput.ext_v11"
+  register_migration "pvoutput_ext_v12" "pvoutput.ext_v12"
+  register_migration "pvoutput_ext_v7" "pvoutput.ext_v7"
+  register_migration "pvoutput_ext_v8" "pvoutput.ext_v8"
+  register_migration "pvoutput_ext_v9" "pvoutput.ext_v9"
+  register_migration "pvoutput_imports" "pvoutput.imports"
+  register_migration "pvoutput_log_level" "logging.pvoutput"
+  register_migration "pvoutput_system_id" "pvoutput.system_id"
+  register_migration "pvoutput_temp_topic" "pvoutput.temp_topic"
+  register_migration "pvoutput_voltage" "pvoutput.voltage"
+  register_migration "sanity_check_default_kw" "advanced.sanity_check_default_kw"
+  register_migration "scan_interval_high" "scan_interval.high"
+  register_migration "scan_interval_low" "scan_interval.low"
+  register_migration "scan_interval_medium" "scan_interval.medium"
+  register_migration "scan_interval_realtime" "scan_interval.realtime"
+  register_migration "smartport_enabled" "smartport.enabled"
+  register_migration "smartport_host" "smartport.host"
+  register_migration "smartport_module_name" "smartport.module_name"
+  register_migration "smartport_mqtt_gain" "smartport.mqtt_gain"
+  register_migration "smartport_mqtt_topic" "smartport.mqtt_topic"
+  register_migration "smartport_password" "smartport.password"
+  register_migration "smartport_pv_power" "smartport.pv_power"
+  register_migration "smartport_username" "smartport.username"
+
+  for option in "${KEYS[@]}"; do
+    local grouped_option="${OPTIONS[$option]}"
+    if bashio::config.has_value "${option}"; then
+      local value="$(bashio::config "${option}")"
+      [[ "${value}" == "null" || -z "${value}" ]] && continue
+      bashio::log.info " → Migrating legacy option '${option}' to grouped option '${grouped_option}' with value $(log_value $option $value)"
+      bashio::addon.option "${grouped_option}" "${value}"
+      bashio::log.debug " → Removing obsolete option '${option}' from configuration"
+      bashio::addon.option "${option}"
+    fi
+  done
+
+  # Phase 2 reuses the same helpers but maps a different set of keys:
+  # grouped options that have since been removed from options.yaml are migrated
+  # to environment variables under advanced.envvars so their values are not lost.
+  reset_options
+  register_migration "device_name_prefix" "SIGENERGY2MQTT_HASS_DEVICE_NAME_PREFIX"
+  register_migration "discovery_prefix" "SIGENERGY2MQTT_HASS_DISCOVERY_PREFIX"
+  register_migration "entity_id_prefix" "SIGENERGY2MQTT_HASS_ENTITY_ID_PREFIX"
+  register_migration "unique_id_prefix" "SIGENERGY2MQTT_HASS_UNIQUE_ID_PREFIX"
+  register_migration "advanced.device_name_prefix" "SIGENERGY2MQTT_HASS_DEVICE_NAME_PREFIX"
+  register_migration "advanced.discovery_prefix" "SIGENERGY2MQTT_HASS_DISCOVERY_PREFIX"
+  register_migration "advanced.entity_id_prefix" "SIGENERGY2MQTT_HASS_ENTITY_ID_PREFIX"
+  register_migration "advanced.unique_id_prefix" "SIGENERGY2MQTT_HASS_UNIQUE_ID_PREFIX"
+  register_migration "smartport.enabled" "SIGENERGY2MQTT_SMARTPORT_ENABLED"
+  register_migration "smartport.host" "SIGENERGY2MQTT_SMARTPORT_HOST"
+  register_migration "smartport.module_name" "SIGENERGY2MQTT_SMARTPORT_MODULE_NAME"
+  register_migration "smartport.mqtt_gain" "SIGENERGY2MQTT_SMARTPORT_MQTT_GAIN"
+  register_migration "smartport.mqtt_topic" "SIGENERGY2MQTT_SMARTPORT_MQTT_TOPIC"
+  register_migration "smartport.password" "SIGENERGY2MQTT_SMARTPORT_PASSWORD"
+  register_migration "smartport.pv_power" "SIGENERGY2MQTT_SMARTPORT_PV_POWER"
+  register_migration "smartport.username" "SIGENERGY2MQTT_SMARTPORT_USERNAME"
+
+  local envvars_count="$(bashio::config 'advanced.envvars|length')"
+  [[ -z "$envvars_count" || "$envvars_count" == "null" ]] && envvars_count=0
+  for option in "${KEYS[@]}"; do
+    if bashio::config.has_value "${option}"; then
+      local value="$(bashio::config "${option}")"
+      local env_name="${OPTIONS[$option]}"
+      local exists=false
+      for ((i=0; i<envvars_count; i++)); do
+        if [[ "$(bashio::config "advanced.envvars[${i}].name")" == "${env_name}" ]]; then
+          exists=true
+          break
+        fi
+      done
+      if [[ "${exists}" == false ]]; then
+        bashio::log.info " → Migrating option '${option}' to environment variables ('advanced.envvars[${envvars_count}]') with name '${env_name}' and value $(log_value $env_name $value)"
+        bashio::addon.option "advanced.envvars[]" "{\"name\":\"${env_name}\",\"value\":\"${value}\"}"
+        envvars_count=$(( ${envvars_count} + 1 ))
+      else
+        bashio::log.debug " → Skipping option '${option}' with name '${env_name}' because it already exists in environment variables"
+      fi
+      bashio::addon.option "${option}"
+    fi
+  done
+
+  # Remove obsolete options
+  if bashio::config.has_value 'pvoutput_interval'; then
+    bashio::log.debug " → Removing obsolete option 'pvoutput_interval' from configuration"
+    bashio::addon.option 'pvoutput_interval'
+  fi
+  if bashio::config.has_value 'advanced.no_remote_ems_check'; then
+    bashio::log.debug " → Renaming option 'advanced.no_remote_ems_check' to 'advanced.no_ems_mode_check'"
+    bashio::addon.option 'advanced.no_ems_mode_check' "$(bashio::config 'advanced.no_remote_ems_check')"
+    bashio::addon.option 'advanced.no_remote_ems_check'
+  fi
+  bashio::log.debug "<<< Exiting handle_legacy_options()"
+}
+#endregion
+
+
+#region Run functions
+run_clean() {
+  bashio::log.debug ">>> Entering run_clean()"
+  if bashio::config.has_value 'advanced.clean' && [[ "$(bashio::config 'advanced.clean')" == "true" ]]; then
+    bashio::log.warning "Cleaning MQTT retained messages to refresh Devices..."
+    if ~/.local/bin/sigenergy2mqtt "${CMD_PARAMETERS[@]}" --log-level=INFO --mqtt-log-level=INFO --modbus-log-level=WARNING --clean; then
+      bashio::addon.option 'advanced.clean' 'false'
+      bashio::log.info "Reset advanced.clean=$(bashio::config 'advanced.clean')"
+    else
+      bashio::log.error "Clean operation failed (exit code: $?); not resetting advanced.clean flag"
+    fi
+  else
+    bashio::log.debug "### SKIPPING clean because advanced.clean != true"
+  fi
+  bashio::log.debug "<<< Exiting run_clean()"
+}
+
+run_service() {
+  local count="$(bashio::config 'advanced.envvars|length')"
+  if [[ -n "$count" && "$count" != "null" ]]; then
+    bashio::log.info "Setting up sigenergy2mqtt service environment..."
+    for ((i=0; i<count; i++)); do
+      local name="$(bashio::config "advanced.envvars[${i}].name")"
+      local value="$(bashio::config "advanced.envvars[${i}].value")"
+      if [[ -z "${name}" ]]; then
+        bashio::log.warning " → Skipping envvar with empty name at index ${i}"
+        continue
+      fi
+      bashio::log.info " → Variable: ${name}=$(log_value "${name}" "${value}")"
+      export "${name}=${value}"
+    done
+  else
+    bashio::log.debug "### SKIPPING environment variables setup because advanced.envvars is not set"
+  fi
+  bashio::log.info "Starting sigenergy2mqtt service..."
+  for PARAM in "${CMD_PARAMETERS[@]}"; do
+    bashio::log.info " → Parameter: $(log_param "${PARAM}")"
+  done
+  exec ~/.local/bin/sigenergy2mqtt \
+      "${CMD_PARAMETERS[@]}"
+}
+#endregion
+
+
+bashio::log.info "Version $(bashio::addon.version)"
+
+bashio::log.info "Configuring sigenergy2mqtt service options..."
+
+handle_legacy_options
+
+config_file_check
+add_mqtt_parameters
+add_modbus_parameters
+add_scan_interval_parameters
+add_pvoutput_parameters
+add_influxdb_parameters
+add_logging_parameters
+add_language_parameter
+add_advanced_parameters
+
+run_clean
+run_service

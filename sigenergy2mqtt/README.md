@@ -16,7 +16,6 @@
 * Automatic detection of Home Assistant language, and translations into German, Spanish, French, Italian, Japanese, Korean, Dutch, Portuguese and Simplified Chinese
 * [_Optional_] You can automatically upload your generation, battery (for donators only) and optionally, consumption, exports and imports, data to [PVOutput](https://pvoutput.org/).
 * [_Optional_] You can automatically publish _all_ sensor data to InfluxDB (v1/2). This is different to the Home Assistant integration with InfluxDB, which only publishes enabled sensors, and does not publish repeating data. You can also import historical `sigenergy2mqtt` sensor data from an existing InfluxDB 'homeassistant' database.
-* [_Optional_] `sigenergy2mqtt` can incorporate third-party PV production via internal Python modules (at this stage, only Enphase micro-inverters are supported), or by subscribing to an MQTT topic that provides the data, as an alternative to using the Sigenergy Modbus registers for third-party PV. (_This feature is under consideration for removal in a future release. Have your say in the [discussion](https://github.com/seud0nym/sigenergy2mqtt/discussions/124)._)
 
 ## Beta Testing
 
@@ -41,7 +40,8 @@ Both the stable and beta versions can be installed simultaneously, but **only on
 2. **Start** the other version (beta or stable).
 
 > [!WARNING]
-> Running both versions simultaneously will cause conflicts (duplicate MQTT topics, Modbus connection issues). The app will detect and prevent this.
+> Running both stable and beta versions simultaneously is not recommended. The app can _not_ detect or prevent this.
+> It is up to _you_ to ensure that you do not run both the stable and beta releases simultaneously!
 
 ## Issues
 

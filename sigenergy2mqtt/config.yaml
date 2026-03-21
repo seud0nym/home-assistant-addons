@@ -1,24 +1,22 @@
-# https://developers.home-assistant.io/docs/add-ons/configuration#add-on-config
-name: sigenergy2mqtt
-version: "2026.1.20"
-image: "ghcr.io/seud0nym/home-assistant-addon-sigenergy2mqtt-{arch}"
-slug: sigenergy2mqtt
-description: Publish Modbus data from Sigenergy to an MQTT Broker, with optional PVOutput updating
-url: "https://github.com/seud0nym/home-assistant-addons/tree/main/sigenergy2mqtt"
+# https://developers.home-assistant.io/docs/apps/configuration#app-config
 arch:
   - aarch64
   - amd64
+description: Publish Modbus data from Sigenergy to an MQTT Broker, with optional PVOutput updating
+homeassistant_api: true
+host_network: true
+image: "ghcr.io/seud0nym/home-assistant-addon-sigenergy2mqtt-{arch}"
 init: false
 map:
   - addon_config
-host_network: true
+name: sigenergy2mqtt (beta)
 options:
   auto_discovery: {
-    force_auto_discovery: false,
+    force: false,
   }
   manual_config: {
     host: "",
-    plant_device_id: "",
+    inverter_device_id: "",
     accharger_device_id: "",
     dccharger_device_id: "",
   }
@@ -35,14 +33,24 @@ options:
   }
   mqtt: {}
   advanced: {
+    clean: false,
     read_only: false,
     no_remote_ems: false,
+    no_ems_mode_check: false,
+    edit_pct_box: false,
+    sigenergy_local_modbus_naming: false,
+    metrics_enabled: false,
+    envvars: []
   }
+  influxdb: 
+    enabled: false
+    host: "a0d7b954-influxdb"
+    include: []
+    exclude: []
   logging: {}
-  smartport: {}
 schema:
   auto_discovery:
-    force: "bool?"
+    force: "bool"
     ping_timeout: "float(0.5,)?"
     timeout: "float(0.25,)?"
     retries: "int(0,)?"
@@ -58,14 +66,14 @@ schema:
     high: "int(1,)?"
     realtime: "int(1,)?"
   pvoutput:
-    enabled: "bool?"
+    enabled: "bool"
     api_key: "str?"
     system_id: "str?"
-    consumption: "bool?"
-    exports: "bool?"
-    imports: "bool?"
-    eod_update: "bool?"
-    voltage: "list(Phase A|Phase B|Phase C|Line to Neutral Average|Line to Line Average|PV Average)?"
+    consumption: "bool"
+    exports: "bool"
+    imports: "bool"
+    eod_update: "bool"
+    voltage: "list(Phase A|Phase B|Phase C|Line to Neutral Average|Line to Line Average|PV Average)"
     ext_v7: "str?"
     ext_v8: "str?"
     ext_v9: "str?"
@@ -80,40 +88,49 @@ schema:
     username: "str?"
     password: "password?"
   advanced:
+    clean: "bool"
+    read_only: "bool"
+    no_remote_ems: "bool"
+    no_ems_mode_check: "bool"
+    edit_pct_box: "bool"
+    sigenergy_local_modbus_naming: "bool"
+    metrics_enabled: "bool"
     consumption_method: "list(Calculated|Total Load|General Load)?"
-    read_only: "bool?"
-    no_remote_ems: "bool?"
-    no_remote_ems_check: "bool?"
-    edit_pct_box: "bool?"
-    metrics_enabled: "bool?"
     sanity_check_default_kw: "int(1,)?"
-    device_name_prefix: "str?"
-    entity_id_prefix: "str?"
-    unique_id_prefix: "str?"
-    discovery_prefix: "str?"
-  logging:
-    debug_sensor: "str?"
-    sigenergy2mqtt: "list(DEBUG|INFO|WARNING|ERROR)?"
-    modbus: "list(DEBUG|INFO|WARNING|ERROR|CRITICAL)?"
-    pvoutput: "list(DEBUG|INFO|WARNING|ERROR|CRITICAL)?"
-    mqtt: "list(DEBUG|INFO|WARNING|ERROR|CRITICAL)?"
-  smartport:
-    enabled: "bool?"
-    module_name: "str?"
+    language: "list(Deutsch|English|Español|Français|Italiano|日本語|한국어|Nederlands|Português|中文|Default)?"
+    envvars:
+      - name: match(^SIGENERGY2MQTT_([A-Z0-9_])+$)
+        value: str
+  influxdb:
+    enabled: "bool"
     host: "str?"
+    port: "port?"
     username: "str?"
     password: "password?"
-    pv_power: "str?"
-    mqtt_topic: "str?"
-    mqtt_gain: "int?"
-  # Deprecated options left in for backward compatibility. The run script will migrate them to their replacements if found.
+    database: "str?"
+    org: "str?"
+    token: "str?"
+    bucket: "str?"
+    include:
+      - sensor: "str?"
+    exclude:
+      - sensor: "str?"
+  logging:
+    sigenergy2mqtt: "list(DEBUG|INFO|WARNING|ERROR|CRITICAL|Default)?"
+    debug_sensor: "str?"
+    app: "list(ALL|TRACE|DEBUG|INFO|NOTICE|WARNING|ERROR|CRITICAL|OFF|Default)?"
+    modbus: "list(DEBUG|INFO|WARNING|ERROR|CRITICAL|Default)?"
+    pvoutput: "list(DEBUG|INFO|WARNING|ERROR|CRITICAL|Default)?"
+    mqtt: "list(DEBUG|INFO|WARNING|ERROR|CRITICAL|Default)?"
+    influxdb: "list(DEBUG|INFO|WARNING|ERROR|CRITICAL|Default)?"
+  #region  Deprecated options left in for backward compatibility. The run script will migrate them to their replacements if found.
   consumption_method: "list(Calculated|Total Load|General Load)?"
   debug_sensor: "str?"
   device_name_prefix: "str?"
   discovery_prefix: "str?"
   edit_pct_box: "bool?"
   entity_id_prefix: "str?"
-  log_level: "list(DEBUG|INFO|WARNING|ERROR)?"
+  log_level: "list(DEBUG|INFO|WARNING|ERROR|CRITICAL)?"
   metrics_enabled: "bool?"
   modbus_accharger_slave: "match(^[0-9 ,]*$)?"
   modbus_auto_discovery_ping_timeout: "float(0.5,)?"
@@ -133,7 +150,7 @@ schema:
   mqtt_port: "port?"
   mqtt_tls: "bool?"
   mqtt_username: "str?"
-  no_remote_ems_check: "bool?"
+  no_ems_mode_check: "bool?"
   pvoutput_api_key: "str?"
   pvoutput_consumption: "bool?"
   pvoutput_enabled: "bool?"
@@ -164,5 +181,10 @@ schema:
   smartport_pv_power: "str?"
   smartport_username: "str?"
   unique_id_prefix: "str?"
+  #endregion
 services:
   - "mqtt:want"
+slug: sigenergy2mqtt
+url: "https://github.com/seud0nym/home-assistant-addons/tree/beta/sigenergy2mqtt"
+stage: experimental
+version: "2026.3.21b2"

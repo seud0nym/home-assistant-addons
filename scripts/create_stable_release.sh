@@ -63,6 +63,9 @@ echo ""
 
 echo "Updating version references..."
 
+# config.yaml: name
+sed -i 's/^name: .*$/name: sigenergy2mqtt/' "$CONFIG"
+
 # config.yaml: version
 sed -i "s/^version: \"${beta_version}\"/version: \"${stable_version}\"/" "$CONFIG"
 

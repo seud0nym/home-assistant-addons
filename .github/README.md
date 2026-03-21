@@ -32,3 +32,6 @@ A beta channel is available for testing new features and bug fixes before stable
 1. Enter https://github.com/seud0nym/home-assistant-addons#beta and click the **ADD** button.
 1. Close the Repositories window and refresh.
 
+> [!WARNING]
+> Running both stable and beta versions simultaneously is not recommended. The app can _not_ detect or prevent this.
+> It is up to _you_ to ensure that you do not run both the stable and beta releases simultaneously!
