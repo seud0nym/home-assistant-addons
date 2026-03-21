@@ -36,10 +36,11 @@ jobs:
         id: changed_addons
         run: |
           declare -a changed_addons
+          changed_files="${{ steps.changed_files.outputs.all_changed_files }} ${{ steps.changed_files.outputs.deleted_files }}"
           for addon in ${{ steps.addons.outputs.addons }}; do
-            if [[ "${{ steps.changed_files.outputs.all_changed_files }}" =~ $addon ]]; then
+            if [[ "${changed_files}" =~ $addon ]]; then
               for file in ${{ env.MONITORED_FILES }}; do
-                  if [[ "${{ steps.changed_files.outputs.all_changed_files }}" =~ $addon/$file ]]; then
+                  if [[ "${changed_files}" =~ $addon/$file ]]; then
                     if [[ ! "${changed_addons[@]}" =~ $addon ]]; then
                       changed_addons+=("\"${addon}\",");
                     fi
