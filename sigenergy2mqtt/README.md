@@ -10,40 +10,43 @@
 
 [sigenergy2mqtt](https://github.com/seud0nym/sigenergy2mqtt) is a bridge between the Modbus interface of the Sigenergy energy system and the MQTT lightweight publish/subscribe messaging protocol.
 
-## Features: 
+## Features
 
 * Auto-discovery of Sigenergy hosts and device IDs for inverters and chargers (or you can manually specify them)
 * Automatic detection of Home Assistant language, and translations into German, Spanish, French, Italian, Japanese, Korean, Dutch, Portuguese and Simplified Chinese
 * [_Optional_] You can automatically upload your generation, battery (for donators only) and optionally, consumption, exports and imports, data to [PVOutput](https://pvoutput.org/).
 * [_Optional_] You can automatically publish _all_ sensor data to InfluxDB (v1/2). This is different to the Home Assistant integration with InfluxDB, which only publishes enabled sensors, and does not publish repeating data. You can also import historical `sigenergy2mqtt` sensor data from an existing InfluxDB 'homeassistant' database.
 
-## Beta Testing
+## Minimum Requirements
 
-Beta releases are available for testing new features and bug fixes before they are released as stable versions. Beta version numbers use the format `YYYY.M.DbN` (e.g. `2026.3.15b1`).
+- A Sigenergy ESS or PV Inverter, with the Modbus-TCP server enabled by your installer
+- The Home Assistant [Mosquitto broker app](https://github.com/home-assistant/addons/blob/master/mosquitto/DOCS.md) or an existing MQTT broker that you have already integrated with Home Assistant.
 
-### Installing the Beta Repository
+## MQTT Devices
 
-1. Ensure you have **Advanced Mode** enabled in your Home Assistant profile (**Settings** → **People** → select your user → **Advanced Mode**).
-2. Add the beta repository to Home Assistant:
+For each Sigenergy host, an MQTT device will be created in Home Assistant. A host can be configured in the app Configuration tab, or it can be discovered automatically.
 
-   [![Open your Home Assistant instance and show the add app repository dialogue with a specific repository URL pre-filled.](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fseud0nym%2Fhome-assistant-addons%23beta)
+The first host will be called `Sigenergy Plant` (plant is the terminology used in the "Sigenergy Modbus Protocol", and is in the context of a power plant). Each plant will have one or more related MQTT devices, such as `Sigenergy Plant Grid Sensor` and `Sigenergy Plant Statistics`. Plants will also have associated inverters, and their names will include the model and serial number (e.g. `SigenStor CMUxxxxxxxxxx Energy Controller`). Each inverter will have an an Energy Storage System device (e.g. `SigenStor CMUxxxxxxxxxx ESS`) and as many PV String devices as the inverter supports. Chargers will be named `Sigenergy AC Charger` and `Sigenergy DC Charger`.
 
-   Or manually: **Settings** → **Apps** → **App store** → ⋮ → **Repositories** → add `https://github.com/seud0nym/home-assistant-addons#beta`
-
-3. The beta version of sigenergy2mqtt will appear in the App store.
-
-### Switching Between Beta and Stable
-
-Both the stable and beta versions can be installed simultaneously, but **only one should be running at a time**. To switch:
-
-1. **Stop** the currently running version (stable or beta).
-2. **Start** the other version (beta or stable).
-
-> [!WARNING]
-> Running both stable and beta versions simultaneously is not recommended. The app can _not_ detect or prevent this.
-> It is up to _you_ to ensure that you do not run both the stable and beta releases simultaneously!
-
-## Issues
-
-If you have a problem with this app, please raise an issue [here](https://github.com/seud0nym/sigenergy2mqtt/issues).
+Example:
+```
+Sigenergy Plant
+   ├─ Sigenergy Plant Grid Code
+   ├─ Sigenergy Plant Grid Sensor
+   ├─ Sigenergy Plant Smart-Port
+   ├─ Sigenergy Plant Statistics
+   ├─ Sigenergy AC Charger
+   ├─ SigenStor CMUxxxxxxxxxx Energy Controller (ID 1)
+   │    ├─ SigenStor CMUxxxxxxxxxx ESS
+   │    ├─ SigenStor CMUxxxxxxxxxx PV String 1
+   │    ├─ SigenStor CMUxxxxxxxxxx PV String 2
+   │    ├─ SigenStor CMUxxxxxxxxxx PV String 3
+   │    ├─ SigenStor CMUxxxxxxxxxx PV String 4
+   │    └─ Sigenergy DC Charger
+   └─ SigenStor CMUyyyyyyyyyy Energy Controller (ID 2)
+        ├─ SigenStor CMUyyyyyyyyyy ESS
+        ├─ SigenStor CMUyyyyyyyyyy PV String 1
+        ├─ SigenStor CMUyyyyyyyyyy PV String 2
+        └─ Sigenergy DC Charger
+```
 
