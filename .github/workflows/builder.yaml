@@ -13,6 +13,17 @@ on:
     branches:
       - main
       - beta
+  workflow_dispatch:
+    inputs:
+      deploy_beta:
+        description: "Deploy beta build (publish images from beta branch)"
+        required: false
+        default: false
+        type: boolean
+      addon:
+        description: "Optional addon directory to build"
+        required: false
+        type: string
 
 jobs:
   init:
@@ -36,6 +47,13 @@ jobs:
       - name: Get changed apps
         id: changed_addons
         run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]] && [[ -n "${{ inputs.addon }}" ]]; then
+            echo "Manual workflow_dispatch build for addon: ${{ inputs.addon }}";
+            echo "changed=true" >> $GITHUB_OUTPUT;
+            echo "addons=[\"${{ inputs.addon }}\"]" >> $GITHUB_OUTPUT;
+            exit 0
+          fi
+
           declare -a changed_addons
           for addon in ${{ steps.addons.outputs.addons }}; do
             if [[ "${{ steps.changed_files.outputs.all_modified_files }}" =~ $addon ]]; then
@@ -90,13 +108,19 @@ jobs:
           elif [[ "${{ steps.info.outputs.architectures }}" =~ ${{ matrix.arch }} ]]; then
             echo "build_arch=true" >> $GITHUB_OUTPUT;
             echo "image=$(echo ${{ steps.info.outputs.image }} | cut -d'/' -f3)" >> $GITHUB_OUTPUT;
-            if [[ -z "${{ github.head_ref }}" ]] && [[ "${{ github.event_name }}" == "push" ]]; then
+            if [[ "${{ github.event_name }}" == "push" ]] && [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+                echo "BUILD_ARGS=" >> $GITHUB_ENV;
+            elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]] && [[ "${{ github.ref }}" == "refs/heads/beta" ]] && [[ "${{ inputs.deploy_beta }}" == "true" ]]; then
                 echo "BUILD_ARGS=" >> $GITHUB_ENV;
             fi
           else
             echo "${{ matrix.arch }} is not a valid arch for ${{ matrix.addon }}, skipping build";
             echo "build_arch=false" >> $GITHUB_OUTPUT;
           fi
+
+      - name: Beta test build only
+        if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/beta' && inputs.deploy_beta != true
+        run: echo "beta test build only"
 
       - name: Login to GitHub Container Registry
         if: env.BUILD_ARGS != '--test'
