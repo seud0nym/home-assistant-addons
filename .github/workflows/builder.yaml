@@ -1,8 +1,8 @@
 name: Builder
 
 env:
-  BUILD_ARGS: "--test"
   MONITORED_FILES: "config.yaml Dockerfile rootfs"
+  ARCHITECTURES: '["aarch64", "amd64"]'
 
 on:
   push:
@@ -76,6 +76,7 @@ jobs:
           else
             echo "No app had any monitored files changed (${{ env.MONITORED_FILES }})";
           fi
+
   build:
     needs: init
     runs-on: ubuntu-latest
@@ -87,6 +88,7 @@ jobs:
         arch: ["aarch64", "amd64"]
     permissions:
       contents: read
+      id-token: write
       packages: write
 
     steps:
@@ -104,40 +106,106 @@ jobs:
         run: |
           if [[ "${{ steps.info.outputs.image }}" == "null" ]]; then
             echo "Image property is not defined, skipping build"
-            echo "build_arch=false" >> $GITHUB_OUTPUT;
-          elif [[ "${{ steps.info.outputs.architectures }}" =~ ${{ matrix.arch }} ]]; then
-            echo "build_arch=true" >> $GITHUB_OUTPUT;
-            echo "image=$(echo ${{ steps.info.outputs.image }} | cut -d'/' -f3)" >> $GITHUB_OUTPUT;
+            echo "build_arch=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          if [[ "${{ steps.info.outputs.architectures }}" =~ ${{ matrix.arch }} ]]; then
+            echo "build_arch=true" >> $GITHUB_OUTPUT
+
+            # Substitute the {arch} placeholder in the image name to get the
+            # full arch-specific image reference required by build-image
+            raw_image=$(echo '${{ steps.info.outputs.image }}' | tr -d '"')
+            arch_image="${raw_image//\{arch\}/${{ matrix.arch }}}"
+            echo "image=${arch_image}" >> $GITHUB_OUTPUT
+
             if [[ "${{ github.event_name }}" == "push" ]] && [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-                echo "BUILD_ARGS=" >> $GITHUB_ENV;
+              echo "push=true" >> $GITHUB_OUTPUT
             elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]] && [[ "${{ github.ref }}" == "refs/heads/beta" ]] && [[ "${{ inputs.deploy_beta }}" == "true" ]]; then
-                echo "BUILD_ARGS=" >> $GITHUB_ENV;
+              echo "push=true" >> $GITHUB_OUTPUT
+            else
+              echo "push=false" >> $GITHUB_OUTPUT
             fi
           else
-            echo "${{ matrix.arch }} is not a valid arch for ${{ matrix.addon }}, skipping build";
-            echo "build_arch=false" >> $GITHUB_OUTPUT;
+            echo "${{ matrix.arch }} is not a valid arch for ${{ matrix.addon }}, skipping build"
+            echo "build_arch=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Beta test build only
         if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/beta' && inputs.deploy_beta != true
         run: echo "beta test build only"
 
-      - name: Login to GitHub Container Registry
-        if: env.BUILD_ARGS != '--test'
-        uses: docker/login-action@v4.0.0
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Build ${{ matrix.addon }} app
         if: steps.check.outputs.build_arch == 'true'
-        uses: home-assistant/builder@2026.03.2
+        uses: home-assistant/builder/actions/build-image@2026.03.2
         with:
-          args: |
-            ${{ env.BUILD_ARGS }} \
-            --${{ matrix.arch }} \
-            --target /data/${{ matrix.addon }} \
-            --image "${{ steps.check.outputs.image }}" \
-            --docker-hub "ghcr.io/${{ github.repository_owner }}" \
-            --addon
+          arch: ${{ matrix.arch }}
+          context: ./${{ matrix.addon }}
+          image: ${{ steps.check.outputs.image }}
+          image-tags: ${{ steps.info.outputs.version }}
+          push: ${{ steps.check.outputs.push }}
+          version: ${{ steps.info.outputs.version }}
+          cache-gha-scope: ${{ matrix.addon }}
+          container-registry-password: ${{ secrets.GITHUB_TOKEN }}
+
+  manifest:
+    needs: [init, build]
+    runs-on: ubuntu-latest
+    if: needs.init.outputs.changed == 'true'
+    name: Publish multi-arch manifest for ${{ matrix.addon }}
+    strategy:
+      matrix:
+        addon: ${{ fromJson(needs.init.outputs.changed_addons) }}
+    permissions:
+      id-token: write
+      packages: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6.0.2
+
+      - name: Get information
+        id: info
+        uses: home-assistant/actions/helpers/info@master
+        with:
+          path: "./${{ matrix.addon }}"
+
+      - name: Check if manifest should be published
+        id: check
+        run: |
+          if [[ "${{ steps.info.outputs.image }}" == "null" ]]; then
+            echo "publish=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          if [[ "${{ github.event_name }}" == "push" ]] && [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "publish=true" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]] && [[ "${{ github.ref }}" == "refs/heads/beta" ]] && [[ "${{ inputs.deploy_beta }}" == "true" ]]; then
+            echo "publish=true" >> $GITHUB_OUTPUT
+          else
+            echo "publish=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Extract just the image name without the arch prefix or registry path
+          raw_image=$(echo '${{ steps.info.outputs.image }}' | tr -d '"')
+          image_name=$(echo "${raw_image}" | cut -d'/' -f3 | sed 's/{arch}-//')
+          echo "image_name=${image_name}" >> $GITHUB_OUTPUT
+
+          # Filter addon's supported architectures to only those we build for
+          supported=$(echo '${{ steps.info.outputs.architectures }}' | \
+            jq -c '[.[] | select(. == "aarch64" or . == "amd64")]')
+          echo "architectures=${supported}" >> $GITHUB_OUTPUT
+
+      - name: Beta test build only
+        if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/beta' && inputs.deploy_beta != true
+        run: echo "beta test build only"
+
+      - name: Publish multi-arch manifest for ${{ matrix.addon }}
+        if: steps.check.outputs.publish == 'true'
+        uses: home-assistant/builder/actions/publish-multi-arch-manifest@2026.03.2
+        with:
+          architectures: ${{ steps.check.outputs.architectures }}
+          image-name: ${{ steps.check.outputs.image_name }}
+          image-tags: ${{ steps.info.outputs.version }}
+          container-registry-password: ${{ secrets.GITHUB_TOKEN }}
