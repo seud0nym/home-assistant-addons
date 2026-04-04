@@ -5,7 +5,7 @@ arch:
 description: Publish Modbus data from Sigenergy to an MQTT Broker, with optional PVOutput updating
 homeassistant_api: true
 host_network: true
-image: "ghcr.io/seud0nym/{arch}-home-assistant-addon-sigenergy2mqtt"
+image: "ghcr.io/seud0nym/home-assistant-addon-sigenergy2mqtt-{arch}"
 init: false
 map:
   - addon_config
