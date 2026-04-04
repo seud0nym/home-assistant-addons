@@ -1,6 +1,7 @@
 #!/bin/bash
 
 cd "$(cd $(dirname $0); pwd)"
+export PATH=$PATH:$(pwd)/sigenergy2mqtt/.local/bin
 
 test=$(find . -name "*$1*" | grep '\.sh$' | head -n 1)
 if [ -z "$test" ]; then

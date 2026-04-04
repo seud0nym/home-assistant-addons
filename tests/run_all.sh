@@ -1,6 +1,7 @@
 #!/bin/bash
 
 cd "$(cd $(dirname $0); pwd)"
+export PATH=$PATH:$(pwd)/sigenergy2mqtt/.local/bin
 
 tests=$(find . -name "test_*.sh" | sort)
 chars=$(echo "$tests" | awk 'BEGIN {

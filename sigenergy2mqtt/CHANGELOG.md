@@ -1,5 +1,26 @@
 # Changelog
 
+## [2026.4.4] - 2026-04-04
+
+_NOTE: Includes all changes from the 2026.3.21b2 beta release_
+
+## Changed
+
+- Simplified Inverter naming to use unchanged model and serial number acquired via the Modbus registers
+- Set sanity check min/max values for PV string current (0-50A) and voltage (0-1000V) sensors
+- Expanded DeviceClass and StateClass enums with comprehensive Home Assistant standard definitions and validation logic
+- Dockerfile updated to use python:3.14-alpine3.23 and no-cache pip install across both native Docker and Home Assistant add-on, with mitigation for CVE-2026-27171
+- Set PYTHONUNBUFFERED=1 environment variable in Dockerfile
+- Standardised logging prefixes across devices and sensors using new log_identity field
+- Upgraded `requests` from 2.32.5 to 2.33.1
+
+### Fixed
+
+- Updated and renamed several environment variables in documentation, and added unit test to verify documentation coverage for constants. (#151)
+- Return None instead of 0 when no state is available for derived sensors
+- Fixed naming convention for multiple Modbus host installations
+
+
 ## [2026.3.21b2] - 2026-03-21
 
 ### Added
@@ -18,6 +39,7 @@
 
 ### Changed
 
+- Simplified Inverter naming to use unchanged model and serial number acquired via the Modbus registers
 - On firmware SPC113 and later, ESS Max Charging/Discharging and PV Max Power limits are now globally available; the validation override option added in 2026.1.20 is ignored for these firmware versions
 - Improved Modbus read sanity checking to better target the requirements of specific sensors
 - PVOutput output uploads are now only verified at end-of-day upload (previously also verified when the upload was unchanged from the previous upload)
@@ -26,9 +48,11 @@
 - Metrics are now updated in a worker thread to remove potential delays
 - Improved readability of alarm messages by removing the numeric prefix
 - Inverter PACK/BCU Count entity category is now `Diagnostic`
-- Improved operating system signal handling
+- Set sanity check min/max values for PV string current (0-50A) and voltage (0-1000V) sensors
+- Expanded DeviceClass and StateClass enums with comprehensive Home Assistant standard definitions and validation logic
 - Upgraded `psutil` from 7.2.1 to 7.2.2
 - Upgraded `pymodbus` from 3.11.4 to 3.12.1
+- Upgraded `requests` from 2.32.5 to 2.33.1
 
 ### Deprecated
 
@@ -42,6 +66,7 @@
 - DC Charger Vehicle Battery Voltage entity id incorrectly identified it as an inverter sensor (`sigen_0_inverter_1_vehicle_battery_voltage` → `sigen_0_dc_charger_1_vehicle_battery_voltage`)
 - Grid Code Over Frequency Derating entity id incorrectly contained `hvrt` (`sigen_0_grid_code_hvrt_over_frequency_derating` → `sigen_0_grid_code_over_frequency_derating`)
 - Per-sensor scan jitter that could defeat read-ahead optimisation
+- Fixed naming convention for multiple Modbus host installations
 
 ---
 
