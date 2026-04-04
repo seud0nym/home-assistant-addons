@@ -192,7 +192,7 @@ jobs:
           # Extract just the image name without the arch prefix or registry path
           raw_image=$(echo '${{ steps.info.outputs.image }}' | tr -d '"')
           raw_version=$(echo '${{ steps.info.outputs.version }}' | tr -d '"')
-          image_name=$(echo "${raw_image}" | cut -d'/' -f3 | sed 's/{arch}-//')
+          image_name=$(echo "${raw_image}" | cut -d'/' -f3 | sed 's/{arch}-//; s/-{arch}//')
           echo "image_name=${image_name}" >> $GITHUB_OUTPUT
           echo "version=${raw_version}" >> $GITHUB_OUTPUT
 

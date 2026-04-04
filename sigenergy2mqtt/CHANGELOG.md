@@ -19,6 +19,8 @@ _NOTE: Includes all changes from the 2026.3.21b2 beta release_
 - Updated and renamed several environment variables in documentation, and added unit test to verify documentation coverage for constants. (#151)
 - Return None instead of 0 when no state is available for derived sensors
 - Fixed naming convention for multiple Modbus host installations
+- Fixed Docker image naming convention in CI/CD workflow to ensure multi-arch manifests are generated correctly.
+
 
 
 ## [2026.3.21b2] - 2026-03-21
