@@ -8,11 +8,9 @@ on:
   push:
     branches:
       - main
-      - beta
   pull_request:
     branches:
       - main
-      - beta
   workflow_dispatch:
     inputs:
       deploy_beta:
@@ -113,11 +111,15 @@ jobs:
           if [[ "${{ steps.info.outputs.architectures }}" =~ ${{ matrix.arch }} ]]; then
             echo "build_arch=true" >> $GITHUB_OUTPUT
 
+            # Strip quotes from image and version outputs
+            raw_image=$(echo '${{ steps.info.outputs.image }}' | tr -d '"')
+            raw_version=$(echo '${{ steps.info.outputs.version }}' | tr -d '"')
+
             # Substitute the {arch} placeholder in the image name to get the
             # full arch-specific image reference required by build-image
-            raw_image=$(echo '${{ steps.info.outputs.image }}' | tr -d '"')
             arch_image="${raw_image//\{arch\}/${{ matrix.arch }}}"
             echo "image=${arch_image}" >> $GITHUB_OUTPUT
+            echo "version=${raw_version}" >> $GITHUB_OUTPUT
 
             if [[ "${{ github.event_name }}" == "push" ]] && [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
               echo "push=true" >> $GITHUB_OUTPUT
@@ -142,9 +144,9 @@ jobs:
           arch: ${{ matrix.arch }}
           context: ./${{ matrix.addon }}
           image: ${{ steps.check.outputs.image }}
-          image-tags: ${{ steps.info.outputs.version }}
+          image-tags: ${{ steps.check.outputs.version }}
           push: ${{ steps.check.outputs.push }}
-          version: ${{ steps.info.outputs.version }}
+          version: ${{ steps.check.outputs.version }}
           cache-gha-scope: ${{ matrix.addon }}
           container-registry-password: ${{ secrets.GITHUB_TOKEN }}
 
@@ -189,8 +191,10 @@ jobs:
 
           # Extract just the image name without the arch prefix or registry path
           raw_image=$(echo '${{ steps.info.outputs.image }}' | tr -d '"')
+          raw_version=$(echo '${{ steps.info.outputs.version }}' | tr -d '"')
           image_name=$(echo "${raw_image}" | cut -d'/' -f3 | sed 's/{arch}-//')
           echo "image_name=${image_name}" >> $GITHUB_OUTPUT
+          echo "version=${raw_version}" >> $GITHUB_OUTPUT
 
           # Filter addon's supported architectures to only those we build for
           supported=$(echo '${{ steps.info.outputs.architectures }}' | \
@@ -207,5 +211,5 @@ jobs:
         with:
           architectures: ${{ steps.check.outputs.architectures }}
           image-name: ${{ steps.check.outputs.image_name }}
-          image-tags: ${{ steps.info.outputs.version }}
+          image-tags: ${{ steps.check.outputs.version }}
           container-registry-password: ${{ secrets.GITHUB_TOKEN }}
