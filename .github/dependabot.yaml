@@ -1,8 +1,23 @@
 version: 2
 updates:
+  # Monitor GitHub Actions with global grouping
   - package-ecosystem: "github-actions"
     directory: "/"
-    target-branch: "beta"
+    target-branch: "alpha"
     schedule:
       interval: weekly
       time: "06:00"
+      timezone: "Australia/Melbourne"
+    groups:
+      all-actions:
+        patterns:
+          - "*"
+
+  # Monitor Docker base image
+  - package-ecosystem: "docker"
+    directory: "/sigenergy2mqtt"
+    target-branch: "alpha"
+    schedule:
+      interval: weekly
+      time: "06:00"
+      timezone: "Australia/Melbourne"
