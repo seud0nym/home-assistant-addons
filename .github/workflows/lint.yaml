@@ -2,13 +2,7 @@ name: Lint
 
 on:
   push:
-    branches:
-      - main
-      - beta
   pull_request:
-    branches:
-      - main
-      - beta
   schedule:
     - cron: "0 0 * * *"
 

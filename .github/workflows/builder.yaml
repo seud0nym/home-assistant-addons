@@ -1,215 +1,78 @@
 name: Builder
 
 env:
-  MONITORED_FILES: "config.yaml Dockerfile rootfs"
-  ARCHITECTURES: '["aarch64", "amd64"]'
+  MONITORED_FILES: "config.json config.yaml config.yml Dockerfile rootfs"
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
-  workflow_dispatch:
-    inputs:
-      deploy_beta:
-        description: "Deploy beta build (publish images from beta branch)"
-        required: false
-        default: false
-        type: boolean
-      addon:
-        description: "Optional addon directory to build"
-        required: false
-        type: string
+
+permissions:
+  contents: read
 
 jobs:
   init:
-    runs-on: ubuntu-latest
     name: Initialize builds
+    runs-on: ubuntu-latest
     outputs:
-      changed_addons: ${{ steps.changed_addons.outputs.addons }}
-      changed: ${{ steps.changed_addons.outputs.changed }}
+      changed: ${{ steps.filter.outputs.changed }}
+      changed_apps: ${{ steps.filter.outputs.changed_apps }}
     steps:
       - name: Check out the repository
         uses: actions/checkout@v6.0.2
 
       - name: Get changed files
         id: changed_files
-        uses: tj-actions/changed-files@v47.0.5
+        uses: tj-actions/changed-files@v47
 
       - name: Find app directories
-        id: addons
+        id: apps
         uses: home-assistant/actions/helpers/find-addons@master
 
-      - name: Get changed apps
-        id: changed_addons
+      - name: Filter changed apps
+        id: filter
+        env:
+          APPS: ${{ steps.apps.outputs.addons }}
+          CHANGED_FILES: ${{ steps.changed_files.outputs.all_changed_files }}
         run: |
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]] && [[ -n "${{ inputs.addon }}" ]]; then
-            echo "Manual workflow_dispatch build for addon: ${{ inputs.addon }}";
-            echo "changed=true" >> $GITHUB_OUTPUT;
-            echo "addons=[\"${{ inputs.addon }}\"]" >> $GITHUB_OUTPUT;
-            exit 0
-          fi
+          changed_apps=()
 
-          declare -a changed_addons
-          for addon in ${{ steps.addons.outputs.addons }}; do
-            if [[ "${{ steps.changed_files.outputs.all_modified_files }}" =~ $addon ]]; then
-              for file in ${{ env.MONITORED_FILES }}; do
-                  if [[ "${{ steps.changed_files.outputs.all_modified_files }}" =~ $addon/$file ]]; then
-                    if [[ ! "${changed_addons[@]}" =~ $addon ]]; then
-                      changed_addons+=("\"${addon}\",");
-                    fi
-                  fi
-              done
-            fi
-          done
-
-          changed=$(echo ${changed_addons[@]} | rev | cut -c 2- | rev)
-
-          if [[ -n ${changed} ]]; then
-            echo "Changed apps: $changed";
-            echo "changed=true" >> $GITHUB_OUTPUT;
-            echo "addons=[$changed]" >> $GITHUB_OUTPUT;
+          # If the workflow file itself changed, rebuild all apps
+          if [[ "${CHANGED_FILES}" =~ \.github/workflows/(builder|build-app)\.yaml ]]; then
+            changed_apps=(${APPS})
           else
-            echo "No app had any monitored files changed (${{ env.MONITORED_FILES }})";
+            for app in ${APPS}; do
+              for file in ${MONITORED_FILES}; do
+                if [[ "${CHANGED_FILES}" =~ ${app}/${file} ]]; then
+                  changed_apps+=("${app}")
+                  break
+                fi
+              done
+            done
           fi
 
-  build:
+          if [[ ${#changed_apps[@]} -gt 0 ]]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "changed_apps=$(jq -nc '$ARGS.positional' --args "${changed_apps[@]}")" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  build-app:
+    name: Build ${{ matrix.app }}
     needs: init
-    runs-on: ubuntu-latest
     if: needs.init.outputs.changed == 'true'
-    name: Build ${{ matrix.arch }} ${{ matrix.addon }} app
-    strategy:
-      matrix:
-        addon: ${{ fromJson(needs.init.outputs.changed_addons) }}
-        arch: ["aarch64", "amd64"]
     permissions:
       contents: read
       id-token: write
       packages: write
-
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v6.0.2
-
-      - name: Get information
-        id: info
-        uses: home-assistant/actions/helpers/info@master
-        with:
-          path: "./${{ matrix.addon }}"
-
-      - name: Check if app should be built
-        id: check
-        run: |
-          if [[ "${{ steps.info.outputs.image }}" == "null" ]]; then
-            echo "Image property is not defined, skipping build"
-            echo "build_arch=false" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-
-          if [[ "${{ steps.info.outputs.architectures }}" =~ ${{ matrix.arch }} ]]; then
-            echo "build_arch=true" >> $GITHUB_OUTPUT
-
-            # Strip quotes from image and version outputs
-            raw_image=$(echo '${{ steps.info.outputs.image }}' | tr -d '"')
-            raw_version=$(echo '${{ steps.info.outputs.version }}' | tr -d '"')
-
-            # Substitute the {arch} placeholder in the image name to get the
-            # full arch-specific image reference required by build-image
-            arch_image="${raw_image//\{arch\}/${{ matrix.arch }}}"
-            echo "image=${arch_image}" >> $GITHUB_OUTPUT
-            echo "version=${raw_version}" >> $GITHUB_OUTPUT
-
-            if [[ "${{ github.ref }}" == "refs/heads/main" ]] && ( [[ "${{ github.event_name }}" == "push" ]] || [[ "${{ github.event_name }}" == "workflow_dispatch" ]] ); then
-              echo "push=true" >> $GITHUB_OUTPUT
-            elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]] && [[ "${{ github.ref }}" == "refs/heads/beta" ]] && [[ "${{ inputs.deploy_beta }}" == "true" ]]; then
-              echo "push=true" >> $GITHUB_OUTPUT
-            else
-              echo "push=false" >> $GITHUB_OUTPUT
-            fi
-          else
-            echo "${{ matrix.arch }} is not a valid arch for ${{ matrix.addon }}, skipping build"
-            echo "build_arch=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Beta test build only
-        if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/beta' && inputs.deploy_beta != true
-        run: echo "beta test build only"
-
-      - name: Build ${{ matrix.addon }} app
-        if: steps.check.outputs.build_arch == 'true'
-        uses: home-assistant/builder/actions/build-image@2026.03.2
-        with:
-          arch: ${{ matrix.arch }}
-          context: ./${{ matrix.addon }}
-          image: ${{ steps.check.outputs.image }}
-          image-tags: ${{ steps.check.outputs.version }}
-          push: ${{ steps.check.outputs.push }}
-          version: ${{ steps.check.outputs.version }}
-          cache-gha-scope: ${{ matrix.addon }}
-          container-registry-password: ${{ secrets.GITHUB_TOKEN }}
-
-  manifest:
-    needs: [init, build]
-    runs-on: ubuntu-latest
-    if: needs.init.outputs.changed == 'true'
-    name: Publish multi-arch manifest for ${{ matrix.addon }}
     strategy:
+      fail-fast: false
       matrix:
-        addon: ${{ fromJson(needs.init.outputs.changed_addons) }}
-    permissions:
-      id-token: write
-      packages: write
-
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v6.0.2
-
-      - name: Get information
-        id: info
-        uses: home-assistant/actions/helpers/info@master
-        with:
-          path: "./${{ matrix.addon }}"
-
-      - name: Check if manifest should be published
-        id: check
-        run: |
-          if [[ "${{ steps.info.outputs.image }}" == "null" ]]; then
-            echo "publish=false" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-
-          if [[ "${{ github.ref }}" == "refs/heads/main" ]] && ( [[ "${{ github.event_name }}" == "push" ]] || [[ "${{ github.event_name }}" == "workflow_dispatch" ]] ); then
-            echo "publish=true" >> $GITHUB_OUTPUT
-          elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]] && [[ "${{ github.ref }}" == "refs/heads/beta" ]] && [[ "${{ inputs.deploy_beta }}" == "true" ]]; then
-            echo "publish=true" >> $GITHUB_OUTPUT
-          else
-            echo "publish=false" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-
-          # Extract just the image name without the arch prefix or registry path
-          raw_image=$(echo '${{ steps.info.outputs.image }}' | tr -d '"')
-          raw_version=$(echo '${{ steps.info.outputs.version }}' | tr -d '"')
-          image_name=$(echo "${raw_image}" | cut -d'/' -f3 | sed 's/{arch}-//')
-          echo "image_name=${image_name}" >> $GITHUB_OUTPUT
-          echo "version=${raw_version}" >> $GITHUB_OUTPUT
-
-          # Filter addon's supported architectures to only those we build for
-          supported=$(echo '${{ steps.info.outputs.architectures }}' | \
-            jq -c '[.[] | select(. == "aarch64" or . == "amd64")]')
-          echo "architectures=${supported}" >> $GITHUB_OUTPUT
-
-      - name: Beta test build only
-        if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/beta' && inputs.deploy_beta != true
-        run: echo "beta test build only"
-
-      - name: Publish multi-arch manifest for ${{ matrix.addon }}
-        if: steps.check.outputs.publish == 'true'
-        uses: home-assistant/builder/actions/publish-multi-arch-manifest@2026.03.2
-        with:
-          architectures: ${{ steps.check.outputs.architectures }}
-          image-name: ${{ steps.check.outputs.image_name }}
-          image-tags: ${{ steps.check.outputs.version }}
-          container-registry-password: ${{ secrets.GITHUB_TOKEN }}
+        app: ${{ fromJSON(needs.init.outputs.changed_apps) }}
+    uses: ./.github/workflows/build-app.yaml
+    with:
+      app: ${{ matrix.app }}
+      publish: ${{ github.event_name == 'push' }}
+    secrets: inherit
