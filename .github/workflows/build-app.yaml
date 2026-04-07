@@ -24,7 +24,6 @@ on:
 jobs:
   prepare:
     name: Prepare
-    if: github.repository == 'home-assistant/apps-example'
     runs-on: ubuntu-latest
     outputs:
       architectures: ${{ steps.info.outputs.architectures }}
