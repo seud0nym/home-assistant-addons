@@ -34,17 +34,17 @@ Sigenergy Plant
    ├─ Sigenergy Plant Smart-Port
    ├─ Sigenergy Plant Statistics
    ├─ Sigenergy AC Charger
-   ├─ SigenStor CMUxxxxxxxxxx Energy Controller (ID 1)
+   ├─ SigenStor EC 6.0 SP CMUxxxxxxxxxx (ID 1)
    │    ├─ SigenStor CMUxxxxxxxxxx ESS
    │    ├─ SigenStor CMUxxxxxxxxxx PV String 1
    │    ├─ SigenStor CMUxxxxxxxxxx PV String 2
    │    ├─ SigenStor CMUxxxxxxxxxx PV String 3
    │    ├─ SigenStor CMUxxxxxxxxxx PV String 4
    │    └─ Sigenergy DC Charger
-   └─ SigenStor CMUyyyyyyyyyy Energy Controller (ID 2)
+   └─ SigenStor EC 6.0 SP CMUyyyyyyyyyy (ID 2)
         ├─ SigenStor CMUyyyyyyyyyy ESS
         ├─ SigenStor CMUyyyyyyyyyy PV String 1
         ├─ SigenStor CMUyyyyyyyyyy PV String 2
-        └─ Sigenergy DC Charger
+        └─ Sigenergy DC Charger 2
 ```
 
