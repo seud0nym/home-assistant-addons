@@ -70,7 +70,6 @@ jobs:
           architectures: ${{ steps.info.outputs.architectures }}
           image-name: ${{ steps.normalize.outputs.image_name }}
           registry-prefix: ${{ steps.normalize.outputs.registry_prefix }}
-          arch-as-suffix: true
 
   build:
     name: Build ${{ matrix.arch }} image
@@ -96,7 +95,6 @@ jobs:
           container-registry-password: ${{ secrets.GITHUB_TOKEN }}
           context: "./${{ inputs.app }}"
           image: ${{ matrix.image }}
-          arch-as-suffix: true
           image-tags: |
             ${{ needs.prepare.outputs.version }}
             ${{ github.ref_name == 'main' && 'latest' || '' }}
@@ -131,4 +129,3 @@ jobs:
             ${{ github.ref_name == 'beta' && 'beta' || '' }}
             ${{ github.ref_name == 'alpha' && 'alpha' || '' }}
           registry-prefix: ${{ needs.prepare.outputs.registry_prefix }}
-          arch-as-suffix: true
