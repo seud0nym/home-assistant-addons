@@ -96,7 +96,9 @@ jobs:
           image: ${{ matrix.image }}
           image-tags: |
             ${{ needs.prepare.outputs.version }}
-            latest
+            ${{ github.ref_name == 'main' && 'latest' || '' }}
+            ${{ github.ref_name == 'beta' && 'beta' || '' }}
+            ${{ github.ref_name == 'alpha' && 'alpha' || '' }}
           labels: |
             io.hass.type=app
             io.hass.name=${{ needs.prepare.outputs.name }}
@@ -122,5 +124,7 @@ jobs:
           image-name: ${{ needs.prepare.outputs.image_name }}
           image-tags: |
             ${{ needs.prepare.outputs.version }}
-            latest
+            ${{ github.ref_name == 'main' && 'latest' || '' }}
+            ${{ github.ref_name == 'beta' && 'beta' || '' }}
+            ${{ github.ref_name == 'alpha' && 'alpha' || '' }}
           registry-prefix: ${{ needs.prepare.outputs.registry_prefix }}
