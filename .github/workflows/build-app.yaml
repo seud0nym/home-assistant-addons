@@ -6,6 +6,7 @@ on:
       app:
         required: true
         type: string
+        default: "sigenergy2mqtt"
       publish:
         required: true
         type: boolean
@@ -15,6 +16,7 @@ on:
         description: "App directory to build (e.g. sigenergy2mqtt)"
         required: true
         type: string
+        default: "sigenergy2mqtt"
       publish:
         description: "Publish image after build?"
         required: true
