@@ -42,6 +42,7 @@
         "pvoutput",
         "pydantic",
         "pymodbus",
+        "PYTHONUNBUFFERED",
         "rootfs",
         "ruamel",
         "seud",

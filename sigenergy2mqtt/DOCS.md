@@ -18,7 +18,7 @@ There are two ways to configure the app. You can provide configuration through t
 
 ### Configuration File
 
-You can upload a [configuration file](https://github.com/seud0nym/sigenergy2mqtt/blob/main/sigenergy2mqtt.yaml) to the addon_configs directory on your Home Assistant server for more advanced configuration options. The file _must_ be named `sigenergy2mqtt.yaml`, and placed inside the `addon_configs/4cee8162_sigenergy2mqtt` directory.
+You can upload a [configuration file](https://github.com/seud0nym/sigenergy2mqtt/blob/main/sigenergy2mqtt.yaml) to the addon_configs directory on your Home Assistant server for more advanced configuration options. The file _must_ be named `sigenergy2mqtt.yaml`, and placed inside the `addon_configs/4cee8162_sigenergy2mqtt` directory. (For **beta** releases, the directory name is `addon_configs/47c5e1c8_sigenergy2mqtt`. Stable and beta releases do _not_ share configuration.)
 
 **NOTE:** If you provide _both_ an advanced configuration file _and_ enter options into the Configuration tab, the Configuration tab will **override** any identical settings in the configuration file. If you are using the Mosquitto Broker app, the MQTT host, port, username and password will _always_ override what is the configuration file. 
 
