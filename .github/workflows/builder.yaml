@@ -7,6 +7,7 @@ on:
   push:
     branches:
       - main
+      - alpha
 
 permissions:
   contents: read
