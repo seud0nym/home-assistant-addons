@@ -1,0 +1,74 @@
+#!/usr/bin/with-contenv bashio
+# ==============================================================================
+# Start the sigenergy2mqtt service
+# s6-overlay docs: https://github.com/just-containers/s6-overlay
+# ==============================================================================
+
+# Timestamp must be set before any log output so that even fatal
+# messages emitted during log-level validation carry the correct format.
+__BASHIO_LOG_TIMESTAMP="%Y-%m-%d %H:%M:%S"
+
+# ---------------------------------------------------------------------------
+# Read add-on options and export them as the environment variables expected
+# by modbus_test_server.py.
+# ---------------------------------------------------------------------------
+
+# --- Logging ----------------------------------------------------------------
+log_level=$(bashio::config 'log_level')
+if [ "$log_level" != "Default" ]; then
+    export MODBUS_TEST_SERVER_LOG_LEVEL="$log_level"
+fi
+
+# --- General ----------------------------------------------------------------
+export MODBUS_TEST_SERVER_USE_SIMPLIFIED_TOPICS="$(bashio::config 'use_simplified_topics')"
+export MODBUS_TEST_SERVER_SIMULATE_GRID_OUTAGES="$(bashio::config 'simulate_grid_outages')"
+export MODBUS_TEST_SERVER_SIMULATE_FIRMWARE_UPGRADE="$(bashio::config 'simulate_firmware_upgrade')"
+export MODBUS_TEST_SERVER_SIMULATE_POWER_FACTOR_ERRORS="$(bashio::config 'simulate_power_factor_errors')"
+
+# --- Optional string/numeric values — only export when non-empty ------------
+if bashio::config.has_value 'initial_firmware'; then
+    export MODBUS_TEST_SERVER_INITIAL_FIRMWARE="$(bashio::config 'initial_firmware')"
+fi
+if bashio::config.has_value 'upgrade_firmware'; then
+    export MODBUS_TEST_SERVER_UPGRADE_FIRMWARE="$(bashio::config 'upgrade_firmware')"
+fi
+if bashio::config.has_value 'protocol_version'; then
+    export MODBUS_TEST_SERVER_PROTOCOL_VERSION="$(bashio::config 'protocol_version')"
+fi
+if bashio::config.has_value 'registers_to_debug'; then
+    export MODBUS_TEST_SERVER_REGISTERS_TO_DEBUG="$(bashio::config 'registers_to_debug')"
+fi
+
+# --- MQTT seeding (all optional) --------------------------------------------
+if bashio::config.has_value 'mqtt_broker'; then
+    export MODBUS_TEST_SERVER_MQTT_BROKER="$(bashio::config 'mqtt_broker')"
+
+    # These are only meaningful when a broker is set
+    if bashio::config.has_value 'mqtt_port'; then
+        export MODBUS_TEST_SERVER_MQTT_PORT="$(bashio::config 'mqtt_port')"
+    fi
+    if bashio::config.has_value 'mqtt_username'; then
+        export MODBUS_TEST_SERVER_MQTT_USERNAME="$(bashio::config 'mqtt_username')"
+    fi
+    if bashio::config.has_value 'mqtt_password'; then
+        export MODBUS_TEST_SERVER_MQTT_PASSWORD="$(bashio::config 'mqtt_password')"
+    fi
+    if bashio::config.has_value 'mqtt_log_level'; then
+        mqtt_log_level=$(bashio::config 'mqtt_log_level')
+        if [ "$mqtt_log_level" != "Default" ]; then
+            export MODBUS_TEST_SERVER_MQTT_LOG_LEVEL="$mqtt_log_level"
+        fi
+    fi
+fi
+
+# --- Live Modbus seeding (all optional) -------------------------------------
+if bashio::config.has_value 'modbus_host'; then
+    export MODBUS_TEST_SERVER_MODBUS_HOST="$(bashio::config 'modbus_host')"
+
+    if bashio::config.has_value 'modbus_port'; then
+        export MODBUS_TEST_SERVER_MODBUS_PORT="$(bashio::config 'modbus_port')"
+    fi
+fi
+
+bashio::log.info "Starting Sigenergy Modbus Simulator on port 502..."
+exec python3 /app/tests/utils/modbus_test_server.py

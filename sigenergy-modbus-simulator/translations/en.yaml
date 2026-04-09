@@ -1,0 +1,110 @@
+configuration:
+  log_level:
+    name: Log Level
+    description: >-
+      Verbosity of the simulator's own log output.
+      DEBUG is very chatty; WARNING or ERROR is recommended for normal use.
+
+  initial_firmware:
+    name: Initial Firmware Version
+    description: >-
+      The firmware version string the simulated inverter reports before any
+      upgrade is performed (e.g. "V100R001C00SPC112B107G"). Leave blank to use
+      the simulator's built-in default.
+
+  upgrade_firmware:
+    name: Upgrade Firmware Version
+    description: >-
+      The firmware version string the simulated inverter reports after a
+      simulated firmware upgrade (e.g. "V100R001C00SPC113"). Only relevant
+      when "Simulate Firmware Upgrade" is enabled. Leave blank to use the
+      simulator's built-in default.
+
+  protocol_version:
+    name: Protocol Version
+    description: >-
+      Overrides the Modbus protocol version advertised by the simulated
+      inverter. Leave blank to use the simulator's built-in default. The
+      minimum supported version is 1.8.
+
+  registers_to_debug:
+    name: Registers to Debug
+    description: >-
+      Comma-separated list of Modbus register addresses to emit detailed
+      read/write trace output for (e.g. "30001,30002"). Ranges are allows
+      acceptable (e.g. "30001-30005,30008"). Leave blank to disable 
+      per-register debugging.
+
+  use_simplified_topics:
+    name: Use Simplified Topics
+    description: >-
+      When enabled, the simulator uses the simplified MQTT topic structure
+      that matches the sigenergy2mqtt "use-simplified-topics" mode. Enable
+      this if your production sigenergy2mqtt instance is configured with
+      simplified topics.
+
+  simulate_grid_outages:
+    name: Simulate Grid Outages
+    description: >-
+      When enabled, the simulator periodically toggles the grid-connected
+      state to exercise grid outage handling in sigenergy2mqtt.
+
+  simulate_firmware_upgrade:
+    name: Simulate Firmware Upgrade
+    description: >-
+      When enabled, the simulator cycles through a firmware upgrade sequence
+      (using the Initial and Upgrade Firmware Version values) to test
+      sigenergy2mqtt's firmware upgrade detection logic.
+
+  simulate_power_factor_errors:
+    name: Simulate Power Factor Errors
+    description: >-
+      When enabled, the simulator injects out-of-range power factor values
+      to test sigenergy2mqtt's error-handling behaviour.
+
+  mqtt_broker:
+    name: MQTT Broker (seed source)
+    description: >-
+      Hostname or IP address of the MQTT broker that is being populated by
+      a live sigenergy2mqtt instance. When set, the simulator reads current
+      inverter state from that broker to seed its registers, giving more
+      realistic values. Leave blank to start with simulator defaults.
+
+  mqtt_port:
+    name: MQTT Port
+    description: >-
+      TCP port of the MQTT broker used for seeding. Defaults to 1883.
+      Only used when an MQTT Broker is configured.
+
+  mqtt_username:
+    name: MQTT Username
+    description: >-
+      Username for authenticating with the seeding MQTT broker.
+      Leave blank if the broker allows anonymous connections.
+
+  mqtt_password:
+    name: MQTT Password
+    description: >-
+      Password for authenticating with the seeding MQTT broker.
+      Leave blank if the broker allows anonymous connections.
+
+  mqtt_log_level:
+    name: MQTT Log Level
+    description: >-
+      Verbosity of MQTT client log output for the seeding connection.
+      Defaults to WARNING. Only used when an MQTT Broker is configured.
+
+  modbus_host:
+    name: Live Modbus Host (seed source)
+    description: >-
+      IP address of a live Sigenergy inverter. When set, the simulator
+      connects directly to the inverter over Modbus TCP and copies its
+      current register values as the initial state, giving realistic
+      starting data without needing an MQTT broker. Leave blank to start
+      with simulator defaults.
+
+  modbus_port:
+    name: Live Modbus Port
+    description: >-
+      Modbus TCP port of the live inverter used for seeding. Defaults to
+      502. Only used when a Live Modbus Host is configured.
