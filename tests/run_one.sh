@@ -1,11 +1,16 @@
 #!/bin/bash
 
-cd "$(cd $(dirname $0); pwd)"
-export PATH=$PATH:$(pwd)/sigenergy2mqtt/.local/bin
+if [ $# -eq 0 ]; then
+    echo "Usage: $0 <test_directory> <test_name>"
+    exit 1
+fi
 
-test=$(find . -name "*$1*" | grep '\.sh$' | head -n 1)
+cd "$(cd $(dirname $0); pwd)"
+export PATH=$PATH:$(pwd)/$1/.local/bin
+
+test=$(find $1 -name "*$2*" | grep '\.sh$' | head -n 1)
 if [ -z "$test" ]; then
-    echo "No test found matching '*$1*'"
+    echo "No test found matching '*$2*' in $1"
     exit 1
 fi
 
