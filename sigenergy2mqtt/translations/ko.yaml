@@ -80,25 +80,25 @@ configuration:
         description: PVOutput에 전송할 전압 값의 소스. 단상은 'Phase A', 삼상은 'Phase B/C' 또는 'Line to Line Average'.
       ext_v7:
         name: 확장 데이터 v7
-        description: PVOutput의 확장 데이터 필드 v7에 사용할 센서 클래스 이름.
+        description: PVOutput의 v7 확장 필드를 채우는 데 사용되는 소스입니다. 센서 클래스 이름, 'sensor.' 접두사가 없는 엔티티 ID, 직접 MQTT 토픽(또는 mqtt:<topic>) 또는 Home Assistant 센서 엔티티 ID(sensor.<id> 또는 ha:sensor.<id>)를 지정할 수 있습니다. 지정하지 않았거나 기부 상태가 최신이 아닌 경우 이 필드는 PVOutput으로 전송되지 않습니다.
       ext_v8:
         name: 확장 데이터 v8
-        description: PVOutput의 확장 데이터 필드 v8에 사용할 센서 클래스 이름.
+        description: PVOutput의 v8 확장 필드를 채우는 데 사용되는 소스입니다. 센서 클래스 이름, 'sensor.' 접두사가 없는 엔티티 ID, 직접 MQTT 토픽(또는 mqtt:<topic>) 또는 Home Assistant 센서 엔티티 ID(sensor.<id> 또는 ha:sensor.<id>)를 지정할 수 있습니다. 지정하지 않았거나 기부 상태가 최신이 아닌 경우 이 필드는 PVOutput으로 전송되지 않습니다.
       ext_v9:
         name: 확장 데이터 v9
-        description: PVOutput의 확장 데이터 필드 v9에 사용할 센서 클래스 이름.
+        description: PVOutput의 v9 확장 필드를 채우는 데 사용되는 소스입니다. 센서 클래스 이름, 'sensor.' 접두사가 없는 엔티티 ID, 직접 MQTT 토픽(또는 mqtt:<topic>) 또는 Home Assistant 센서 엔티티 ID(sensor.<id> 또는 ha:sensor.<id>)를 지정할 수 있습니다. 지정하지 않았거나 기부 상태가 최신이 아닌 경우 이 필드는 PVOutput으로 전송되지 않습니다.
       ext_v10:
         name: 확장 데이터 v10
-        description: PVOutput의 확장 데이터 필드 v10에 사용할 센서 클래스 이름.
+        description: PVOutput의 v10 확장 필드를 채우는 데 사용되는 소스입니다. 센서 클래스 이름, 'sensor.' 접두사가 없는 엔티티 ID, 직접 MQTT 토픽(또는 mqtt:<topic>) 또는 Home Assistant 센서 엔티티 ID(sensor.<id> 또는 ha:sensor.<id>)를 지정할 수 있습니다. 지정하지 않았거나 기부 상태가 최신이 아닌 경우 이 필드는 PVOutput으로 전송되지 않습니다.
       ext_v11:
         name: 확장 데이터 v11
-        description: PVOutput의 확장 데이터 필드 v11에 사용할 센서 클래스 이름.
+        description: PVOutput의 v11 확장 필드를 채우는 데 사용되는 소스입니다. 센서 클래스 이름, 'sensor.' 접두사가 없는 엔티티 ID, 직접 MQTT 토픽(또는 mqtt:<topic>) 또는 Home Assistant 센서 엔티티 ID(sensor.<id> 또는 ha:sensor.<id>)를 지정할 수 있습니다. 지정하지 않았거나 기부 상태가 최신이 아닌 경우 이 필드는 PVOutput으로 전송되지 않습니다.
       ext_v12:
         name: 확장 데이터 v12
-        description: PVOutput의 확장 데이터 필드 v12에 사용할 센서 클래스 이름.
+        description: PVOutput의 v12 확장 필드를 채우는 데 사용되는 소스입니다. 센서 클래스 이름, 'sensor.' 접두사가 없는 엔티티 ID, 직접 MQTT 토픽(또는 mqtt:<topic>) 또는 Home Assistant 센서 엔티티 ID(sensor.<id> 또는 ha:sensor.<id>)를 지정할 수 있습니다. 지정하지 않았거나 기부 상태가 최신이 아닌 경우 이 필드는 PVOutput으로 전송되지 않습니다.
       temp_topic:
-        name: 온도 토픽
-        description: PVOutput용 현재 온도 데이터의 MQTT 토픽.
+        name: 온도
+        description: PVOutput으로 전송되는 현재 온도의 소스입니다. 직접 MQTT 토픽(또는 mqtt:<topic>) 또는 Home Assistant 센서 엔티티 ID(sensor.<id> 또는 ha:sensor.<id>)를 지정할 수 있습니다. 지정하지 않으면 온도가 PVOutput으로 전송되지 않습니다.
   mqtt:
     name: MQTT 설정
     description: MQTT 브로커 연결 설정

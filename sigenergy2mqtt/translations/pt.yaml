@@ -80,25 +80,25 @@ configuration:
         description: Fonte do valor de tensão para PVOutput. 'Phase A' para monofásico, 'Phase B/C' ou 'Line to Line Average' para trifásico.
       ext_v7:
         name: Dados estendidos v7
-        description: Nome da classe de sensor para o campo de dados estendidos v7 no PVOutput.
+        description: Uma fonte usada para preencher o campo estendido v7 no PVOutput. Você pode especificar um nome de classe de sensor, um ID de entidade sem o prefixo 'sensor.', um tópico MQTT direto (ou mqtt:<topic>), ou um ID de entidade de sensor do Home Assistant (sensor.<id> ou ha:sensor.<id>). Se não especificado, OU se seu status de doação não estiver atual, este campo não será enviado ao PVOutput.
       ext_v8:
         name: Dados estendidos v8
-        description: Nome da classe de sensor para o campo de dados estendidos v8 no PVOutput.
+        description: Uma fonte usada para preencher o campo estendido v8 no PVOutput. Você pode especificar um nome de classe de sensor, um ID de entidade sem o prefixo 'sensor.', um tópico MQTT direto (ou mqtt:<topic>), ou um ID de entidade de sensor do Home Assistant (sensor.<id> ou ha:sensor.<id>). Se não especificado, OU se seu status de doação não estiver atual, este campo não será enviado ao PVOutput.
       ext_v9:
         name: Dados estendidos v9
-        description: Nome da classe de sensor para o campo de dados estendidos v9 no PVOutput.
+        description: Uma fonte usada para preencher o campo estendido v9 no PVOutput. Você pode especificar um nome de classe de sensor, um ID de entidade sem o prefixo 'sensor.', um tópico MQTT direto (ou mqtt:<topic>), ou um ID de entidade de sensor do Home Assistant (sensor.<id> ou ha:sensor.<id>). Se não especificado, OU se seu status de doação não estiver atual, este campo não será enviado ao PVOutput.
       ext_v10:
         name: Dados estendidos v10
-        description: Nome da classe de sensor para o campo de dados estendidos v10 no PVOutput.
+        description: Uma fonte usada para preencher o campo estendido v10 no PVOutput. Você pode especificar um nome de classe de sensor, um ID de entidade sem o prefixo 'sensor.', um tópico MQTT direto (ou mqtt:<topic>), ou um ID de entidade de sensor do Home Assistant (sensor.<id> ou ha:sensor.<id>). Se não especificado, OU se seu status de doação não estiver atual, este campo não será enviado ao PVOutput.
       ext_v11:
         name: Dados estendidos v11
-        description: Nome da classe de sensor para o campo de dados estendidos v11 no PVOutput.
+        description: Uma fonte usada para preencher o campo estendido v11 no PVOutput. Você pode especificar um nome de classe de sensor, um ID de entidade sem o prefixo 'sensor.', um tópico MQTT direto (ou mqtt:<topic>), ou um ID de entidade de sensor do Home Assistant (sensor.<id> ou ha:sensor.<id>). Se não especificado, OU se seu status de doação não estiver atual, este campo não será enviado ao PVOutput.
       ext_v12:
         name: Dados estendidos v12
-        description: Nome da classe de sensor para o campo de dados estendidos v12 no PVOutput.
+        description: Uma fonte usada para preencher o campo estendido v12 no PVOutput. Você pode especificar um nome de classe de sensor, um ID de entidade sem o prefixo 'sensor.', um tópico MQTT direto (ou mqtt:<topic>), ou um ID de entidade de sensor do Home Assistant (sensor.<id> ou ha:sensor.<id>). Se não especificado, OU se seu status de doação não estiver atual, este campo não será enviado ao PVOutput.
       temp_topic:
-        name: Tópico de temperatura
-        description: Tópico MQTT para dados de temperatura atuais para PVOutput.
+        name: Temperatura
+        description: Uma fonte para a temperatura atual enviada ao PVOutput. Você pode especificar um tópico MQTT direto (ou mqtt:<topic>), ou um ID de entidade de sensor do Home Assistant (sensor.<id> ou ha:sensor.<id>). Se não especificado, a temperatura não será enviada ao PVOutput.
   mqtt:
     name: Configuração MQTT
     description: Configuração para conexão ao seu broker MQTT

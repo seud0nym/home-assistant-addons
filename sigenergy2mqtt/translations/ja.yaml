@@ -80,25 +80,25 @@ configuration:
         description: PVOutput に送信する電圧値のソース。単相は 'Phase A'、三相は 'Phase B/C' または 'Line to Line Average'。
       ext_v7:
         name: 拡張データ v7
-        description: PVOutput の拡張データフィールド v7 に使用するセンサークラス名。
+        description: PVOutput の v7 拡張フィールドに入力するために使用するソース。センサークラス名、'sensor.' プレフィックスなしのエンティティ ID、直接 MQTT トピック（または mqtt:<topic>）、または Home Assistant センサーエンティティ ID（sensor.<id> または ha:sensor.<id>）を指定できます。指定されていない場合、または寄付ステータスが最新でない場合、このフィールドは PVOutput に送信されません。
       ext_v8:
         name: 拡張データ v8
-        description: PVOutput の拡張データフィールド v8 に使用するセンサークラス名。
+        description: PVOutput の v8 拡張フィールドに入力するために使用するソース。センサークラス名、'sensor.' プレフィックスなしのエンティティ ID、直接 MQTT トピック（または mqtt:<topic>）、または Home Assistant センサーエンティティ ID（sensor.<id> または ha:sensor.<id>）を指定できます。指定されていない場合、または寄付ステータスが最新でない場合、このフィールドは PVOutput に送信されません。
       ext_v9:
         name: 拡張データ v9
-        description: PVOutput の拡張データフィールド v9 に使用するセンサークラス名。
+        description: PVOutput の v9 拡張フィールドに入力するために使用するソース。センサークラス名、'sensor.' プレフィックスなしのエンティティ ID、直接 MQTT トピック（または mqtt:<topic>）、または Home Assistant センサーエンティティ ID（sensor.<id> または ha:sensor.<id>）を指定できます。指定されていない場合、または寄付ステータスが最新でない場合、このフィールドは PVOutput に送信されません。
       ext_v10:
         name: 拡張データ v10
-        description: PVOutput の拡張データフィールド v10 に使用するセンサークラス名。
+        description: PVOutput の v10 拡張フィールドに入力するために使用するソース。センサークラス名、'sensor.' プレフィックスなしのエンティティ ID、直接 MQTT トピック（または mqtt:<topic>）、または Home Assistant センサーエンティティ ID（sensor.<id> または ha:sensor.<id>）を指定できます。指定されていない場合、または寄付ステータスが最新でない場合、このフィールドは PVOutput に送信されません。
       ext_v11:
         name: 拡張データ v11
-        description: PVOutput の拡張データフィールド v11 に使用するセンサークラス名。
+        description: PVOutput の v11 拡張フィールドに入力するために使用するソース。センサークラス名、'sensor.' プレフィックスなしのエンティティ ID、直接 MQTT トピック（または mqtt:<topic>）、または Home Assistant センサーエンティティ ID（sensor.<id> または ha:sensor.<id>）を指定できます。指定されていない場合、または寄付ステータスが最新でない場合、このフィールドは PVOutput に送信されません。
       ext_v12:
         name: 拡張データ v12
-        description: PVOutput の拡張データフィールド v12 に使用するセンサークラス名。
+        description: PVOutput の v12 拡張フィールドに入力するために使用するソース。センサークラス名、'sensor.' プレフィックスなしのエンティティ ID、直接 MQTT トピック（または mqtt:<topic>）、または Home Assistant センサーエンティティ ID（sensor.<id> または ha:sensor.<id>）を指定できます。指定されていない場合、または寄付ステータスが最新でない場合、このフィールドは PVOutput に送信されません。
       temp_topic:
-        name: 温度トピック
-        description: PVOutput 用の現在の温度データの MQTT トピック。
+        name: 温度
+        description: PVOutput に送信される現在の温度のソース。直接 MQTT トピック（または mqtt:<topic>）または Home Assistant センサーエンティティ ID（sensor.<id> または ha:sensor.<id>）を指定できます。指定されていない場合、温度は PVOutput に送信されません。
   mqtt:
     name: MQTT 設定
     description: MQTT ブローカーへの接続設定

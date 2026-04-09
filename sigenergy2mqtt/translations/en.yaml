@@ -80,25 +80,25 @@ configuration:
         description: The source of the voltage value to be sent to PVOutput. Use 'Phase A' for single-phase systems, 'Phase B', 'Phase C' or 'Line to Line Average' for three-phase or 'Line to Neutral Average' or 'PV Average' for either.
       ext_v7:
         name: Extended Data v7
-        description: A sensor class name that will be used to populate the v7 extended data field in PVOutput. If not specified, OR your donation status is not current, this field will not be sent to PVOutput. You can use any sensor with a numeric value. |
+        description: A source used to populate the v7 extended field in PVOutput. You can specify a sensor class name, an entity id without the 'sensor.' prefix, a direct MQTT topic (or mqtt:<topic>), or a Home Assistant sensor entity id (sensor.<id> or ha:sensor.<id>). If not specified, OR your donation status is not current, this field will not be sent to PVOutput.
       ext_v8:
         name: Extended Data v8
-        description: A sensor class name that will be used to populate the v8 extended data field in PVOutput. If not specified, OR your donation status is not current, this field will not be sent to PVOutput. You can use any sensor with a numeric value. |
+        description: A source used to populate the v8 extended field in PVOutput. You can specify a sensor class name, an entity id without the 'sensor.' prefix, a direct MQTT topic (or mqtt:<topic>), or a Home Assistant sensor entity id (sensor.<id> or ha:sensor.<id>). If not specified, OR your donation status is not current, this field will not be sent to PVOutput.
       ext_v9:
         name: Extended Data v9
-        description: A sensor class name that will be used to populate the v9 extended data field in PVOutput. If not specified, OR your donation status is not current, this field will not be sent to PVOutput. You can use any sensor with a numeric value. |
+        description: A source used to populate the v9 extended field in PVOutput. You can specify a sensor class name, an entity id without the 'sensor.' prefix, a direct MQTT topic (or mqtt:<topic>), or a Home Assistant sensor entity id (sensor.<id> or ha:sensor.<id>). If not specified, OR your donation status is not current, this field will not be sent to PVOutput.
       ext_v10:
         name: Extended Data v10
-        description: A sensor class name that will be used to populate the v10 extended data field in PVOutput. If not specified, OR your donation status is not current, this field will not be sent to PVOutput. You can use any sensor with a numeric value. |
+        description: A source used to populate the v10 extended field in PVOutput. You can specify a sensor class name, an entity id without the 'sensor.' prefix, a direct MQTT topic (or mqtt:<topic>), or a Home Assistant sensor entity id (sensor.<id> or ha:sensor.<id>). If not specified, OR your donation status is not current, this field will not be sent to PVOutput.
       ext_v11:
         name: Extended Data v11
-        description: A sensor class name that will be used to populate the v11 extended data field in PVOutput. If not specified, OR your donation status is not current, this field will not be sent to PVOutput. You can use any sensor with a numeric value. |
+        description: A source used to populate the v11 extended field in PVOutput. You can specify a sensor class name, an entity id without the 'sensor.' prefix, a direct MQTT topic (or mqtt:<topic>), or a Home Assistant sensor entity id (sensor.<id> or ha:sensor.<id>). If not specified, OR your donation status is not current, this field will not be sent to PVOutput.
       ext_v12:
         name: Extended Data v12
-        description: A sensor class name that will be used to populate the v12 extended data field in PVOutput. If not specified, OR your donation status is not current, this field will not be sent to PVOutput. You can use any sensor with a numeric value. |
+        description: A source used to populate the v12 extended field in PVOutput. You can specify a sensor class name, an entity id without the 'sensor.' prefix, a direct MQTT topic (or mqtt:<topic>), or a Home Assistant sensor entity id (sensor.<id> or ha:sensor.<id>). If not specified, OR your donation status is not current, this field will not be sent to PVOutput.
       temp_topic:
-        name: Temperature Topic
-        description: The MQTT topic to which to subscribe to obtain the current temperature data for PVOutput. If specified, the temperature will be sent to PVOutput.
+        name: Temperature
+        description: A source for the current temperature sent to PVOutput. You can specify a direct MQTT topic (or mqtt:<topic>), or a Home Assistant sensor entity id (sensor.<id> or ha:sensor.<id>). If not specified, the temperature will not be sent to PVOutput.
   mqtt:
     name: MQTT Configuration
     description: Configuration for connecting to your MQTT broker. You do not need to configure this section if you are using the Home Assistant MQTT app.
