@@ -7,6 +7,7 @@ image: "ghcr.io/seud0nym/home-assistant-app-sigenergy-modbus-simulator"
 version: "2026.4.9a1"
 slug: "sigenergy-modbus-simulator"
 url: "https://github.com/seud0nym/home-assistant-addons/tree/test/sigenergy-modbus-simulator"
+init: false
 
 arch:
   - aarch64
