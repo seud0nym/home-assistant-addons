@@ -4,7 +4,7 @@ description: >-
   Runs the modbus_test_server from the sigenergy2mqtt project on port 502,
   allowing you to test sigenergy2mqtt without a physical inverter.
 image: "ghcr.io/seud0nym/home-assistant-app-sigenergy-modbus-simulator"
-version: "2026.4.9a1"
+version: "2026.4.9a2"
 slug: "sigenergy-modbus-simulator"
 url: "https://github.com/seud0nym/home-assistant-addons/tree/test/sigenergy-modbus-simulator"
 init: false
