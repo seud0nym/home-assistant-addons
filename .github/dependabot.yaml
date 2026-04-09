@@ -3,7 +3,7 @@ updates:
   # Monitor GitHub Actions with global grouping
   - package-ecosystem: "github-actions"
     directory: "/"
-    target-branch: "alpha"
+    target-branch: "test"
     schedule:
       interval: weekly
       time: "06:00"
@@ -15,8 +15,8 @@ updates:
 
   # Monitor Docker base image
   - package-ecosystem: "docker"
-    directory: "/sigenergy2mqtt"
-    target-branch: "alpha"
+    directory: "sigenergy-modbus-simulator"
+    target-branch: "test"
     schedule:
       interval: weekly
       time: "06:00"

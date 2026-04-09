@@ -6,7 +6,6 @@ description: >-
 version: "2026.4.9a1"
 slug: "sigenergy-modbus-simulator"
 url: "https://github.com/seud0nym/sigenergy2mqtt"
-init: true
 
 arch:
   - aarch64
@@ -16,8 +15,6 @@ ports:
   502/tcp: 502
 ports_description:
   502/tcp: "Modbus TCP (simulator)"
-
-map: []
 
 options:
   log_level: "INFO"
