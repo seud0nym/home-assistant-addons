@@ -64,6 +64,10 @@ mqtt-transport
 mqtt-username
 no-ems-mode-check
 no-metrics
+no-persistence-mqtt-redundancy
+persistence-cache-warmup-timeout
+persistence-mqtt-state-prefix
+persistence-sync-timeout
 pvoutput-api-key
 pvoutput-consumption
 pvoutput-enabled
