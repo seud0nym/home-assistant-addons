@@ -96,12 +96,8 @@ elif [[ "$target_branch" == "main" ]]; then
   sed -i 's/#alpha\|#beta//' "$REPO_YAML"
 fi
 
-version=$(grep version: "$CONFIG" | cut -d'"' -f2)
 git add "$CONFIG" "$REPO_YAML"
-git commit -m "chore(release): bump ${ADDON_DIR} to ${version}"
-echo -e '\033[90m'
-git cherry -v "$target_branch"
-echo -e '\033[0m'
+git commit -m "chore(release): bump ${ADDON_DIR} to $(grep version: "$CONFIG" | cut -d'"' -f2)"
 
 # --- Push ---
 
