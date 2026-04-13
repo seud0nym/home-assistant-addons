@@ -73,6 +73,7 @@ echo ""
 
 echo "Switching to ${target_branch} and merging ${source_branch}..."
 git checkout "$target_branch"
+target_branch_orig=$(git rev-parse HEAD)
 git merge "$source_branch" -m "Merge ${source_branch} into ${target_branch}"
 
 # --- Update files on target branch ---
@@ -98,7 +99,7 @@ fi
 version=$(grep version: "$CONFIG" | cut -d'"' -f2)
 git add "$CONFIG" "$REPO_YAML"
 git commit -m "chore(release): bump ${ADDON_DIR} to ${version}"
-echo -ne '\033[90m'
+echo -e '\033[90m'
 git cherry -v "$target_branch"
 echo -e '\033[0m'
 
@@ -120,9 +121,9 @@ if [[ "$confirm" =~ ^[Yy]$ ]]; then
   echo "Done! ${source_branch} has been promoted to ${target_branch}."
 else
   echo ""
-  echo "Push cancelled. ${target_branch} has been updated locally."
-  echo "When ready, run:"
-  echo "  git push origin ${target_branch}"
+  echo "Push cancelled. Resetting ${target_branch} to its pre-merge state..."
+  git reset --hard "$target_branch_orig"
+  echo "Reset complete. No changes have been made."
 fi
 
 # --- Switch back to source branch ---
