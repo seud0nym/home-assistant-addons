@@ -1,10 +1,30 @@
 # Changelog
 
+## [2026.4.14] - 2026-04-14
+
+### Added
+
+- Added `SIGENERGY2MQTT_HASS_SENSORS_ENABLED_BY_DEFAULT` environment variable for setting initial state of Home Assistant sensors
+- Added `SIGENERGY2MQTT_SENSOR_OVERRIDES_JSON` environment variable to allow complex sensor overrides via JSON strings
+
+### Changed
+
+- Refactored state persistence (where transient states are saved to disk and restored after a restart) to use MQTT retained messages so that state can be restored even if the app is moved to another host after, for example, a hardware failure, or to migrate more easily from one installation method to another such as a Linux install to Docker, or Docker to Home Assistant add-on, without having to find and restore the state directory
+- Allow PVOutput extended v7-v12 fields and the temperature source to be backed by Home Assistant sensors when running as a Home Assistant add-on, or by explicit MQTT topics (in addition to using sensor class names or entity ids for v7-v12)([#168](https://github.com/seud0nym/sigenergy2mqtt/discussions/168))
+- Upgraded `pymodbus` from 3.12.1 to 3.13.0
+
+### Fixed
+
+- Use zero-length payload rather than None when deleting retained MQTT messages
+- The reset controls for daily accumulation sensors in Home Assistant were incorrectly marked as enabled by default (only affects new or cleaned installations)
+
+---
+
 ## [2026.4.4] - 2026-04-04
 
 _NOTE: Includes all changes from the 2026.3.21b2 beta release_
 
-## Changed
+### Changed
 
 - Simplified Inverter naming to use unchanged model and serial number acquired via the Modbus registers
 - Set sanity check min/max values for PV string current (0-50A) and voltage (0-1000V) sensors

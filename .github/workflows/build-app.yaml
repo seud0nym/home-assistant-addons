@@ -6,15 +6,17 @@ on:
       app:
         required: true
         type: string
+        default: "sigenergy2mqtt"
       publish:
         required: true
         type: boolean
   workflow_dispatch:
     inputs:
       app:
-        description: "App directory to build (e.g. sigenergy2mqtt)"
+        description: "App directory to build?"
         required: true
         type: string
+        default: "sigenergy2mqtt"
       publish:
         description: "Publish image after build?"
         required: true
@@ -24,7 +26,6 @@ on:
 jobs:
   prepare:
     name: Prepare
-    if: github.repository == 'home-assistant/apps-example'
     runs-on: ubuntu-latest
     outputs:
       architectures: ${{ steps.info.outputs.architectures }}

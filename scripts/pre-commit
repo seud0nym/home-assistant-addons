@@ -1,0 +1,61 @@
+#!/bin/bash
+# This script is intended to be called by .git/hooks/pre-commit. e.g.:
+#
+#   #!/bin/bash
+#
+#   source "$(cd "$(dirname "$0")/../../scripts"; pwd)/pre-commit"
+
+set -euo pipefail
+
+cd "$(cd "$(dirname "$0")"/..; pwd)"
+
+# Files to watch (match by basename only)
+MONITORED=(
+  "config.yaml"
+  "Dockerfile"
+  "rootfs"
+)
+
+# Get staged files
+mapfile -t STAGED < <(git diff --cached --name-only)
+
+declare -A APPS=()
+for f in "${STAGED[@]}"; do
+  app="${f%%/*}"
+  base="${f##*/}"
+  for m in "${MONITORED[@]}"; do
+    if [[ "$base" == "$m" ]]; then
+      if [[ -f "$app/config.yaml" ]]; then
+        APPS["$app"]=1
+      fi
+      break
+    fi
+  done
+done
+
+if [[ ${#APPS[@]} -eq 0 ]]; then
+  exit 0
+fi
+
+branch=$(git branch --show-current)
+
+for app in "${!APPS[@]}"; do
+  version=$(grep '^version:' "$app/config.yaml" | cut -d'"' -f2 || true)
+  if [[ -z "$version" ]]; then
+    continue
+  fi
+
+  # Validate branch/version consistency
+  if [[ "$branch" == "main" ]]; then
+    if [[ "$version" =~ [ab][0-9]+$ ]]; then
+      echo "ERROR: Main branch requires a stable version (no [ab]N suffix), but found '$version'"
+      exit 1
+    fi
+  fi
+
+  grep -q "^## \[${version}\]" "$app/CHANGELOG.md" ||  { echo "No change log found for version $version in $app!"; exit 1; }
+
+  if [[ -d "tests/$app" ]]; then
+    tests/run_all.sh "$app" -q
+  fi
+done

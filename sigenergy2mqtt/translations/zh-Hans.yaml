@@ -80,25 +80,25 @@ configuration:
         description: 发送到 PVOutput 的电压值来源。单相用 'Phase A'，三相用 'Phase B/C' 或 'Line to Line Average'。
       ext_v7:
         name: 扩展数据 v7
-        description: 用于 PVOutput 扩展数据字段 v7 的传感器类名。
+        description: 用于填充 PVOutput 中 v7 扩展字段的数据源。您可以指定传感器类名、不带 'sensor.' 前缀的实体 ID、直接 MQTT 主题（或 mqtt:<topic>）或 Home Assistant 传感器实体 ID（sensor.<id> 或 ha:sensor.<id>）。如果未指定或您的捐赠状态不是最新的,此字段将不会发送到 PVOutput。
       ext_v8:
         name: 扩展数据 v8
-        description: 用于 PVOutput 扩展数据字段 v8 的传感器类名。
+        description: 用于填充 PVOutput 中 v8 扩展字段的数据源。您可以指定传感器类名、不带 'sensor.' 前缀的实体 ID、直接 MQTT 主题（或 mqtt:<topic>）或 Home Assistant 传感器实体 ID（sensor.<id> 或 ha:sensor.<id>）。如果未指定或您的捐赠状态不是最新的,此字段将不会发送到 PVOutput。
       ext_v9:
         name: 扩展数据 v9
-        description: 用于 PVOutput 扩展数据字段 v9 的传感器类名。
+        description: 用于填充 PVOutput 中 v9 扩展字段的数据源。您可以指定传感器类名、不带 'sensor.' 前缀的实体 ID、直接 MQTT 主题（或 mqtt:<topic>）或 Home Assistant 传感器实体 ID（sensor.<id> 或 ha:sensor.<id>）。如果未指定或您的捐赠状态不是最新的,此字段将不会发送到 PVOutput。
       ext_v10:
         name: 扩展数据 v10
-        description: 用于 PVOutput 扩展数据字段 v10 的传感器类名。
+        description: 用于填充 PVOutput 中 v10 扩展字段的数据源。您可以指定传感器类名、不带 'sensor.' 前缀的实体 ID、直接 MQTT 主题（或 mqtt:<topic>）或 Home Assistant 传感器实体 ID（sensor.<id> 或 ha:sensor.<id>）。如果未指定或您的捐赠状态不是最新的,此字段将不会发送到 PVOutput。
       ext_v11:
         name: 扩展数据 v11
-        description: 用于 PVOutput 扩展数据字段 v11 的传感器类名。
+        description: 用于填充 PVOutput 中 v11 扩展字段的数据源。您可以指定传感器类名、不带 'sensor.' 前缀的实体 ID、直接 MQTT 主题（或 mqtt:<topic>）或 Home Assistant 传感器实体 ID（sensor.<id> 或 ha:sensor.<id>）。如果未指定或您的捐赠状态不是最新的,此字段将不会发送到 PVOutput。
       ext_v12:
         name: 扩展数据 v12
-        description: 用于 PVOutput 扩展数据字段 v12 的传感器类名。
+        description: 用于填充 PVOutput 中 v12 扩展字段的数据源。您可以指定传感器类名、不带 'sensor.' 前缀的实体 ID、直接 MQTT 主题（或 mqtt:<topic>）或 Home Assistant 传感器实体 ID（sensor.<id> 或 ha:sensor.<id>）。如果未指定或您的捐赠状态不是最新的,此字段将不会发送到 PVOutput。
       temp_topic:
-        name: 温度主题
-        description: 用于 PVOutput 当前温度数据的 MQTT 主题。
+        name: 温度
+        description: 发送到 PVOutput 的当前温度的数据源。您可以指定直接 MQTT 主题（或 mqtt:<topic>）或 Home Assistant 传感器实体 ID（sensor.<id> 或 ha:sensor.<id>）。如果未指定,温度将不会发送到 PVOutput。
   mqtt:
     name: MQTT 配置
     description: 连接到 MQTT 代理的配置
@@ -151,7 +151,7 @@ configuration:
         description: 验证用的默认值（kW）。默认 500 kW。
       language:
         name: 语言
-        description: sigenergy2mqtt使用的语言。默认值为“设置”→“系统”→“语言”中定义的语言，如果不支持该语言，则默认为英语。
+        description: sigenergy2mqtt使用的语言。默认值为"设置"→"系统"→"语言"中定义的语言，如果不支持该语言，则默认为英语。
       envvars:
         name: 环境变量
         description: 允许您为 sigenergy2mqtt 服务配置高级环境变量。可用环境变量的完整列表可在 https://github.com/seud0nym/sigenergy2mqtt/blob/main/resources/configuration/ENV.md#environment-variables 找到

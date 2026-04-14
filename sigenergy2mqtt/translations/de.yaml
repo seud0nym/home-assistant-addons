@@ -80,25 +80,25 @@ configuration:
         description: Quelle des Spannungswerts für PVOutput. 'Phase A' für Einphasen, 'Phase B/C' oder 'Line to Line Average' für Dreiphasen.
       ext_v7:
         name: Erweiterte Daten v7
-        description: Sensorklassenname für das erweiterte Datenfeld v7 in PVOutput.
+        description: Eine Quelle, die zum Ausfüllen des erweiterten Felds v7 in PVOutput verwendet wird. Sie können einen Sensorklassennamen, eine Entitäts-ID ohne das Präfix 'sensor.', ein direktes MQTT-Topic (oder mqtt:<topic>) oder eine Home Assistant Sensor-Entitäts-ID (sensor.<id> oder ha:sensor.<id>) angeben. Wenn nicht angegeben, ODER wenn Ihr Spendenstatus nicht aktuell ist, wird dieses Feld nicht an PVOutput gesendet.
       ext_v8:
         name: Erweiterte Daten v8
-        description: Sensorklassenname für das erweiterte Datenfeld v8 in PVOutput.
+        description: Eine Quelle, die zum Ausfüllen des erweiterten Felds v8 in PVOutput verwendet wird. Sie können einen Sensorklassennamen, eine Entitäts-ID ohne das Präfix 'sensor.', ein direktes MQTT-Topic (oder mqtt:<topic>) oder eine Home Assistant Sensor-Entitäts-ID (sensor.<id> oder ha:sensor.<id>) angeben. Wenn nicht angegeben, ODER wenn Ihr Spendenstatus nicht aktuell ist, wird dieses Feld nicht an PVOutput gesendet.
       ext_v9:
         name: Erweiterte Daten v9
-        description: Sensorklassenname für das erweiterte Datenfeld v9 in PVOutput.
+        description: Eine Quelle, die zum Ausfüllen des erweiterten Felds v9 in PVOutput verwendet wird. Sie können einen Sensorklassennamen, eine Entitäts-ID ohne das Präfix 'sensor.', ein direktes MQTT-Topic (oder mqtt:<topic>) oder eine Home Assistant Sensor-Entitäts-ID (sensor.<id> oder ha:sensor.<id>) angeben. Wenn nicht angegeben, ODER wenn Ihr Spendenstatus nicht aktuell ist, wird dieses Feld nicht an PVOutput gesendet.
       ext_v10:
         name: Erweiterte Daten v10
-        description: Sensorklassenname für das erweiterte Datenfeld v10 in PVOutput.
+        description: Eine Quelle, die zum Ausfüllen des erweiterten Felds v10 in PVOutput verwendet wird. Sie können einen Sensorklassennamen, eine Entitäts-ID ohne das Präfix 'sensor.', ein direktes MQTT-Topic (oder mqtt:<topic>) oder eine Home Assistant Sensor-Entitäts-ID (sensor.<id> oder ha:sensor.<id>) angeben. Wenn nicht angegeben, ODER wenn Ihr Spendenstatus nicht aktuell ist, wird dieses Feld nicht an PVOutput gesendet.
       ext_v11:
         name: Erweiterte Daten v11
-        description: Sensorklassenname für das erweiterte Datenfeld v11 in PVOutput.
+        description: Eine Quelle, die zum Ausfüllen des erweiterten Felds v11 in PVOutput verwendet wird. Sie können einen Sensorklassennamen, eine Entitäts-ID ohne das Präfix 'sensor.', ein direktes MQTT-Topic (oder mqtt:<topic>) oder eine Home Assistant Sensor-Entitäts-ID (sensor.<id> oder ha:sensor.<id>) angeben. Wenn nicht angegeben, ODER wenn Ihr Spendenstatus nicht aktuell ist, wird dieses Feld nicht an PVOutput gesendet.
       ext_v12:
         name: Erweiterte Daten v12
-        description: Sensorklassenname für das erweiterte Datenfeld v12 in PVOutput.
+        description: Eine Quelle, die zum Ausfüllen des erweiterten Felds v12 in PVOutput verwendet wird. Sie können einen Sensorklassennamen, eine Entitäts-ID ohne das Präfix 'sensor.', ein direktes MQTT-Topic (oder mqtt:<topic>) oder eine Home Assistant Sensor-Entitäts-ID (sensor.<id> oder ha:sensor.<id>) angeben. Wenn nicht angegeben, ODER wenn Ihr Spendenstatus nicht aktuell ist, wird dieses Feld nicht an PVOutput gesendet.
       temp_topic:
-        name: Temperatur-Topic
-        description: MQTT-Topic für aktuelle Temperaturdaten für PVOutput.
+        name: Temperatur
+        description: Eine Quelle für die aktuelle Temperatur, die an PVOutput gesendet wird. Sie können ein direktes MQTT-Topic (oder mqtt:<topic>) oder eine Home Assistant Sensor-Entitäts-ID (sensor.<id> oder ha:sensor.<id>) angeben. Wenn nicht angegeben, wird die Temperatur nicht an PVOutput gesendet.
   mqtt:
     name: MQTT-Konfiguration
     description: Konfiguration zur Verbindung mit Ihrem MQTT-Broker

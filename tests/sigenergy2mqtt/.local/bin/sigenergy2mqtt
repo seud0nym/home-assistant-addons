@@ -101,6 +101,6 @@ done < <(env)
 
 # Validate parsed options against expected assertions
 if [[ -n "${ASSERTIONS_SERIALIZED}" ]]; then
-    source ../functions.sh
+    source "../functions.sh"
     validate_params_against_assertions
 fi

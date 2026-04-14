@@ -1,0 +1,131 @@
+#!/bin/bash
+# ==============================================================================
+# Promote a release from the current branch to the next branch:
+#   alpha  → beta        (default from alpha)
+#   alpha  → main        (pass 'main' as argument)
+#   beta   → main        (default from beta)
+#
+# Usage: promote.sh [target_branch]
+#
+# This script:
+# 1. Validates it is run from the alpha or beta branch with a clean working tree
+# 2. Merges the current branch into the target branch
+# 3. Updates config.yaml and repository.yaml for the target branch
+# 4. Commits changes on the target branch
+# 5. Pushes the target branch
+# 6. Switches back to the source branch
+# ==============================================================================
+set -euo pipefail
+
+cd "$(cd "$(dirname "$0")/.." ; pwd)"
+
+readonly ADDON_DIR="sigenergy2mqtt"
+readonly CONFIG="${ADDON_DIR}/config.yaml"
+readonly REPO_YAML="repository.yaml"
+
+# --- Determine promotion path ---
+
+source_branch=$(git branch --show-current)
+target_branch="${1:-}"
+
+case "$source_branch" in
+  alpha)
+    case "$target_branch" in
+      "")     target_branch="beta" ;;
+      beta)   ;;
+      main)   ;;
+      *)
+        echo "ERROR: Invalid target branch '${target_branch}' for source 'alpha'. Valid targets: beta, main."
+        exit 1
+        ;;
+    esac
+    ;;
+  beta)
+    case "$target_branch" in
+      "")     target_branch="main" ;;
+      main)   ;;
+      *)
+        echo "ERROR: Invalid target branch '${target_branch}' for source 'beta'. Valid target: main."
+        exit 1
+        ;;
+    esac
+    ;;
+  *)
+    echo "ERROR: This script must be run from the alpha or beta branch (currently on '$source_branch')."
+    exit 1
+    ;;
+esac
+
+# --- Validate working tree ---
+
+if [[ -n "$(git status --porcelain)" ]]; then
+  echo "ERROR: Working tree is not clean. Please commit or stash your changes first."
+  exit 1
+fi
+
+echo ""
+echo "=== Release Summary ==="
+echo "  Branch: ${source_branch} → ${target_branch}"
+echo "======================="
+echo ""
+
+# --- Merge source branch into target branch ---
+
+echo "Switching to ${target_branch} and merging ${source_branch}..."
+git checkout "$target_branch"
+target_branch_orig=$(git rev-parse HEAD)
+git merge -X theirs "$source_branch" -m "Merge ${source_branch} into ${target_branch}"
+
+# --- Update files on target branch ---
+
+echo "Updating config.yaml and repository.yaml for ${target_branch}..."
+
+if [[ "$target_branch" == "beta" ]]; then
+  # Arriving from alpha
+  sed -i 's/^name: .*$/name: sigenergy2mqtt (beta)/' "$CONFIG"
+  sed -i 's|/tree/alpha/|/tree/beta/|g' "$CONFIG"
+  sed -i 's/ (Alpha)/ (Beta)/' "$REPO_YAML"
+  sed -i 's/#alpha/#beta/' "$REPO_YAML"
+
+elif [[ "$target_branch" == "main" ]]; then
+  # Arriving from alpha or beta
+  sed -i 's/^name: .*$/name: sigenergy2mqtt/' "$CONFIG"
+  sed -i "s|/tree/${source_branch}/|/tree/main/|g" "$CONFIG"
+  sed -i '/^stage:/d' "$CONFIG"
+  sed -i 's/ (Alpha)\| (Beta)//' "$REPO_YAML"
+  sed -i 's/#alpha\|#beta//' "$REPO_YAML"
+fi
+
+git add "$CONFIG" "$REPO_YAML"
+git commit -m "chore(release): bump ${ADDON_DIR} to $(grep version: "$CONFIG" | cut -d'"' -f2)"
+
+# --- Push ---
+
+echo ""
+echo "=== Ready to push ==="
+echo "  ${target_branch}: merged release"
+echo ""
+echo "Pushing ${target_branch} will trigger the Home Assistant add-on builder workflow."
+echo ""
+read -rp "Push ${target_branch}? [Y/n] " confirm
+confirm="${confirm:-Y}"
+
+if [[ "$confirm" =~ ^[Yy]$ ]]; then
+  echo "Pushing ${target_branch}..."
+  git push origin "$target_branch"
+  echo ""
+  echo "Done! ${source_branch} has been promoted to ${target_branch}."
+else
+  echo ""
+  echo "Push cancelled. Resetting ${target_branch} to its pre-merge state..."
+  git reset --hard "$target_branch_orig"
+  echo "Reset complete. No changes have been made."
+fi
+
+# --- Switch back to source branch ---
+
+echo "Switching back to ${source_branch} branch..."
+git checkout "$source_branch"
+
+echo ""
+echo "Done. You are back on the ${source_branch} branch."

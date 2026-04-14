@@ -80,25 +80,25 @@ configuration:
         description: Source de la valeur de tension pour PVOutput. 'Phase A' pour monophasé, 'Phase B/C' ou 'Line to Line Average' pour triphasé.
       ext_v7:
         name: Données étendues v7
-        description: Nom de classe de capteur pour le champ de données étendues v7 dans PVOutput.
+        description: Une source utilisée pour remplir le champ étendu v7 dans PVOutput. Vous pouvez spécifier un nom de classe de capteur, un ID d'entité sans le préfixe 'sensor.', un sujet MQTT direct (ou mqtt:<topic>), ou un ID d'entité de capteur Home Assistant (sensor.<id> ou ha:sensor.<id>). Si non spécifié, OU si votre statut de don n'est pas à jour, ce champ ne sera pas envoyé à PVOutput.
       ext_v8:
         name: Données étendues v8
-        description: Nom de classe de capteur pour le champ de données étendues v8 dans PVOutput.
+        description: Une source utilisée pour remplir le champ étendu v8 dans PVOutput. Vous pouvez spécifier un nom de classe de capteur, un ID d'entité sans le préfixe 'sensor.', un sujet MQTT direct (ou mqtt:<topic>), ou un ID d'entité de capteur Home Assistant (sensor.<id> ou ha:sensor.<id>). Si non spécifié, OU si votre statut de don n'est pas à jour, ce champ ne sera pas envoyé à PVOutput.
       ext_v9:
         name: Données étendues v9
-        description: Nom de classe de capteur pour le champ de données étendues v9 dans PVOutput.
+        description: Une source utilisée pour remplir le champ étendu v9 dans PVOutput. Vous pouvez spécifier un nom de classe de capteur, un ID d'entité sans le préfixe 'sensor.', un sujet MQTT direct (ou mqtt:<topic>), ou un ID d'entité de capteur Home Assistant (sensor.<id> ou ha:sensor.<id>). Si non spécifié, OU si votre statut de don n'est pas à jour, ce champ ne sera pas envoyé à PVOutput.
       ext_v10:
         name: Données étendues v10
-        description: Nom de classe de capteur pour le champ de données étendues v10 dans PVOutput.
+        description: Une source utilisée pour remplir le champ étendu v10 dans PVOutput. Vous pouvez spécifier un nom de classe de capteur, un ID d'entité sans le préfixe 'sensor.', un sujet MQTT direct (ou mqtt:<topic>), ou un ID d'entité de capteur Home Assistant (sensor.<id> ou ha:sensor.<id>). Si non spécifié, OU si votre statut de don n'est pas à jour, ce champ ne sera pas envoyé à PVOutput.
       ext_v11:
         name: Données étendues v11
-        description: Nom de classe de capteur pour le champ de données étendues v11 dans PVOutput.
+        description: Une source utilisée pour remplir le champ étendu v11 dans PVOutput. Vous pouvez spécifier un nom de classe de capteur, un ID d'entité sans le préfixe 'sensor.', un sujet MQTT direct (ou mqtt:<topic>), ou un ID d'entité de capteur Home Assistant (sensor.<id> ou ha:sensor.<id>). Si non spécifié, OU si votre statut de don n'est pas à jour, ce champ ne sera pas envoyé à PVOutput.
       ext_v12:
         name: Données étendues v12
-        description: Nom de classe de capteur pour le champ de données étendues v12 dans PVOutput.
+        description: Une source utilisée pour remplir le champ étendu v12 dans PVOutput. Vous pouvez spécifier un nom de classe de capteur, un ID d'entité sans le préfixe 'sensor.', un sujet MQTT direct (ou mqtt:<topic>), ou un ID d'entité de capteur Home Assistant (sensor.<id> ou ha:sensor.<id>). Si non spécifié, OU si votre statut de don n'est pas à jour, ce champ ne sera pas envoyé à PVOutput.
       temp_topic:
-        name: Sujet de température
-        description: Sujet MQTT pour les données de température actuelles pour PVOutput.
+        name: Température
+        description: Une source pour la température actuelle envoyée à PVOutput. Vous pouvez spécifier un sujet MQTT direct (ou mqtt:<topic>), ou un ID d'entité de capteur Home Assistant (sensor.<id> ou ha:sensor.<id>). Si non spécifié, la température ne sera pas envoyée à PVOutput.
   mqtt:
     name: Configuration MQTT
     description: Configuration pour la connexion à votre broker MQTT

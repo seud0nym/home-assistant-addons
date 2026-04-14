@@ -21,6 +21,9 @@ Follow these steps to get the app repository installed on your system:
 
 A beta channel is available for testing new features and bug fixes before stable releases. Beta apps require **Advanced Mode** enabled in your Home Assistant profile.
 
+> [!IMPORTANT]
+> Stable and beta releases do _not_ share configuration. If you have configured an app through the `addon_configs` directory, you _must_ update the directory contents for both the stable and beta releases if you switch between them.
+
 ### Automatic
 
 [![Open your Home Assistant instance and show the add app repository dialogue with a specific repository URL pre-filled.](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fseud0nym%2Fhome-assistant-addons%23beta)

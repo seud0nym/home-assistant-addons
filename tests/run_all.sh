@@ -1,9 +1,14 @@
 #!/bin/bash
 
-cd "$(cd $(dirname $0); pwd)"
-export PATH=$PATH:$(pwd)/sigenergy2mqtt/.local/bin
+if [ $# -eq 0 ]; then
+    echo "Usage: $0 <test_directory>"
+    exit 1
+fi
 
-tests=$(find . -name "test_*.sh" | sort)
+cd "$(cd $(dirname $0); pwd)"
+export PATH=$PATH:$(pwd)/$1/.local/bin
+
+tests=$(find $1 -name "test_*.sh" | sort)
 chars=$(echo "$tests" | awk 'BEGIN {
    chars = 0
    longest = ""
