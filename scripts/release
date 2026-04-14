@@ -74,7 +74,7 @@ echo ""
 echo "Switching to ${target_branch} and merging ${source_branch}..."
 git checkout "$target_branch"
 target_branch_orig=$(git rev-parse HEAD)
-git merge "$source_branch" -m "Merge ${source_branch} into ${target_branch}"
+git merge -X theirs "$source_branch" -m "Merge ${source_branch} into ${target_branch}"
 
 # --- Update files on target branch ---
 
