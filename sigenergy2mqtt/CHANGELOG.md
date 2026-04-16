@@ -1,5 +1,13 @@
 # Changelog
 
+## [2026.4.16] - 2026-04-16
+
+### Fixed
+
+- Fixed the PVOutput extended fields (V7-V12) to allow zero values to be included in the payload
+
+---
+
 ## [2026.4.15] - 2026-04-15
 
 ### Changed
