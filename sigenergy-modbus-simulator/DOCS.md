@@ -19,6 +19,8 @@ Sigenergy Plant (Device ID 247)
    │    ├─ SigenStor EC 12.0 TP CMU123A45BP678 PV String 4
    │    └─ Sigenergy DC Charger
    ├─ Sigenergy AC Charger (Device ID 2)
+   ├─ Sigenergy PID (Device ID 241)
+   ├─ Sigenergy PSS (Device ID 242)
    └─ Sigen PV Max 5.0 TP CMU876A54BP321 (Device ID 3)
         ├─ Sigen PV Max 5.0 PV TP CMU876A54BP321 String 1
         ├─ Sigen PV Max 5.0 PV TP CMU876A54BP321 String 2
