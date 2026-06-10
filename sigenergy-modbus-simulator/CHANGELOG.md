@@ -10,6 +10,8 @@
 - grid_status_initial_state had no default when setting from envvar
 - restart after outage-skipped AC charger when grid restores
 
+---
+
 ## [2026.4.17] - 2026-04-17
 
 - Reimplement Modbus test server using pymodbus v3.13.0 SimDevice
