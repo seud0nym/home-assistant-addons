@@ -36,9 +36,12 @@ influxdb-token
 influxdb-username
 influxdb-write-timeout
 language
+log-fmt
 log-level
 modbus-accharger-device-id
 modbus-auto-discovery
+modbus-auto-discovery-exclude
+modbus-auto-discovery-networks
 modbus-auto-discovery-ping-timeout
 modbus-auto-discovery-retries
 modbus-auto-discovery-timeout
@@ -48,7 +51,9 @@ modbus-host
 modbus-inverter-device-id
 modbus-log-level
 modbus-no-remote-ems
+modbus-pid-device-id
 modbus-port
+modbus-pss-device-id
 modbus-readonly
 modbus-retries
 modbus-timeout
@@ -66,6 +71,7 @@ no-ems-mode-check
 no-metrics
 no-persistence-mqtt-redundancy
 persistence-cache-warmup-timeout
+persistence-debug
 persistence-mqtt-state-prefix
 persistence-sync-timeout
 pvoutput-api-key
@@ -90,13 +96,5 @@ scan-interval-high
 scan-interval-low
 scan-interval-medium
 scan-interval-realtime
-smartport-enabled
-smartport-host
-smartport-module-name
-smartport-mqtt-gain
-smartport-mqtt-topic
-smartport-password
-smartport-pv-power
-smartport-username
 validate
 version

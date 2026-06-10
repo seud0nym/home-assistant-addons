@@ -318,48 +318,61 @@ add_logging_parameters() {
 
 add_modbus_parameters() {
   bashio::log.debug ">>> Entering add_modbus_parameters()"
-  local MODBUS_AUTO_DISCOVERY="false"
+  local MODBUS_AUTO_DISCOVERY="Automatic"
   local MODBUS_HOST=""
   local MODBUS_READ_ONLY="false"
   local OPTION
-  bashio::config.has_value 'auto_discovery.force' && MODBUS_AUTO_DISCOVERY="$(bashio::config 'auto_discovery.force')"
+  local HAS_AUTO_DISCOVERY="false"
+  bashio::config.has_value 'auto_discovery.status' && MODBUS_AUTO_DISCOVERY="$(bashio::config 'auto_discovery.status')"
   bashio::config.has_value 'manual_config.host' && MODBUS_HOST="$(bashio::config 'manual_config.host')"
-  if [[ "$MODBUS_HOST" == "" && "${MODBUS_AUTO_DISCOVERY}" == "true" ]]; then
-    bashio::log.info "Forcing Modbus auto-discovery"
-    add_value_cmd_parameter --modbus-auto-discovery force
-    bashio::addon.option 'auto_discovery.force' 'false'
-    bashio::log.info "Reset auto_discovery.force=$(bashio::config 'auto_discovery.force')"
-  elif [[ "$MODBUS_HOST" == "" && -e /data/sigenergy2mqtt/auto-discovery.yaml ]]; then
-    bashio::log.info "Enabling Modbus auto-discovery because auto-discovery cache file exists and no host specified"
-    add_value_cmd_parameter --modbus-auto-discovery once
-  elif [[ "$MODBUS_HOST" == "" ]]; then
-    bashio::log.info "Enabling Modbus auto-discovery because no Modbus host specified"
-    add_value_cmd_parameter --modbus-auto-discovery once
+  bashio::log.info "Modbus auto-discovery status is ${MODBUS_AUTO_DISCOVERY}"
+  if [[ "${MODBUS_AUTO_DISCOVERY}" == "Disabled" ]]; then
+    if [[ "$MODBUS_HOST" == "" ]]; then
+      bashio::log.fatal "Modbus auto-discovery is 'Disabled' but no Modbus Host address has been manually configured"
+      exit 1
+    fi
   else
-    if [[ "${MODBUS_AUTO_DISCOVERY}" == "true" ]]; then
-      bashio::log.warning "IGNORED forced Modbus auto-discovery, because a Modbus host is specified (${MODBUS_HOST})."
-      bashio::addon.option 'auto_discovery.force' 'false'
-      bashio::log.info "Reset auto_discovery.force=$(bashio::config 'auto_discovery.force')"
-    fi
-    add_value_cmd_parameter --modbus-host "${MODBUS_HOST}"
-    if bashio::config.has_value 'manual_config.inverter_device_id'; then
-      id=$(bashio::config 'manual_config.inverter_device_id')
-      add_value_cmd_parameter --modbus-inverter-device-id "${id//,/ }"
-    fi
-    if bashio::config.has_value 'manual_config.accharger_device_id'; then
-      id=$(bashio::config 'manual_config.accharger_device_id')
-      add_value_cmd_parameter --modbus-accharger-device-id "${id//,/ }"
-    fi
-    if bashio::config.has_value 'manual_config.dccharger_device_id'; then
-      id=$(bashio::config 'manual_config.dccharger_device_id')
-      add_value_cmd_parameter --modbus-dccharger-device-id "${id//,/ }"
+    if [[ "${MODBUS_AUTO_DISCOVERY}" == "Forced" ]]; then
+      bashio::log.info "Forcing Modbus auto-discovery"
+      add_value_cmd_parameter --modbus-auto-discovery force
+      bashio::addon.option 'auto_discovery.status' 'Enabled'
+      bashio::log.info "Reset auto_discovery.status=$(bashio::config 'auto_discovery.status')"
+      HAS_AUTO_DISCOVERY="true"
+    elif [[ "${MODBUS_AUTO_DISCOVERY}" == "Enabled" ]]; then
+      add_value_cmd_parameter --modbus-auto-discovery once
+      HAS_AUTO_DISCOVERY="true"
+    elif [[ "${MODBUS_AUTO_DISCOVERY}" == "Automatic" ]]; then
+      if [[ -e /data/sigenergy2mqtt/auto-discovery.yaml ]]; then
+        bashio::log.info "Enabling Modbus auto-discovery because auto-discovery cache file exists"
+        add_value_cmd_parameter --modbus-auto-discovery once
+        HAS_AUTO_DISCOVERY="true"
+      else
+        bashio::log.debug "!!! auto-discovery cache file not found"
+      fi
     fi
   fi
-  local has_auto_discovery=false
-  for p in "${CMD_PARAMETERS[@]}"; do
-    [[ "$p" == --modbus-auto-discovery=* ]] && { has_auto_discovery=true; break; }
-  done
-  if [[ "$has_auto_discovery" == true ]]; then
+  if [[ "$MODBUS_HOST" == "" ]]; then
+    if [[ ${HAS_AUTO_DISCOVERY} == "false" ]]; then
+      bashio::log.info "Enabling Modbus auto-discovery because no Modbus host specified"
+      add_value_cmd_parameter --modbus-auto-discovery once
+      HAS_AUTO_DISCOVERY="true"
+    fi
+  else
+    add_value_cmd_parameter --modbus-host "${MODBUS_HOST}"
+  fi
+  if bashio::config.has_value 'manual_config.inverter_device_id'; then
+    id=$(bashio::config 'manual_config.inverter_device_id')
+    add_value_cmd_parameter --modbus-inverter-device-id "${id//,/ }"
+  fi
+  if bashio::config.has_value 'manual_config.accharger_device_id'; then
+    id=$(bashio::config 'manual_config.accharger_device_id')
+    add_value_cmd_parameter --modbus-accharger-device-id "${id//,/ }"
+  fi
+  if bashio::config.has_value 'manual_config.dccharger_device_id'; then
+    id=$(bashio::config 'manual_config.dccharger_device_id')
+    add_value_cmd_parameter --modbus-dccharger-device-id "${id//,/ }"
+  fi
+  if [[ "$HAS_AUTO_DISCOVERY" == "true" ]]; then
     for OPTION in auto_discovery.ping_timeout auto_discovery.timeout auto_discovery.retries; do
       add_value_cmd_parameter_from_config --modbus-auto-discovery-$(echo "${OPTION#auto_discovery.}" | sed 's/_/-/g') "${OPTION}"
     done
@@ -587,14 +600,14 @@ handle_legacy_options() {
   register_migration "advanced.discovery_prefix" "SIGENERGY2MQTT_HASS_DISCOVERY_PREFIX"
   register_migration "advanced.entity_id_prefix" "SIGENERGY2MQTT_HASS_ENTITY_ID_PREFIX"
   register_migration "advanced.unique_id_prefix" "SIGENERGY2MQTT_HASS_UNIQUE_ID_PREFIX"
-  register_migration "smartport.enabled" "SIGENERGY2MQTT_SMARTPORT_ENABLED"
-  register_migration "smartport.host" "SIGENERGY2MQTT_SMARTPORT_HOST"
-  register_migration "smartport.module_name" "SIGENERGY2MQTT_SMARTPORT_MODULE_NAME"
-  register_migration "smartport.mqtt_gain" "SIGENERGY2MQTT_SMARTPORT_MQTT_GAIN"
-  register_migration "smartport.mqtt_topic" "SIGENERGY2MQTT_SMARTPORT_MQTT_TOPIC"
-  register_migration "smartport.password" "SIGENERGY2MQTT_SMARTPORT_PASSWORD"
-  register_migration "smartport.pv_power" "SIGENERGY2MQTT_SMARTPORT_PV_POWER"
-  register_migration "smartport.username" "SIGENERGY2MQTT_SMARTPORT_USERNAME"
+  # register_migration "smartport.enabled" "SIGENERGY2MQTT_SMARTPORT_ENABLED"
+  # register_migration "smartport.host" "SIGENERGY2MQTT_SMARTPORT_HOST"
+  # register_migration "smartport.module_name" "SIGENERGY2MQTT_SMARTPORT_MODULE_NAME"
+  # register_migration "smartport.mqtt_gain" "SIGENERGY2MQTT_SMARTPORT_MQTT_GAIN"
+  # register_migration "smartport.mqtt_topic" "SIGENERGY2MQTT_SMARTPORT_MQTT_TOPIC"
+  # register_migration "smartport.password" "SIGENERGY2MQTT_SMARTPORT_PASSWORD"
+  # register_migration "smartport.pv_power" "SIGENERGY2MQTT_SMARTPORT_PV_POWER"
+  # register_migration "smartport.username" "SIGENERGY2MQTT_SMARTPORT_USERNAME"
 
   local envvars_count="$(bashio::config 'advanced.envvars|length')"
   [[ -z "$envvars_count" || "$envvars_count" == "null" ]] && envvars_count=0
@@ -621,6 +634,10 @@ handle_legacy_options() {
   done
 
   # Remove obsolete options
+  if bashio::config.has_value 'auto_discovery.force'; then
+    bashio::log.debug " → Removing obsolete option 'auto_discovery.force' from configuration"
+    bashio::addon.option 'auto_discovery.force'
+  fi
   if bashio::config.has_value 'pvoutput_interval'; then
     bashio::log.debug " → Removing obsolete option 'pvoutput_interval' from configuration"
     bashio::addon.option 'pvoutput_interval'

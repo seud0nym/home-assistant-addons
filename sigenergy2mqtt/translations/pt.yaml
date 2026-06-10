@@ -3,9 +3,9 @@ configuration:
     name: Deteção automática de dispositivos Sigenergy
     description: Configuração para detetar automaticamente os seus dispositivos Sigenergy
     fields:
-      force:
-        name: Forçar deteção automática
-        description: Ative para forçar a deteção automática de hosts Modbus Sigenergy e IDs de dispositivo associados.
+      status:
+        name: Estado
+        description: Controla a descoberta automática de hosts Modbus da Sigenergy e IDs de dispositivo associados. Só precisa de selecionar `Forced` se tiver detetado automaticamente hosts/IDs de dispositivos anteriormente e a sua rede ou dispositivos tiverem mudado..
       ping_timeout:
         name: Tempo limite de ping
         description: Tempo limite de ping em segundos para a deteção automática. Predefinido 0,5 segundos.

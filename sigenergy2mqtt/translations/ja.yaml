@@ -3,9 +3,9 @@ configuration:
     name: Sigenergy デバイス自動検出
     description: Sigenergy デバイスを自動的に検出するための設定
     fields:
-      force:
-        name: 自動検出を強制
-        description: Sigenergy Modbus ホストと関連するデバイスIDの自動検出を強制するには有効にしてください。
+      status:
+        name: ステータス
+        description: Sigenergy Modbus ホストおよび関連するデバイス IDの自動検出を制御します。以前にホスト/デバイス IDを自動検出済みで、ネットワークまたはデバイスが変更された場合にのみ `Forced` を選択する必要があります。
       ping_timeout:
         name: Ping タイムアウト
         description: 自動検出時のPingタイムアウト（秒）。デフォルトは0.5秒。

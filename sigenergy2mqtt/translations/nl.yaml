@@ -3,9 +3,9 @@ configuration:
     name: Automatische Sigenergy apparaatdetectie
     description: Configuratie voor automatische detectie van uw Sigenergy apparaten
     fields:
-      force:
-        name: Forceer automatische detectie
-        description: Activeer om automatische detectie van Sigenergy Modbus hosts en bijbehorende apparaat-ID's te forceren.
+      status:
+        name: Status
+        description: Beheert de automatische detectie van Sigenergy Modbus-hosts en bijbehorende apparaat-ID's. U hoeft alleen `Forced` te selecteren als u eerder automatisch hosts/apparaat-ID's hebt gedetecteerd en uw netwerk of apparaten zijn gewijzigd.
       ping_timeout:
         name: Ping timeout
         description: Ping timeout in seconden voor automatische detectie. Standaard 0,5 seconden.

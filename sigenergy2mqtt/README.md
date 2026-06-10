@@ -17,7 +17,7 @@
 
 ## Minimum Requirements
 
-- A Sigenergy ESS or PV Inverter, with the Modbus-TCP server enabled by your installer
+- A Sigenergy ESS or PV Inverter, with the Modbus-TCP server enabled (this can be done by your installer, or through the `mySigen` app)
 - The Home Assistant [Mosquitto broker app](https://github.com/home-assistant/addons/blob/master/mosquitto/DOCS.md) or an existing MQTT broker that you have already integrated with Home Assistant.
 
 ## MQTT Devices
@@ -29,9 +29,9 @@ The first host will be called `Sigenergy Plant` (plant is the terminology used i
 Example:
 ```
 Sigenergy Plant
+   ├─ Sigenergy Plant ESS Pre-Heating
    ├─ Sigenergy Plant Grid Code
    ├─ Sigenergy Plant Grid Sensor
-   ├─ Sigenergy Plant Smart-Port
    ├─ Sigenergy Plant Statistics
    ├─ Sigenergy AC Charger
    ├─ SigenStor EC 6.0 SP CMUxxxxxxxxxx (ID 1)
@@ -48,3 +48,6 @@ Sigenergy Plant
         └─ Sigenergy DC Charger 2
 ```
 
+
+> [!IMPORTANT]
+> Not all devices will be created for every installation. The `ESS Pre-Heating` device, for example, is only applicable to the Sigen PV M1-HYA/HYB series. AC and DC Charger devices are only created if you have a charger installed.

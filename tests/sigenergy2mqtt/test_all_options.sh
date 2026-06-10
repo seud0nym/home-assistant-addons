@@ -30,24 +30,8 @@ advanced:
           value: discover
         - name:  SIGENERGY2MQTT_HASS_UNIQUE_ID_PREFIX
           value: unique
-        - name: SIGENERGY2MQTT_SMARTPORT_ENABLED
-          value: "true"
-        - name: SIGENERGY2MQTT_SMARTPORT_HOST
-          value: 192.168.192.224
-        - name: SIGENERGY2MQTT_SMARTPORT_MODULE_NAME
-          value: enphase
-        - name: SIGENERGY2MQTT_SMARTPORT_MQTT_GAIN
-          value: "1000"
-        - name: SIGENERGY2MQTT_SMARTPORT_MQTT_TOPIC
-          value: mqtt/smartport
-        - name: SIGENERGY2MQTT_SMARTPORT_PASSWORD
-          value: test_enphase_password
-        - name: SIGENERGY2MQTT_SMARTPORT_PV_POWER
-          value: EnphasePVPower
-        - name: SIGENERGY2MQTT_SMARTPORT_USERNAME
-          value: test_enphase_user
 auto_discovery:
-    force: false
+    status: Default
     ping_timeout: 1
     retries: 1
     timeout: 1
@@ -252,14 +236,6 @@ declare -A ASSERTIONS=(
     ["SIGENERGY2MQTT_HASS_DISCOVERY_PREFIX"]="discover"
     ["SIGENERGY2MQTT_HASS_ENTITY_ID_PREFIX"]="entity"
     ["SIGENERGY2MQTT_HASS_UNIQUE_ID_PREFIX"]="unique"
-    ["SIGENERGY2MQTT_SMARTPORT_ENABLED"]="true"
-    ["SIGENERGY2MQTT_SMARTPORT_HOST"]="192.168.192.224"
-    ["SIGENERGY2MQTT_SMARTPORT_MODULE_NAME"]="enphase"
-    ["SIGENERGY2MQTT_SMARTPORT_MQTT_GAIN"]="1000"
-    ["SIGENERGY2MQTT_SMARTPORT_MQTT_TOPIC"]="mqtt/smartport"
-    ["SIGENERGY2MQTT_SMARTPORT_PASSWORD"]="test_enphase_password"
-    ["SIGENERGY2MQTT_SMARTPORT_PV_POWER"]="EnphasePVPower"
-    ["SIGENERGY2MQTT_SMARTPORT_USERNAME"]="test_enphase_user"
     ["hass-sigenergy-local-modbus-naming"]="true"
 )
 #endregion

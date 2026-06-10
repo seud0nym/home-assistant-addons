@@ -11,6 +11,7 @@ advanced:
 auto_discovery:
     status: Forced
 manual_config:
+    host: 10.10.10.10
 pvoutput:
 mqtt:
 logging:
@@ -28,6 +29,7 @@ declare -A ASSERTIONS=(
     ["mqtt-password"]="super_secret_mock_password" # Default
     ["no-metrics"]="true" # Default
     ["modbus-auto-discovery"]="force"
+    ["modbus-host"]="10.10.10.10"
 )
 #endregion
 

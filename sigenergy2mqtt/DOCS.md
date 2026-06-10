@@ -4,7 +4,7 @@
 
 ### Sigenergy ESS
 
-Your Sigenergy ESS must be configured to act as a Modbus server. This is an installer-only option, so organise with your installer to enable this option.
+Your Sigenergy ESS must be configured to act as a Modbus server. This can be enabled by your installer, or you can do it yourself via the mySigen app.
 
 ### MQTT
 
@@ -20,10 +20,10 @@ There are two ways to configure the app. You can provide configuration through t
 
 You can upload a [configuration file](https://github.com/seud0nym/sigenergy2mqtt/blob/main/sigenergy2mqtt.yaml) to the addon_configs directory on your Home Assistant server for more advanced configuration options. The file _must_ be named `sigenergy2mqtt.yaml`, and placed inside the `addon_configs/4cee8162_sigenergy2mqtt` directory. (For **beta** releases, the directory name is `addon_configs/47c5e1c8_sigenergy2mqtt`. Stable and beta releases do _not_ share configuration.)
 
-> [!IMPORTANT]
+> [!CAUTION]
 > If you provide _both_ an advanced configuration file _and_ enter options into the Configuration tab, the Configuration tab will **override** any identical settings in the configuration file. If you are using the Mosquitto Broker app, the MQTT host, port, username and password will _always_ override what is the configuration file. 
 
-When using the configuration file, the default is to _not_ automatically publish the Sigenergy devices and entities in Home Assistant. If you wish that to occur, you must include the following option in your file:
+When using the configuration file, the default is to _not_ automatically publish the Sigenergy devices and entities in Home Assistant. If you wish that to occur, you _must_ include the following option in your file:
 
 ```yaml
 home-assistant:
@@ -36,9 +36,13 @@ home-assistant:
 
 #### Sigenergy Device Auto-Discovery
 
+> [!IMPORTANT]
+> Device IDs found during auto-discovery are **cumulative** with any manually configured device IDs. For example, if you configure inverter device ID `1` in your modbus settings and auto-discovery also finds device ID `1` plus device ID `2`, the final configuration will include both `[1, 2]`. Device IDs must be unique within their type (inverters, ac-chargers, dc-chargers) and across all device types for a given host.
+
+
 | Option | Description |
 |--------|-------------|
-| `Force Auto-Discovery` | Enable to force the automatic discovery of Sigenergy Modbus hosts and associated Device IDs. You only need enable this if you have previously auto-discovered hosts/device IDs and your network or devices have changed. Once auto-discovery has been forced, this option will be reset to disabled. However, this may _not_ be reflected in the Configuration User Interface until you refresh the screen. |
+| `Status` | <dl><dt>`Automatic`</dt><dd>Auto-discovery will be enabled if the `Host Address` has _not_ been manually configured _OR_ if the auto-discovery cache file exists.</dd><dt>`Forced`</dt><dd>Enable to force the automatic discovery of Sigenergy Modbus hosts and associated Device IDs. You only need enable this if you have previously auto-discovered hosts/device IDs and your network or devices have changed. Once auto-discovery has been forced, this option will be reset to `Enabled` (this may _not_ be reflected in the Configuration User Interface until you refresh the screen).</dd><dt>`Enabled`</dt><dd>Auto-discovery is enabled. The network will be scanned _once_ for Sigenergy device IDs, and the results cached. On subsequent start-up, the cache will be used.</dd><dt>`Disabled`</dt><dd>Auto-discovery is disabled and you must manually configure the host address and device IDs.</dd></dl> |
 | `Ping Timeout` | The ping timeout, in seconds, to use when performing auto-discovery of Sigenergy devices on the network. The default is **0.5** (seconds). |
 | `Modbus Timeout` | The Modbus timeout, in seconds, to use when performing auto-discovery of Sigenergy devices on the network. The default is **0.25** (seconds). |
 | `Maximum Retries` | The maximum retry count to use when performing auto-discovery of Sigenergy devices on the network. The default is **0**.
@@ -85,7 +89,7 @@ If you enable status updates to PVOutput, you must enter both the ***API Key*** 
     <tr><td><code>Extended Data v10</code></td></tr>
     <tr><td><code>Extended Data v11</code></td></tr>
     <tr><td><code>Extended Data v12</code></td></tr>
-    <tr><td><code>Temperature Topic</code></td><td>The MQTT topic to which to subscribe to obtain the current temperature data for PVOutput. If specified, the temperature will be sent to PVOutput. See note below.</td></tr>
+    <tr><td><code>Temperature</code></td><td>A source for the current temperature sent to PVOutput. You can specify a direct MQTT topic (or mqtt:<topic>), or a Home Assistant sensor entity id (sensor.<id> or ha:sensor.<id>). If not specified, the temperature will not be sent to PVOutput.</td></tr>
   </tbody>
 </table>
 
@@ -164,33 +168,6 @@ The `time-periods` element contains an array of time periods that describe the p
           - All
                                    
 If plans or time periods overlap, the first match will be used.
-
-##### PVOutput Temperature
-
-You can publish temperature to PVOutput. As an app, `sigenergy2mqtt` does not have direct access to the Home Assistant sensors. It can only consume temperature that has been published to MQTT.
-
-If your Home Assistant weather integration does not publish the temperature to MQTT, you can create an automation that will publish the temperature whenever it changes. This is an example (you will need to modify the `entity_id` to match your location):
-
-```yaml
-alias: Publish Current Temperature
-description: ""
-triggers:
-  - trigger: state
-    entity_id:
-      - weather.forecast_prahran
-    attribute: temperature
-conditions: []
-actions:
-  - action: mqtt.publish
-    data:
-      qos: "1"
-      retain: true
-      topic: homeassistant/weather/temperature
-      payload: "{{ state_attr(\"weather.forecast_prahran\", \"temperature\") }}"
-mode: single
-```
-
-Once you have this automation running, you can add it to your PVOutput status uploads by specifying the MQTT topic `homeassistant/weather/temperature` in the `PVOutput Temperature Topic` configuration field.
 
 ##### Extended Data Fields
 

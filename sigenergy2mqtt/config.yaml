@@ -12,7 +12,7 @@ map:
 name: sigenergy2mqtt (alpha)
 options:
   auto_discovery: {
-    force: false,
+    status: "Automatic",
   }
   manual_config: {
     host: "",
@@ -50,7 +50,7 @@ options:
   logging: {}
 schema:
   auto_discovery:
-    force: "bool"
+    status: "list(Automatic|Forced|Enabled|Disabled)"
     ping_timeout: "float(0.5,)?"
     timeout: "float(0.25,)?"
     retries: "int(0,)?"
@@ -172,19 +172,11 @@ schema:
   scan_interval_low: "int(1,)?"
   scan_interval_medium: "int(1,)?"
   scan_interval_realtime: "int(1,)?"
-  smartport_enabled: "bool?"
-  smartport_host: "str?"
-  smartport_module_name: "str?"
-  smartport_mqtt_gain: "int?"
-  smartport_mqtt_topic: "str?"
-  smartport_password: "password?"
-  smartport_pv_power: "str?"
-  smartport_username: "str?"
   unique_id_prefix: "str?"
   #endregion
 services:
   - "mqtt:want"
 slug: sigenergy2mqtt
 url: "https://github.com/seud0nym/home-assistant-addons/tree/alpha/sigenergy2mqtt"
-version: "2026.4.16"
+version: "2026.6.10a1"
 stage: experimental

@@ -3,9 +3,9 @@ configuration:
     name: Sigenergy 设备自动发现
     description: 自动发现您的 Sigenergy 设备的配置
     fields:
-      force:
-        name: 强制自动发现
-        description: 启用以强制自动发现 Sigenergy Modbus 主机和关联的设备 ID。
+      status:
+        name: 状态
+        description: 控制 Sigenergy Modbus 主机及相关设备 ID 的自动发现。仅当您之前已自动发现主机/设备 ID，且网络或设备发生了更改时，才需要选择 `Forced`。
       ping_timeout:
         name: Ping 超时
         description: 自动发现时的 Ping 超时（秒）。默认 0.5 秒。

@@ -3,9 +3,9 @@ configuration:
     name: Sigenergy Device Auto-Discovery
     description: Configuration for automatically discovering your Sigenergy devices
     fields:
-      force:
-        name: Force Auto-Discovery
-        description: Enable to force the automatic discovery of Sigenergy Modbus hosts and associated Device IDs. You only need enable this if you have previously auto-discovered hosts/device IDs and your network or devices have changed.
+      status:
+        name: Status
+        description: Controls the automatic discovery of Sigenergy Modbus hosts and associated Device IDs. You only need to select `Forced` if you have previously auto-discovered hosts/device IDs and your network or devices have changed.
       ping_timeout:
         name: Ping Timeout
         description: The ping timeout, in seconds, to use when performing auto-discovery of Sigenergy devices on the network. The default is 0.5 seconds.
