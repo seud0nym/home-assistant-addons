@@ -1,6 +1,6 @@
 # Changelog
 
-## [2026.6.10a1]
+## [2026.6.11b2]
 
 ### Added
 
@@ -65,6 +65,7 @@
 ### Fixed
 
 - Fixed deadlock when running auto-discovery ([#177](https://github.com/seud0nym/sigenergy2mqtt/issues/177))
+- Fixed auto-discovery so that the cache was only used when auto-discovery was explicitly enabled as "once"
 - Fixed incorrect popping of aliased device ID keys during discovery merge which led to device config loss
 - Fixed the Phase Current and Phase Voltage sensors object_id when the inverter is a single-phase inverter
 - Fixed min/max for Active/Reactive Power Fixed Adjustment Target Value sensors to use total Rated Active Power of attached inverters as the base for calculation
