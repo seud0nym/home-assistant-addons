@@ -10,6 +10,7 @@ init: false
 map:
   - addon_config
 name: sigenergy2mqtt (beta)
+name: sigenergy2mqtt (beta)
 options:
   auto_discovery: {
     status: "Automatic",
