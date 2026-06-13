@@ -52,7 +52,7 @@ options:
 schema:
   auto_discovery:
     status: "list(Automatic|Forced|Enabled|Disabled)"
-    max_device_id: "int(1,246)",
+    max_device_id: "int(1,246)"
     ping_timeout: "float(0.5,)?"
     timeout: "float(0.25,)?"
     retries: "int(0,)?"
