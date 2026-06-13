@@ -10,6 +10,7 @@ cat << EOF > $MOCK_OPTIONS_PATH
 advanced:
 auto_discovery:
     status: Forced
+    max_device_id: 10
 manual_config:
     host: 10.10.10.10
 pvoutput:
@@ -29,6 +30,7 @@ declare -A ASSERTIONS=(
     ["mqtt-password"]="super_secret_mock_password" # Default
     ["no-metrics"]="true" # Default
     ["modbus-auto-discovery"]="force"
+    ["modbus-auto-discovery-max-device-id"]="10"
     ["modbus-host"]="10.10.10.10"
 )
 #endregion

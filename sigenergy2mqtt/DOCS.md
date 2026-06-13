@@ -43,6 +43,7 @@ home-assistant:
 | Option | Description |
 |--------|-------------|
 | `Status` | <dl><dt>`Automatic`</dt><dd>Auto-discovery will be enabled if the `Host Address` has _not_ been manually configured _OR_ if the auto-discovery cache file exists.</dd><dt>`Forced`</dt><dd>Enable to force the automatic discovery of Sigenergy Modbus hosts and associated Device IDs. You only need enable this if you have previously auto-discovered hosts/device IDs and your network or devices have changed. Once auto-discovery has been forced, this option will be reset to `Enabled` (this may _not_ be reflected in the Configuration User Interface until you refresh the screen).</dd><dt>`Enabled`</dt><dd>Auto-discovery is enabled. The network will be scanned _once_ for Sigenergy device IDs, and the results cached. On subsequent start-up, the cache will be used.</dd><dt>`Disabled`</dt><dd>Auto-discovery is disabled and you must manually configure the host address and device IDs.</dd></dl> |
+| `Max Device ID` | The maximum device ID to use when performing auto-discovery of Sigenergy devices on the network. The default is `10`, and it must be between 1 and 246 (inclusive). This option can significantly speed up auto-discovery, at the risk of not finding devices that have been configured with a higher Device ID than the maximum allowed by this setting. |
 | `Ping Timeout` | The ping timeout, in seconds, to use when performing auto-discovery of Sigenergy devices on the network. The default is **0.5** (seconds). |
 | `Modbus Timeout` | The Modbus timeout, in seconds, to use when performing auto-discovery of Sigenergy devices on the network. The default is **0.25** (seconds). |
 | `Maximum Retries` | The maximum retry count to use when performing auto-discovery of Sigenergy devices on the network. The default is **0**.
@@ -241,7 +242,7 @@ If both v1 credentials (username/password) and v2 credentials (token) are provid
 
 | Option | Description |
 |--------|-------------|
-| `sigenergy2mqtt` | Use to set the `sigenergy2mqtt` log level. By default, only WARNING messages are logged. |
+| `sigenergy2mqtt` | Use to set the `sigenergy2mqtt` log level. By default, INFO messages are logged. |
 | `Sensor to Debug` | Specify a sensor to be debugged using either the full entity id, a partial entity id, the full sensor class name, or a partial sensor class name. You can also use regular expressions. For example, specifying 'daily' would match all sensors with daily in their entity name. If specified, `Logging Level` is also forced to **DEBUG**. |
 | `App Run Script` | Set the app run script log level. **WARNING!** Setting this to ALL, TRACE or DEBUG will produce very verbose output. |
 | `Modbus` | Set the pymodbus logging level. **WARNING!** Setting this to DEBUG will produce very verbose output. |
