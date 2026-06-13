@@ -11,13 +11,16 @@ __BASHIO_LOG_TIMESTAMP="%Y-%m-%d %H:%M:%S"
 
 # Single definition of the sentinel that means "use the built-in
 # default; skip emitting this parameter on the command line".
+# This value must also be included in the list() described
+# in config.yaml for the option.
 readonly SKIP_SENTINEL="Default"
 
 # HAS_CONFIG is written by config_file_check() and read by
 # add_mqtt_parameters(). Declare it here so the dependency is explicit and
 # a future reordering of the main-body calls is caught immediately.
-HAS_CONFIG=0
+HAS_CONFIG="false"
 
+#region Logging
 if bashio::config.has_value 'logging.app'; then
   log_level="$(bashio::config 'logging.app')"
   if [[ $log_level != "$SKIP_SENTINEL" ]]; then
@@ -46,16 +49,11 @@ log_value() {
 }
 
 log_param() {
-  local param="$1"
-  local key="${param%%=*}"
-  local value="${param#*=}"
-  if [[ "$key" == *password* || "$key" == *api[-_]key* || "$key" == *token* ]]; then
-    echo -n "${key}=[REDACTED]"
-  else
-    echo -n "${param}"
-  fi
+  local key="${1%%=*}"
+  local value="${1#*=}"
+  echo -n "${key}=$(log_value "$key" "$value" false)"
 }
-
+#endregion
 
 #region Command line parameter helpers
 declare -a CMD_PARAMETERS=()
@@ -77,10 +75,7 @@ add_boolean_cmd_parameter_from_config() {
   local key="$2"
   local add_if="${3:-true}"
   # When add_if==false the caller wants the flag emitted only when the config
-  # key is explicitly set to false (i.e. "disable this feature").  We evaluate
-  # even when the key is absent so that a missing key is treated identically to
-  # an explicit false value — bashio::config returns "" in that case, which
-  # does not match add_if ("false"), so the parameter is correctly skipped.
+  # key is explicitly set to false (i.e. "disable this feature").
   if bashio::config.has_value "$key" || [[ "$add_if" == "false" ]]; then
     value="$(bashio::config "$key")"
     add_boolean_cmd_parameter "$parameter" "$value" "$add_if"
@@ -90,6 +85,7 @@ add_boolean_cmd_parameter_from_config() {
 }
 
 add_value_cmd_parameter() {
+  # Beware: Space separated values will be added as multiple parameters!!
   local parameter="$1"
   local value="$2"
   if [[ -z "${value}" || "${value}" == "null" ]]; then
@@ -119,7 +115,6 @@ add_value_cmd_parameter_from_config() {
   fi
 }
 #endregion
-
 
 #region Parameter processing functions
 add_advanced_parameters() {
@@ -289,7 +284,7 @@ add_language_parameter() {
         bashio::log.debug "*** Using default language en-US"
         lang="en-US"
     fi
-    lang="${lang%%[-_]*}"
+    [ "$lang" != "zh-Hans" ] && lang="${lang%%[-_]*}"
   fi
   add_value_cmd_parameter --language "${lang}"
   bashio::log.debug "<<< Exiting add_language_parameter()"
@@ -422,7 +417,7 @@ add_mqtt_parameters() {
   add_boolean_cmd_parameter --mqtt-tls "${MQTT_TLS}"
   add_value_cmd_parameter --mqtt-username "${MQTT_USERNAME}"
   add_value_cmd_parameter --mqtt-password "${MQTT_PASSWORD}"
-  [[ -z "${MQTT_USERNAME}${MQTT_PASSWORD}" && $HAS_CONFIG == 0 ]] && add_boolean_cmd_parameter --mqtt-anonymous true
+  [[ -z "${MQTT_USERNAME}${MQTT_PASSWORD}" && $HAS_CONFIG == "false" ]] && add_boolean_cmd_parameter --mqtt-anonymous true
   bashio::log.debug "<<< Exiting add_mqtt_parameters()"
 }
 
@@ -486,19 +481,25 @@ config_file_check() {
   if [[ -e /config/sigenergy2mqtt.yaml ]]; then
     bashio::log.info "Configuration file found, using: /config/sigenergy2mqtt.yaml"
     add_value_cmd_parameter --config "/config/sigenergy2mqtt.yaml"
-    HAS_CONFIG=1
+    HAS_CONFIG="true"
     bashio::log.warning "Home Assistant discovery is NOT enabled by default"
   else
     bashio::log.info "No configuration file found, enabling Home Assistant discovery"
     add_boolean_cmd_parameter --hass-enabled true
-    HAS_CONFIG=0
+    HAS_CONFIG="false"
   fi
   bashio::log.debug "<<< Exiting config_file_check()"
 }
 #endregion
 
-
 #region Legacy option handling functions
+json_escape() {
+  local s="$1"
+  s="${s//\\/\\\\}"   # backslash first
+  s="${s//\"/\\\"}"   # then double-quote
+  printf '%s' "$s"
+}
+
 handle_legacy_options() {
   bashio::log.debug ">>> Entering handle_legacy_options()"
   bashio::log.info "Checking options..."
@@ -624,8 +625,10 @@ handle_legacy_options() {
       done
       if [[ "${exists}" == false ]]; then
         bashio::log.info " → Migrating option '${option}' to environment variables ('advanced.envvars[${envvars_count}]') with name '${env_name}' and value $(log_value $env_name $value)"
-        bashio::addon.option "advanced.envvars[]" "{\"name\":\"${env_name}\",\"value\":\"${value}\"}"
-        envvars_count=$(( ${envvars_count} + 1 ))
+        local escaped_value
+        escaped_value="$(json_escape "$value")"
+        bashio::addon.option "advanced.envvars[]" "{\"name\":\"${env_name}\",\"value\":\"${escaped_value}\"}" 
+        envvars_count=$(( envvars_count + 1 ))
       else
         bashio::log.debug " → Skipping option '${option}' with name '${env_name}' because it already exists in environment variables"
       fi
@@ -651,13 +654,12 @@ handle_legacy_options() {
 }
 #endregion
 
-
 #region Run functions
 run_clean() {
   bashio::log.debug ">>> Entering run_clean()"
   if bashio::config.has_value 'advanced.clean' && [[ "$(bashio::config 'advanced.clean')" == "true" ]]; then
     bashio::log.warning "Cleaning MQTT retained messages to refresh Devices..."
-    if ~/.local/bin/sigenergy2mqtt "${CMD_PARAMETERS[@]}" --log-level=INFO --mqtt-log-level=INFO --modbus-log-level=WARNING --clean; then
+    if sigenergy2mqtt "${CMD_PARAMETERS[@]}" --log-level=INFO --mqtt-log-level=INFO --modbus-log-level=WARNING --clean; then
       bashio::addon.option 'advanced.clean' 'false'
       bashio::log.info "Reset advanced.clean=$(bashio::config 'advanced.clean')"
     else
