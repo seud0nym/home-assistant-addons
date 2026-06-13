@@ -3,9 +3,12 @@ configuration:
     name: Sigenergy 기기 자동 검색
     description: Sigenergy 기기를 자동으로 검색하기 위한 설정
     fields:
-      force:
-        name: 자동 검색 강제
-        description: Sigenergy Modbus 호스트 및 관련 기기 ID의 자동 검색을 강제하려면 활성화하세요.
+      status:
+        name: 상태
+        description: Sigenergy Modbus 호스트 및 관련 장치 ID의 자동 검색을 제어합니다. 이전에 호스트/장치 ID를 자동으로 검색한 적이 있고 네트워크 또는 장치가 변경된 경우에만 `Forced`를 선택하면 됩니다.
+      max_device_id:
+        name: 최대 장치 ID
+        description: 네트워크에서 Sigenergy 장치를 자동 검색할 때 사용할 최대 장치 ID입니다. 기본값은 `10`이며 1에서 246 사이(포함)여야 합니다. 이 옵션을 사용하면 자동 검색 속도를 크게 높일 수 있지만, 이 설정에서 허용하는 최대값보다 높은 장치 ID로 구성된 장치를 찾지 못할 위험이 있습니다.
       ping_timeout:
         name: Ping 타임아웃
         description: 자동 검색 시 Ping 타임아웃(초). 기본값 0.5초.

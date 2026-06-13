@@ -3,9 +3,12 @@ configuration:
     name: Découverte automatique des appareils Sigenergy
     description: Configuration pour découvrir automatiquement vos appareils Sigenergy
     fields:
-      force:
-        name: Forcer la découverte automatique
-        description: Activez pour forcer la découverte automatique des hôtes Modbus Sigenergy et des ID de périphérique associés.
+      status:
+        name: Statut
+        description: Contrôle la découverte automatique des hôtes Modbus Sigenergy et des ID d'appareils associés. Vous ne devez sélectionner `Forced` que si vous avez précédemment découvert automatiquement des hôtes/ID d'appareils et que votre réseau ou vos appareils ont changé.
+      max_device_id:
+        name: ID d'appareil maximal
+        description: L'ID d'appareil maximal à utiliser lors de la découverte automatique des appareils Sigenergy sur le réseau. La valeur par défaut est `10` et doit être comprise entre 1 et 246 (inclus). Cette option peut accélérer considérablement la découverte automatique, au risque de ne pas trouver les appareils configurés avec un ID d'appareil supérieur au maximum autorisé par ce paramètre.
       ping_timeout:
         name: Délai de ping
         description: Délai de ping en secondes pour la découverte automatique. Par défaut 0,5 secondes.

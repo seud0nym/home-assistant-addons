@@ -3,11 +3,13 @@ configuration:
     name: Sigenergy 设备自动发现
     description: 自动发现您的 Sigenergy 设备的配置
     fields:
-      force:
-        name: 强制自动发现
-        description: 启用以强制自动发现 Sigenergy Modbus 主机和关联的设备 ID。
-      ping_timeout:
-        name: Ping 超时
+      status:
+        name: 状态
+        description: 控制 Sigenergy Modbus 主机及相关设备 ID 的自动发现。仅当您之前已自动发现主机/设备 ID，且网络或设备发生了更改时，才需要选择 `Forced`。
+      max_device_id:
+        name: 最大设备 ID
+        description: 在网络上自动发现 Sigenergy 设备时使用的最大设备 ID。默认值为 `10`，且必须在 1 到 246 之间（含端点）。此选项可显著加快自动发现速度，但存在找不到设备 ID 高于此设置所允许最大值的设备的风险。      ping_timeout:
+      name: Ping 超时
         description: 自动发现时的 Ping 超时（秒）。默认 0.5 秒。
       retries:
         name: 最大重试次数

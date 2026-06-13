@@ -3,9 +3,12 @@ configuration:
     name: Automatische Sigenergy apparaatdetectie
     description: Configuratie voor automatische detectie van uw Sigenergy apparaten
     fields:
-      force:
-        name: Forceer automatische detectie
-        description: Activeer om automatische detectie van Sigenergy Modbus hosts en bijbehorende apparaat-ID's te forceren.
+      status:
+        name: Status
+        description: Beheert de automatische detectie van Sigenergy Modbus-hosts en bijbehorende apparaat-ID's. U hoeft alleen `Forced` te selecteren als u eerder automatisch hosts/apparaat-ID's hebt gedetecteerd en uw netwerk of apparaten zijn gewijzigd.
+      max_device_id:
+        name: Max. apparaat-ID
+        description: Het maximale apparaat-ID dat wordt gebruikt bij de automatische detectie van Sigenergy-apparaten op het netwerk. De standaardwaarde is `10` en moet tussen 1 en 246 (inclusief) liggen. Deze optie kan de automatische detectie aanzienlijk versnellen, maar met het risico dat apparaten die zijn geconfigureerd met een hoger apparaat-ID dan het door deze instelling toegestane maximum niet worden gevonden.
       ping_timeout:
         name: Ping timeout
         description: Ping timeout in seconden voor automatische detectie. Standaard 0,5 seconden.

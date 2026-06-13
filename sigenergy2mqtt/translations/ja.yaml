@@ -3,9 +3,12 @@ configuration:
     name: Sigenergy デバイス自動検出
     description: Sigenergy デバイスを自動的に検出するための設定
     fields:
-      force:
-        name: 自動検出を強制
-        description: Sigenergy Modbus ホストと関連するデバイスIDの自動検出を強制するには有効にしてください。
+      status:
+        name: ステータス
+        description: Sigenergy Modbus ホストおよび関連するデバイス IDの自動検出を制御します。以前にホスト/デバイス IDを自動検出済みで、ネットワークまたはデバイスが変更された場合にのみ `Forced` を選択する必要があります。
+      max_device_id:
+        name: デバイス ID の最大値
+        description: ネットワーク上の Sigenergy デバイスを自動検出する際に使用するデバイス ID の最大値です。デフォルトは `10` で、1 から 246 の範囲（両端を含む）で指定する必要があります。このオプションを使用すると自動検出を大幅に高速化できますが、この設定で許可された最大値より高いデバイス ID が設定されたデバイスが見つからないリスクがあります。
       ping_timeout:
         name: Ping タイムアウト
         description: 自動検出時のPingタイムアウト（秒）。デフォルトは0.5秒。

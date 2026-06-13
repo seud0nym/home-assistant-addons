@@ -3,9 +3,12 @@ configuration:
     name: Sigenergy Geräte-Auto-Erkennung
     description: Konfiguration zur automatischen Erkennung Ihrer Sigenergy-Geräte
     fields:
-      force:
-        name: Auto-Erkennung erzwingen
-        description: Aktivieren Sie diese Option, um die automatische Erkennung von Sigenergy Modbus-Hosts und zugehörigen Geräte-IDs zu erzwingen. Sie müssen diese Option nur aktivieren, wenn Sie zuvor Hosts/Geräte-IDs automatisch erkannt haben und sich Ihr Netzwerk oder Ihre Geräte geändert haben.
+      status:
+        name: Status
+        description: Steuert die automatische Erkennung von Sigenergy-Modbus-Hosts und zugehörigen Geräte-IDs. Sie müssen nur `Forced` auswählen, wenn Sie zuvor Hosts/Geräte-IDs automatisch erkannt haben und sich Ihr Netzwerk oder Ihre Geräte geändert haben.
+      max_device_id:
+        name: Max. Geräte-ID
+        description: Die maximale Geräte-ID, die bei der automatischen Erkennung von Sigenergy-Geräten im Netzwerk verwendet wird. Der Standardwert ist `10` und muss zwischen 1 und 246 (einschließlich) liegen. Diese Option kann die automatische Erkennung erheblich beschleunigen, birgt jedoch das Risiko, Geräte nicht zu finden, die mit einer höheren Geräte-ID konfiguriert wurden, als durch diese Einstellung zulässig ist.
       ping_timeout:
         name: Ping-Zeitüberschreitung
         description: Die Ping-Zeitüberschreitung in Sekunden bei der Auto-Erkennung. Standard ist 0,5 Sekunden.
