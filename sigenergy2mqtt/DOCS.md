@@ -242,7 +242,7 @@ If both v1 credentials (username/password) and v2 credentials (token) are provid
 
 | Option | Description |
 |--------|-------------|
-| `sigenergy2mqtt` | Use to set the `sigenergy2mqtt` log level. By default, only WARNING messages are logged. |
+| `sigenergy2mqtt` | Use to set the `sigenergy2mqtt` log level. By default, INFO messages are logged. |
 | `Sensor to Debug` | Specify a sensor to be debugged using either the full entity id, a partial entity id, the full sensor class name, or a partial sensor class name. You can also use regular expressions. For example, specifying 'daily' would match all sensors with daily in their entity name. If specified, `Logging Level` is also forced to **DEBUG**. |
 | `App Run Script` | Set the app run script log level. **WARNING!** Setting this to ALL, TRACE or DEBUG will produce very verbose output. |
 | `Modbus` | Set the pymodbus logging level. **WARNING!** Setting this to DEBUG will produce very verbose output. |
