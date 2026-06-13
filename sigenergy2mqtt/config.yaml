@@ -13,6 +13,7 @@ name: sigenergy2mqtt (alpha)
 options:
   auto_discovery: {
     status: "Automatic",
+    max_device_id: 10,
   }
   manual_config: {
     host: "",
@@ -51,6 +52,7 @@ options:
 schema:
   auto_discovery:
     status: "list(Automatic|Forced|Enabled|Disabled)"
+    max_device_id: "int(1,246)",
     ping_timeout: "float(0.5,)?"
     timeout: "float(0.25,)?"
     retries: "int(0,)?"
@@ -178,5 +180,5 @@ services:
   - "mqtt:want"
 slug: sigenergy2mqtt
 url: "https://github.com/seud0nym/home-assistant-addons/tree/alpha/sigenergy2mqtt"
-version: "2026.6.13a3"
+version: "2026.6.13b1"
 stage: experimental

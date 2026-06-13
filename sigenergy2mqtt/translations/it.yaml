@@ -6,6 +6,9 @@ configuration:
       status:
         name: Stato
         description: Controlla il rilevamento automatico degli host Modbus Sigenergy e degli ID dispositivo associati. È necessario selezionare `Forced` solo se in precedenza sono stati rilevati automaticamente host/ID dispositivo e la rete o i dispositivi sono cambiati.
+      max_device_id:
+        name: ID dispositivo massimo
+        description: L'ID dispositivo massimo da utilizzare durante il rilevamento automatico dei dispositivi Sigenergy sulla rete. Il valore predefinito è `10` e deve essere compreso tra 1 e 246 (inclusi). Questa opzione può velocizzare notevolmente il rilevamento automatico, con il rischio di non trovare dispositivi configurati con un ID dispositivo superiore al massimo consentito da questa impostazione.
       ping_timeout:
         name: Timeout ping
         description: Timeout ping in secondi per il rilevamento automatico. Predefinito 0,5 secondi.

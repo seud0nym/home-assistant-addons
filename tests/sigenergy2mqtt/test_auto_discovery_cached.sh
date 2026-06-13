@@ -9,6 +9,8 @@ export MOCK_OPTIONS_PATH="/tmp/${TEST_NAME}.yaml"
 cat << EOF > $MOCK_OPTIONS_PATH
 advanced:
 auto_discovery:
+    status: Automatic
+    max_device_id: 10
 manual_config:
     host: 10.10.10.10
 pvoutput:
@@ -27,7 +29,8 @@ declare -A ASSERTIONS=(
     ["mqtt-username"]="mock_mqtt_user" # Default
     ["mqtt-password"]="super_secret_mock_password" # Default
     ["no-metrics"]="true" # Default
-    ["modbus-auto-discovery"]="once" # Default
+    ["modbus-auto-discovery"]="once"
+    ["modbus-auto-discovery-max-device-id"]="10"
     ["modbus-host"]="10.10.10.10"
 )
 #endregion

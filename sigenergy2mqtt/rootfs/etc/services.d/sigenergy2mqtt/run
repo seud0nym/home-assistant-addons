@@ -368,7 +368,7 @@ add_modbus_parameters() {
     add_value_cmd_parameter --modbus-dccharger-device-id "${id//,/ }"
   fi
   if [[ "$HAS_AUTO_DISCOVERY" == "true" ]]; then
-    for OPTION in auto_discovery.ping_timeout auto_discovery.timeout auto_discovery.retries; do
+    for OPTION in auto_discovery.max_device_id auto_discovery.ping_timeout auto_discovery.timeout auto_discovery.retries; do
       add_value_cmd_parameter_from_config --modbus-auto-discovery-$(echo "${OPTION#auto_discovery.}" | sed 's/_/-/g') "${OPTION}"
     done
   fi

@@ -10,6 +10,7 @@ cat << EOF > $MOCK_OPTIONS_PATH
 advanced:
 auto_discovery:
     status: Disabled
+    max_device_id: 10
 manual_config:
     host: 127.0.0.1
 pvoutput:
