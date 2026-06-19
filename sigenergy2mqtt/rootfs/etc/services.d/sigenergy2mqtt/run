@@ -696,8 +696,8 @@ run_service() {
   for PARAM in "${CMD_PARAMETERS[@]}"; do
     bashio::log.info " → Parameter: $(log_param "${PARAM}")"
   done
-  exec sigenergy2mqtt \
-      "${CMD_PARAMETERS[@]}"
+  bashio::log.debug "exec sigenergy2mqtt ${CMD_PARAMETERS[*]}"
+  exec sigenergy2mqtt ${CMD_PARAMETERS[@]}
 }
 #endregion
 

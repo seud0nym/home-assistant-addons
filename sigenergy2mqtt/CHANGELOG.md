@@ -1,5 +1,26 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- Added `SIGENERGY2MQTT_PVOUTPUT_UPLOAD_LOG_LEVEL` configuration setting to allow override of the log level for PVOutput upload messages
+- Added metrics for PVOutput uploads, errors, and skips
+
+### Changed
+
+- Reduced log noise by demoting config sourcing to debug and improving device discovery log details
+
+### Fixed
+
+- PV Total Generation Today and PV Total Generation Yesterday were incorrectly classified as State class TOTAL_INCREASING, which could cause a persistent sanity check error when they reset at midnight (#200)
+- PV Total Generation Today and PV Total Generation Yesterday were incorrectly marked as enabled by default in Home Assistant
+- Set negative delta range limits for unsigned integer types in sanity checks, because a delta can be less than zero
+- Fixed ConfigurationError raised for valid Modbus configurations with auto-discovery cache (fixes [#203](https://github.com/seud0nym/sigenergy2mqtt/issues/203))
+
+---
+
+
 ## [2026.6.14] - 2026-06-14
 
 ### Added
