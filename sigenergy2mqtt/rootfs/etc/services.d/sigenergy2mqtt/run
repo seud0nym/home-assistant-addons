@@ -50,8 +50,12 @@ log_value() {
 
 log_param() {
   local key="${1%%=*}"
-  local value="${1#*=}"
-  echo -n "${key}=$(log_value "$key" "$value" false)"
+  if [[ "$1" == *=* ]]; then
+    local value="${1#*=}"
+    echo -n "${key}=$(log_value "$key" "$value" false)"
+  else
+    echo -n "${key}"
+  fi
 }
 #endregion
 
