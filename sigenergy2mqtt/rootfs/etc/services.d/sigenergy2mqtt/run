@@ -34,6 +34,7 @@ if bashio::config.has_value 'logging.app'; then
 fi
 
 log_value() {
+  # Convert the name to lowercase
   local name_lc=${1,,}
   local value="$2"
   local quoted="${3:-true}"
@@ -119,6 +120,19 @@ add_value_cmd_parameter_from_config() {
   fi
 }
 #endregion
+
+export_envvar() {
+  local name="$1"
+  local value="$2"
+  if [[ -z "${value}" || "${value}" == "null" ]]; then
+    bashio::log.debug "### Variable  '${name}' is empty or null, SKIPPING"
+  elif [[ "$value" == "$SKIP_SENTINEL" ]]; then
+    bashio::log.debug "### Variable  '${name}' SKIPPED (value '$value' == '$SKIP_SENTINEL')"
+  else
+    bashio::log.debug "*** Exporting '${name}=$(log_value "$name" "$value" false)'"
+    export "${name}=${value}"
+  fi
+}
 
 #region Parameter processing functions
 add_advanced_parameters() {
@@ -416,12 +430,12 @@ add_mqtt_parameters() {
   bashio::config.has_value 'mqtt.username' && MQTT_USERNAME="$(bashio::config 'mqtt.username')"
   bashio::config.has_value 'mqtt.password' && MQTT_PASSWORD="$(bashio::config 'mqtt.password')"
   bashio::config.has_value 'mqtt.tls' && MQTT_TLS="$(bashio::config 'mqtt.tls')" || MQTT_TLS="false"
-  add_value_cmd_parameter --mqtt-broker "${MQTT_BROKER}"
-  add_value_cmd_parameter --mqtt-port "${MQTT_PORT}"
-  add_boolean_cmd_parameter --mqtt-tls "${MQTT_TLS}"
-  add_value_cmd_parameter --mqtt-username "${MQTT_USERNAME}"
-  add_value_cmd_parameter --mqtt-password "${MQTT_PASSWORD}"
-  [[ -z "${MQTT_USERNAME}${MQTT_PASSWORD}" && $HAS_CONFIG == "false" ]] && add_boolean_cmd_parameter --mqtt-anonymous true
+  export_envvar SIGENERGY2MQTT_MQTT_BROKER "${MQTT_BROKER}"
+  export_envvar SIGENERGY2MQTT_MQTT_PORT "${MQTT_PORT}"
+  export_envvar SIGENERGY2MQTT_MQTT_TLS "${MQTT_TLS}"
+  export_envvar SIGENERGY2MQTT_MQTT_USERNAME "${MQTT_USERNAME}"
+  export_envvar SIGENERGY2MQTT_MQTT_PASSWORD "${MQTT_PASSWORD}"
+  [[ -z "${MQTT_USERNAME}${MQTT_PASSWORD}" && $HAS_CONFIG == "false" ]] && export_envvar SIGENERGY2MQTT_MQTT_ANONYMOUS "true"
   bashio::log.debug "<<< Exiting add_mqtt_parameters()"
 }
 
