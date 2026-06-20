@@ -15,7 +15,7 @@ manual_config:
 pvoutput:
 mqtt:
 logging:
-smartport:
+influxdb:
 "
 
 # Scenario: advanced.clean is true
@@ -37,7 +37,6 @@ RESULT=$?
 
 if [ $RESULT -ne 0 ]; then
     echo "Clean option test failed with result $RESULT"
-    cat $LOG_PATH
     exit $RESULT
 fi
 

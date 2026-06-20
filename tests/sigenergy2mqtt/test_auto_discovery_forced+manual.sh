@@ -16,7 +16,7 @@ manual_config:
 pvoutput:
 mqtt:
 logging:
-smartport:
+influxdb:
 EOF
 #endregion
 
@@ -24,10 +24,11 @@ EOF
 declare -A ASSERTIONS=(
     ["language"]="en"
     ["hass-enabled"]="true" # Default
-    ["mqtt-broker"]="127.0.0.1" # Default
-    ["mqtt-port"]="1883" # Default
-    ["mqtt-username"]="mock_mqtt_user" # Default
-    ["mqtt-password"]="super_secret_mock_password" # Default
+    ["SIGENERGY2MQTT_MQTT_BROKER"]="127.0.0.1" # Default
+    ["SIGENERGY2MQTT_MQTT_PORT"]="1883" # Default
+    ["SIGENERGY2MQTT_MQTT_TLS"]="false" # Default
+    ["SIGENERGY2MQTT_MQTT_USERNAME"]="mock_mqtt_user" # Default
+    ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password" # Default
     ["no-metrics"]="true" # Default
     ["modbus-auto-discovery"]="force"
     ["modbus-auto-discovery-max-device-id"]="10"

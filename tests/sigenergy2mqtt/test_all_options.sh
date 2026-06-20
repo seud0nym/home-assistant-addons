@@ -32,6 +32,7 @@ advanced:
           value: unique
 auto_discovery:
     status: Default
+    max_device_id: 10
     ping_timeout: 1
     retries: 1
     timeout: 1
@@ -206,12 +207,12 @@ declare -A ASSERTIONS=(
     ["modbus-log-level"]="INFO"
     ["modbus-port"]="502"
     ["modbus-readonly"]="true"
-    ["mqtt-broker"]="localhost"
+    ["SIGENERGY2MQTT_MQTT_BROKER"]="localhost"
+    ["SIGENERGY2MQTT_MQTT_PORT"]="8883"
+    ["SIGENERGY2MQTT_MQTT_TLS"]="true"
+    ["SIGENERGY2MQTT_MQTT_USERNAME"]="test_mqtt_user"
+    ["SIGENERGY2MQTT_MQTT_PASSWORD"]="test_mqtt_password"
     ["mqtt-log-level"]="WARNING"
-    ["mqtt-password"]="test_mqtt_password"
-    ["mqtt-port"]="8883"
-    ["mqtt-tls"]="true"
-    ["mqtt-username"]="test_mqtt_user"
     ["pvoutput-api-key"]="b2d224a131574b6a96f3592741637ad82f4c1989"
     ["pvoutput-consumption"]="true"
     ["pvoutput-enabled"]="true"

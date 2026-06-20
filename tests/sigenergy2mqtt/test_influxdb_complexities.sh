@@ -45,10 +45,11 @@ declare -A ASSERTIONS=(
     # Default config checks
     ["hass-enabled"]="true"
     ["no-metrics"]="true"
-    ["mqtt-broker"]="127.0.0.1"
-    ["mqtt-port"]="1883"
-    ["mqtt-username"]="mock_mqtt_user"
-    ["mqtt-password"]="super_secret_mock_password"
+    ["SIGENERGY2MQTT_MQTT_BROKER"]="127.0.0.1" # Default
+    ["SIGENERGY2MQTT_MQTT_PORT"]="1883" # Default
+    ["SIGENERGY2MQTT_MQTT_TLS"]="false" # Default
+    ["SIGENERGY2MQTT_MQTT_USERNAME"]="mock_mqtt_user" # Default
+    ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password" # Default
     ["modbus-auto-discovery"]="once"
 )
 #endregion
@@ -62,7 +63,6 @@ RESULT=$?
 
 if [ $RESULT -ne 0 ]; then
     echo "Test failed with exit code $RESULT"
-    cat $LOG_PATH
 fi
 
 exit $RESULT
