@@ -8,12 +8,18 @@ fi
 cd "$(cd $(dirname $0); pwd)"
 export PATH=$PATH:$(pwd)/$1/.local/bin
 
+cleanup_and_exit() {
+    rm -rf /config /data
+    exit $1
+}
+
+trap cleanup_and_exit EXIT
+
 test=$(find $1 -name "*$2*" | grep '\.sh$' | head -n 1)
 if [ -z "$test" ]; then
     echo "No test found matching '*$2*' in $1"
-    exit 1
+    cleanup_and_exit 1
 fi
-
 
 test_name="$(basename "$test" .sh)"
 echo "### Running: $test_name ###"
@@ -34,10 +40,10 @@ cat /tmp/${test_name}.log
 echo "### End Log ###"
 if [ $result -ne 0 ]; then
     echo "### FAILED ###"
-    exit 1
+    cleanup_and_exit 1
 else
     echo "### PASSED ###"
     rm -rf /tmp/${test_name}*
 fi
 
-exit $result
+cleanup_and_exit $result
