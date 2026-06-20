@@ -68,10 +68,10 @@ add_boolean_cmd_parameter() {
   local value="${2:-false}"
   local add_if="${3:-true}"
   if [[ "$value" == "$add_if" ]]; then
-    bashio::log.debug "*** Parameter '$parameter' added"
+    bashio::log.debug "*** Parameter '$parameter' added (value=$value addif=$add_if)"
     CMD_PARAMETERS+=($parameter)
   else
-    bashio::log.debug "### Parameter '$parameter' SKIPPED (value=$value)"
+    bashio::log.debug "### Parameter '$parameter' SKIPPED (value=$value addif=$add_if)"
   fi
 }
 
@@ -147,6 +147,17 @@ add_advanced_parameters() {
       "General Load")     add_value_cmd_parameter --consumption general;;
       "Calculated")       add_value_cmd_parameter --consumption calculated;;
     esac
+  fi
+  local count="$(bashio::config 'advanced.envvars|length')"
+  if [[ -n "$count" && "$count" != "null" ]]; then
+    bashio::log.info "Setting up sigenergy2mqtt service environment..."
+    for ((i=0; i<count; i++)); do
+      local name="$(bashio::config "advanced.envvars[${i}].name")"
+      local value="$(bashio::config "advanced.envvars[${i}].value")"
+      export_envvar "${name}" "${value}"
+    done
+  else
+    bashio::log.debug "### SKIPPING environment variables setup because advanced.envvars is not set"
   fi
   bashio::log.debug "<<< Exiting add_advanced_parameters()"
 }
@@ -430,6 +441,7 @@ add_mqtt_parameters() {
   bashio::config.has_value 'mqtt.username' && MQTT_USERNAME="$(bashio::config 'mqtt.username')"
   bashio::config.has_value 'mqtt.password' && MQTT_PASSWORD="$(bashio::config 'mqtt.password')"
   bashio::config.has_value 'mqtt.tls' && MQTT_TLS="$(bashio::config 'mqtt.tls')" || MQTT_TLS="false"
+  # Use environment variables for MQTT configuration so that it gets loaded early to configure persistence
   export_envvar SIGENERGY2MQTT_MQTT_BROKER "${MQTT_BROKER}"
   export_envvar SIGENERGY2MQTT_MQTT_PORT "${MQTT_PORT}"
   export_envvar SIGENERGY2MQTT_MQTT_TLS "${MQTT_TLS}"
@@ -690,27 +702,21 @@ run_clean() {
 }
 
 run_service() {
-  local count="$(bashio::config 'advanced.envvars|length')"
-  if [[ -n "$count" && "$count" != "null" ]]; then
-    bashio::log.info "Setting up sigenergy2mqtt service environment..."
-    for ((i=0; i<count; i++)); do
-      local name="$(bashio::config "advanced.envvars[${i}].name")"
-      local value="$(bashio::config "advanced.envvars[${i}].value")"
-      if [[ -z "${name}" ]]; then
-        bashio::log.warning " → Skipping envvar with empty name at index ${i}"
-        continue
-      fi
-      bashio::log.info " → Variable: ${name}=$(log_value "${name}" "${value}")"
-      export "${name}=${value}"
-    done
-  else
-    bashio::log.debug "### SKIPPING environment variables setup because advanced.envvars is not set"
-  fi
-  bashio::log.info "Starting sigenergy2mqtt service..."
+  bashio::log.info "Service environment:"
+  env | while IFS= read -r entry; do
+      local name="${entry%%=*}"
+      local value="${entry#*=}"
+      case "$name" in
+          "SIGENERGY2MQTT_"*)
+              bashio::log.info " → Variable:  ${name}=$(log_value "${name}" "${value}")"
+              ;;
+      esac
+  done | sort  
+  bashio::log.info "Command line parameters:"
   for PARAM in "${CMD_PARAMETERS[@]}"; do
     bashio::log.info " → Parameter: $(log_param "${PARAM}")"
   done
-  bashio::log.debug "exec sigenergy2mqtt ${CMD_PARAMETERS[*]}"
+  bashio::log.info "Starting sigenergy2mqtt service..."
   exec sigenergy2mqtt ${CMD_PARAMETERS[@]}
 }
 #endregion
@@ -730,6 +736,7 @@ add_pvoutput_parameters
 add_influxdb_parameters
 add_logging_parameters
 add_language_parameter
+# Advanced Settings must be processed LAST before execution, so that any environment variables set by the user will override settings defined in the Add-On configuration
 add_advanced_parameters
 
 run_clean
