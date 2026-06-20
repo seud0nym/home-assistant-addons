@@ -13,6 +13,7 @@ arch:
   - aarch64
   - amd64
 
+host_network: true
 ports:
   502/tcp: 502
 ports_description:
