@@ -1,5 +1,9 @@
 # Changelog
 
+## [2026.6.20] - 2026-06-20
+
+- update base image to alpine 3.24 and enable host network access
+
 ## [2026.6.10] - 2026-06-10
 
 - update pymodbus logger configuration and enable multi-inverter firmware upgrade simulation
