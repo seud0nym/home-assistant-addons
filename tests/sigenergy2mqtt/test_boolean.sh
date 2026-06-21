@@ -5,31 +5,14 @@ export TEST_NAME="$(basename "$0" .sh)"
 export LOG_PATH="/tmp/${TEST_NAME}.log"
 export MOCK_OPTIONS_PATH="/tmp/${TEST_NAME}.yaml"
 
-# Shared config
-BASE_CONFIG="
+#region Scenario 1: Default: not configured
+cat << EOF > $MOCK_OPTIONS_PATH
 advanced:
 auto_discovery:
-    retries: 1
-    timeout: 1
 manual_config:
-    host: 127.0.0.1
-influxdb:
-"
-
-#region Scenario 1: Verify all logging options
-cat << EOF > $MOCK_OPTIONS_PATH
-logging:
-  sigenergy2mqtt: DEBUG
-  modbus: INFO
-  mqtt: ERROR
-  pvoutput: CRITICAL
-  debug_sensor: sensor.my_debug_sensor
-# Enable pvoutput so we can test its logging flag
 pvoutput:
-    enabled: true
-    api_key: k
-    system_id: s
-$BASE_CONFIG
+logging:
+influxdb:
 EOF
 
 declare -A ASSERTIONS=(
@@ -40,19 +23,8 @@ declare -A ASSERTIONS=(
     ["SIGENERGY2MQTT_MQTT_TLS"]="false" # Default
     ["SIGENERGY2MQTT_MQTT_USERNAME"]="mock_mqtt_user" # Default
     ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password" # Default
-    ["modbus-host"]="127.0.0.1"
+    ["modbus-auto-discovery"]="once"
     ["no-metrics"]="true"
-    # Logging assertions
-    ["log-level"]="DEBUG"
-    ["modbus-log-level"]="INFO"
-    ["mqtt-log-level"]="ERROR"
-    ["pvoutput-log-level"]="CRITICAL"
-    ["debug-sensor"]="sensor.my_debug_sensor"
-    # PVOutput required assertions because we enabled it
-    ["pvoutput-enabled"]="true"
-    ["pvoutput-api-key"]="k"
-    ["pvoutput-system-id"]="s"
-    ["pvoutput-output-hour"]="-1" # Default when eod_update missing
 )
 
 cd $HOME
@@ -67,13 +39,25 @@ if [ $RESULT -ne 0 ]; then
 fi
 #endregion
 
-#region Scenario 2: Verify defaults/absent logging
-# If logging keys are missing, flags should not be present (except potentially defaults handled by run script?)
-# The run script only adds them if config.has_value.
+#region Scenario 2: Configured but false
 cat << EOF > $MOCK_OPTIONS_PATH
-logging:
+advanced:
+    metrics_enabled: false
+    edit_pct_box: false
+    sigenergy_local_modbus_naming: false
+auto_discovery:
+manual_config:
+    read_only: false
+    no_remote_ems: false
+    no_ems_mode_check: false
 pvoutput:
-$BASE_CONFIG
+    enabled: false
+    consumption: false
+    exports: false
+    imports: false
+logging:
+influxdb:
+    enabled: false
 EOF
 
 unset ASSERTIONS
@@ -85,10 +69,9 @@ declare -A ASSERTIONS=(
     ["SIGENERGY2MQTT_MQTT_TLS"]="false" # Default
     ["SIGENERGY2MQTT_MQTT_USERNAME"]="mock_mqtt_user" # Default
     ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password" # Default
-    ["modbus-host"]="127.0.0.1"
+    ["modbus-auto-discovery"]="once"
     ["no-metrics"]="true"
 )
-
 export_assertions
 ( source ../../sigenergy2mqtt/rootfs/etc/services.d/sigenergy2mqtt/run ) > $LOG_PATH 2>&1
 RESULT=$?
@@ -96,56 +79,66 @@ if [ $RESULT -ne 0 ]; then
     echo "Scenario 2 failed with result $RESULT"
     exit $RESULT
 fi
-
-# Manual check that no logging flags are present
-if grep -q "Parameter: \-\-log-level" $LOG_PATH; then
-    echo "Scenario 2 Failed: Found --log-level"
-    exit 1
-fi
-if grep -q "Parameter: \-\-modbus-log-level" $LOG_PATH; then
-    echo "Scenario 2 Failed: Found --modbus-log-level"
-    exit 1
-fi
-if grep -q "Parameter: \-\-mqtt-log-level" $LOG_PATH; then
-    echo "Scenario 2 Failed: Found --mqtt-log-level"
-    exit 1
-fi
-if grep -q "Parameter: \-\-pvoutput-log-level" $LOG_PATH; then
-    echo "Scenario 2 Failed: Found --pvoutput-log-level"
-    exit 1
-fi
-if grep -q "Parameter: \-\-debug-sensor" $LOG_PATH; then
-    echo "Scenario 2 Failed: Found --debug-sensor"
-    exit 1
-fi
 #endregion
 
-
-#region Scenario 3: Verify Default logging option
+#region Scenario 3: Enabled
 cat << EOF > $MOCK_OPTIONS_PATH
+advanced:
+    metrics_enabled: true
+    edit_pct_box: true
+    sigenergy_local_modbus_naming: true
+    read_only: true
+    no_remote_ems: true
+    no_ems_mode_check: true
+auto_discovery:
+manual_config:
+    host: "127.0.0.1"
+pvoutput:
+    enabled: true
+    system_id: "system_id"
+    api_key: "api_key"
+    consumption: true
+    exports: true
+    imports: true
 logging:
-  sigenergy2mqtt: Default
-  modbus: INFO
-$BASE_CONFIG
+influxdb:
+    enabled: true
+    host: "a0d7b954-influxdb"
+    port: 8086
+    username: "username"
+    password: "password"
+    database: "database"
 EOF
 
+unset ASSERTIONS
 declare -A ASSERTIONS=(
     ["language"]="en"
     ["hass-enabled"]="true"
-    ["SIGENERGY2MQTT_MQTT_BROKER"]="127.0.0.1" # Default
-    ["SIGENERGY2MQTT_MQTT_PORT"]="1883" # Default
+    ["hass-edit-pct-box"]="true"
+    ["hass-sigenergy-local-modbus-naming"]="true"
+    ["SIGENERGY2MQTT_MQTT_BROKER"]="127.0.0.1" # Inherited
+    ["SIGENERGY2MQTT_MQTT_PORT"]="1883" # Inherited
     ["SIGENERGY2MQTT_MQTT_TLS"]="false" # Default
     ["SIGENERGY2MQTT_MQTT_USERNAME"]="mock_mqtt_user" # Default
     ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password" # Default
     ["modbus-host"]="127.0.0.1"
-    ["no-metrics"]="true"
-    # Logging assertions
-    ["modbus-log-level"]="INFO"
+    ["modbus-readonly"]="true"
+    # ["modbus-no-remote-ems"]="true" # Will be missing because readonly == true
+    # ["modbus-no-ems-mode-check"]="true" # Will be missing because readonly == true
+    ["pvoutput-enabled"]="true"
+    ["pvoutput-system-id"]="system_id"
+    ["pvoutput-api-key"]="api_key"
+    ["pvoutput-consumption"]="true"
+    ["pvoutput-exports"]="true"
+    ["pvoutput-imports"]="true"
+    ["pvoutput-output-hour"]="-1"
+    ["influxdb-enabled"]="true"
+    ["influxdb-host"]="a0d7b954-influxdb"
+    ["influxdb-port"]="8086"
+    ["influxdb-username"]="username"
+    ["influxdb-password"]="password"
+    ["influxdb-database"]="database"
 )
-
-cd $HOME
-source "../mock_bashio.sh"
-source "../functions.sh"
 export_assertions
 ( source ../../sigenergy2mqtt/rootfs/etc/services.d/sigenergy2mqtt/run ) > $LOG_PATH 2>&1
 RESULT=$?
@@ -154,6 +147,5 @@ if [ $RESULT -ne 0 ]; then
     exit $RESULT
 fi
 #endregion
-
 
 exit 0

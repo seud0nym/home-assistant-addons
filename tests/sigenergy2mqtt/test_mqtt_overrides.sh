@@ -15,7 +15,7 @@ manual_config:
     host: 127.0.0.1
 pvoutput:
 logging:
-smartport:
+influxdb:
 "
 
 #region Scenario 1: Default Auto-Discovery (Mocked in mock_bashio.sh)
@@ -28,10 +28,11 @@ EOF
 declare -A ASSERTIONS=(
     ["language"]="en"
     ["hass-enabled"]="true"
-    ["mqtt-broker"]="127.0.0.1"
-    ["mqtt-port"]="1883"
-    ["mqtt-username"]="mock_mqtt_user"
-    ["mqtt-password"]="super_secret_mock_password"
+    ["SIGENERGY2MQTT_MQTT_BROKER"]="127.0.0.1" # Default
+    ["SIGENERGY2MQTT_MQTT_PORT"]="1883" # Default
+    ["SIGENERGY2MQTT_MQTT_TLS"]="false" # Default
+    ["SIGENERGY2MQTT_MQTT_USERNAME"]="mock_mqtt_user" # Default
+    ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password" # Default
     ["modbus-host"]="127.0.0.1"
 )
 # Note: consumption/metrics/etc are defaults we don't strictly care about here but valid_params checks them.
@@ -52,7 +53,6 @@ export_assertions
 RESULT=$?
 if [ $RESULT -ne 0 ]; then
     echo "Scenario 1 failed with result $RESULT"
-    cat $LOG_PATH
     exit $RESULT
 fi
 #endregion
@@ -69,10 +69,11 @@ unset ASSERTIONS
 declare -A ASSERTIONS=(
     ["language"]="en"
     ["hass-enabled"]="true"
-    ["mqtt-broker"]="192.168.1.100"
-    ["mqtt-port"]="9999"
-    ["mqtt-username"]="mock_mqtt_user" # Inherited from auto-discovery
-    ["mqtt-password"]="super_secret_mock_password" # Inherited
+    ["SIGENERGY2MQTT_MQTT_BROKER"]="192.168.1.100"
+    ["SIGENERGY2MQTT_MQTT_PORT"]="9999"
+    ["SIGENERGY2MQTT_MQTT_TLS"]="false" # Default
+    ["SIGENERGY2MQTT_MQTT_USERNAME"]="mock_mqtt_user" # Inherited from auto-discovery
+    ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password" # Inherited
     ["modbus-host"]="127.0.0.1"
     ["no-metrics"]="true"
 )
@@ -81,7 +82,6 @@ export_assertions
 RESULT=$?
 if [ $RESULT -ne 0 ]; then
     echo "Scenario 2 failed with result $RESULT"
-    cat $LOG_PATH
     exit $RESULT
 fi
 #endregion
@@ -99,11 +99,11 @@ unset ASSERTIONS
 declare -A ASSERTIONS=(
     ["language"]="en"
     ["hass-enabled"]="true"
-    ["mqtt-broker"]="127.0.0.1" # Inherited
-    ["mqtt-port"]="1883" # Inherited
-    ["mqtt-username"]="myuser"
-    ["mqtt-password"]="mypassword"
-    ["mqtt-tls"]="true"
+    ["SIGENERGY2MQTT_MQTT_BROKER"]="127.0.0.1" # Inherited
+    ["SIGENERGY2MQTT_MQTT_PORT"]="1883" # Inherited
+    ["SIGENERGY2MQTT_MQTT_TLS"]="true"
+    ["SIGENERGY2MQTT_MQTT_USERNAME"]="myuser"
+    ["SIGENERGY2MQTT_MQTT_PASSWORD"]="mypassword"
     ["modbus-host"]="127.0.0.1"
     ["no-metrics"]="true"
 )
@@ -112,7 +112,6 @@ export_assertions
 RESULT=$?
 if [ $RESULT -ne 0 ]; then
     echo "Scenario 3 failed with result $RESULT"
-    cat $LOG_PATH
     exit $RESULT
 fi
 #endregion

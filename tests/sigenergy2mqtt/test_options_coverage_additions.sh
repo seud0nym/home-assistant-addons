@@ -23,7 +23,7 @@ pvoutput:
     voltage: Phase A
 mqtt:
 logging:
-smartport:
+influxdb:
 EOF
 #endregion
 
@@ -32,10 +32,11 @@ EOF
 declare -A ASSERTIONS=(
     ["language"]="en"
     ["hass-enabled"]="true"
-    ["mqtt-broker"]="127.0.0.1"
-    ["mqtt-port"]="1883"
-    ["mqtt-username"]="mock_mqtt_user"
-    ["mqtt-password"]="super_secret_mock_password"
+    ["SIGENERGY2MQTT_MQTT_BROKER"]="127.0.0.1" # Default
+    ["SIGENERGY2MQTT_MQTT_PORT"]="1883" # Default
+    ["SIGENERGY2MQTT_MQTT_TLS"]="false" # Default
+    ["SIGENERGY2MQTT_MQTT_USERNAME"]="mock_mqtt_user" # Default
+    ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password" # Default
     ["consumption"]="total"
     ["no-metrics"]="true"
     ["pvoutput-enabled"]="true"
@@ -75,17 +76,18 @@ pvoutput:
     voltage: Phase B
 mqtt:
 logging:
-smartport:
+influxdb:
 EOF
 
 unset ASSERTIONS
 declare -A ASSERTIONS=(
     ["language"]="en"
     ["hass-enabled"]="true"
-    ["mqtt-broker"]="127.0.0.1"
-    ["mqtt-port"]="1883"
-    ["mqtt-username"]="mock_mqtt_user"
-    ["mqtt-password"]="super_secret_mock_password"
+    ["SIGENERGY2MQTT_MQTT_BROKER"]="127.0.0.1" # Default
+    ["SIGENERGY2MQTT_MQTT_PORT"]="1883" # Default
+    ["SIGENERGY2MQTT_MQTT_TLS"]="false" # Default
+    ["SIGENERGY2MQTT_MQTT_USERNAME"]="mock_mqtt_user" # Default
+    ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password" # Default
     ["consumption"]="general"
     ["no-metrics"]="true"
     ["pvoutput-enabled"]="true"
@@ -121,17 +123,18 @@ pvoutput:
     voltage: Phase C
 mqtt:
 logging:
-smartport:
+influxdb:
 EOF
 
 unset ASSERTIONS
 declare -A ASSERTIONS=(
     ["language"]="en"
     ["hass-enabled"]="true"
-    ["mqtt-broker"]="127.0.0.1"
-    ["mqtt-port"]="1883"
-    ["mqtt-username"]="mock_mqtt_user"
-    ["mqtt-password"]="super_secret_mock_password"
+    ["SIGENERGY2MQTT_MQTT_BROKER"]="127.0.0.1" # Default
+    ["SIGENERGY2MQTT_MQTT_PORT"]="1883" # Default
+    ["SIGENERGY2MQTT_MQTT_TLS"]="false" # Default
+    ["SIGENERGY2MQTT_MQTT_USERNAME"]="mock_mqtt_user" # Default
+    ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password" # Default
     ["consumption"]="calculated"
     ["no-metrics"]="true"
     ["pvoutput-enabled"]="true"
@@ -167,17 +170,18 @@ pvoutput:
     voltage: Line to Line Average
 mqtt:
 logging:
-smartport:
+influxdb:
 EOF
 
 unset ASSERTIONS
 declare -A ASSERTIONS=(
     ["language"]="en"
     ["hass-enabled"]="true"
-    ["mqtt-broker"]="127.0.0.1"
-    ["mqtt-port"]="1883"
-    ["mqtt-username"]="mock_mqtt_user"
-    ["mqtt-password"]="super_secret_mock_password"
+    ["SIGENERGY2MQTT_MQTT_BROKER"]="127.0.0.1" # Default
+    ["SIGENERGY2MQTT_MQTT_PORT"]="1883" # Default
+    ["SIGENERGY2MQTT_MQTT_TLS"]="false" # Default
+    ["SIGENERGY2MQTT_MQTT_USERNAME"]="mock_mqtt_user" # Default
+    ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password" # Default
     ["consumption"]="calculated"
     ["no-metrics"]="true"
     ["pvoutput-enabled"]="true"
@@ -213,17 +217,18 @@ pvoutput:
     voltage: PV Average
 mqtt:
 logging:
-smartport:
+influxdb:
 EOF
 
 unset ASSERTIONS
 declare -A ASSERTIONS=(
     ["language"]="en"
     ["hass-enabled"]="true"
-    ["mqtt-broker"]="127.0.0.1"
-    ["mqtt-port"]="1883"
-    ["mqtt-username"]="mock_mqtt_user"
-    ["mqtt-password"]="super_secret_mock_password"
+    ["SIGENERGY2MQTT_MQTT_BROKER"]="127.0.0.1" # Default
+    ["SIGENERGY2MQTT_MQTT_PORT"]="1883" # Default
+    ["SIGENERGY2MQTT_MQTT_TLS"]="false" # Default
+    ["SIGENERGY2MQTT_MQTT_USERNAME"]="mock_mqtt_user" # Default
+    ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password" # Default
     ["consumption"]="calculated"
     ["no-metrics"]="true"
     ["pvoutput-enabled"]="true"
@@ -259,17 +264,18 @@ pvoutput:
     voltage: PV Average
 mqtt:
 logging:
-smartport:
+influxdb:
 EOF
 
 unset ASSERTIONS
 declare -A ASSERTIONS=(
     ["language"]="en"
     ["hass-enabled"]="true"
-    ["mqtt-broker"]="127.0.0.1"
-    ["mqtt-port"]="1883"
-    ["mqtt-username"]="mock_mqtt_user"
-    ["mqtt-password"]="super_secret_mock_password"
+    ["SIGENERGY2MQTT_MQTT_BROKER"]="127.0.0.1" # Default
+    ["SIGENERGY2MQTT_MQTT_PORT"]="1883" # Default
+    ["SIGENERGY2MQTT_MQTT_TLS"]="false" # Default
+    ["SIGENERGY2MQTT_MQTT_USERNAME"]="mock_mqtt_user" # Default
+    ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password" # Default
     # no-metrics should be ABSENT
     ["pvoutput-enabled"]="true"
     ["pvoutput-api-key"]="test_key"

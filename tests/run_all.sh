@@ -8,6 +8,13 @@ fi
 cd "$(cd $(dirname $0); pwd)"
 export PATH=$PATH:$(pwd)/$1/.local/bin
 
+cleanup_and_exit() {
+    rm -rf /config /data
+    exit $1
+}
+
+trap cleanup_and_exit EXIT
+
 tests=$(find $1 -name "test_*.sh" | sort)
 chars=$(echo "$tests" | awk 'BEGIN {
    chars = 0
@@ -31,7 +38,7 @@ for test in $tests; do
         [[ "$1" == "-q" ]] && echo -n "$test_name "
         echo "## FAILED ## ($result)"
         [[ "$1" != "-q" ]] && cat /tmp/${test_name}.log
-        exit 1
+        cleanup_and_exit 1
     else
         elapsed=$(grep real /tmp/${test_name}.time | cut -d'm' -f2)
         total=$(echo "$total $(echo $elapsed | tr -d 's')" | awk '{ total = $1 + $2; printf "%.3f", total; }')
@@ -43,4 +50,4 @@ done
 
 [[ "$1" != "-q" ]] && echo "All ${passed} tests passed in $(printf '%.3'f $total)s"
 
-exit 0
+cleanup_and_exit 0

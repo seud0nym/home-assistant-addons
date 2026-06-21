@@ -15,7 +15,7 @@ manual_config:
 pvoutput:
 mqtt:
 logging:
-smartport:
+influxdb:
 "
 
 #region Scenario 1: Read Only takes precedence
@@ -31,10 +31,11 @@ EOF
 declare -A ASSERTIONS=(
     ["language"]="en"
     ["hass-enabled"]="true"
-    ["mqtt-broker"]="127.0.0.1"
-    ["mqtt-port"]="1883"
-    ["mqtt-username"]="mock_mqtt_user"
-    ["mqtt-password"]="super_secret_mock_password"
+    ["SIGENERGY2MQTT_MQTT_BROKER"]="127.0.0.1"
+    ["SIGENERGY2MQTT_MQTT_PORT"]="1883"
+    ["SIGENERGY2MQTT_MQTT_TLS"]="false"
+    ["SIGENERGY2MQTT_MQTT_USERNAME"]="mock_mqtt_user"
+    ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password"
     ["no-metrics"]="true"
     ["modbus-host"]="127.0.0.1"
     ["modbus-readonly"]="true"
@@ -49,7 +50,6 @@ export_assertions
 RESULT=$?
 if [ $RESULT -ne 0 ]; then
     echo "Scenario 1 failed with result $RESULT"
-    cat $LOG_PATH
     exit $RESULT
 fi
 
@@ -78,10 +78,11 @@ unset ASSERTIONS
 declare -A ASSERTIONS=(
     ["language"]="en"
     ["hass-enabled"]="true"
-    ["mqtt-broker"]="127.0.0.1"
-    ["mqtt-port"]="1883"
-    ["mqtt-username"]="mock_mqtt_user"
-    ["mqtt-password"]="super_secret_mock_password"
+    ["SIGENERGY2MQTT_MQTT_BROKER"]="127.0.0.1"
+    ["SIGENERGY2MQTT_MQTT_PORT"]="1883"
+    ["SIGENERGY2MQTT_MQTT_TLS"]="false"
+    ["SIGENERGY2MQTT_MQTT_USERNAME"]="mock_mqtt_user"
+    ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password"
     ["no-metrics"]="true"
     ["modbus-host"]="127.0.0.1"
     ["modbus-no-remote-ems"]="true"
@@ -91,7 +92,6 @@ export_assertions
 RESULT=$?
 if [ $RESULT -ne 0 ]; then
     echo "Scenario 2 failed with result $RESULT"
-    cat $LOG_PATH
     exit $RESULT
 fi
 
@@ -119,10 +119,11 @@ unset ASSERTIONS
 declare -A ASSERTIONS=(
     ["language"]="en"
     ["hass-enabled"]="true"
-    ["mqtt-broker"]="127.0.0.1"
-    ["mqtt-port"]="1883"
-    ["mqtt-username"]="mock_mqtt_user"
-    ["mqtt-password"]="super_secret_mock_password"
+    ["SIGENERGY2MQTT_MQTT_BROKER"]="127.0.0.1"
+    ["SIGENERGY2MQTT_MQTT_PORT"]="1883"
+    ["SIGENERGY2MQTT_MQTT_TLS"]="false"
+    ["SIGENERGY2MQTT_MQTT_USERNAME"]="mock_mqtt_user"
+    ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password"
     ["no-metrics"]="true"
     ["modbus-host"]="127.0.0.1"
     ["no-ems-mode-check"]="true"
@@ -132,7 +133,6 @@ export_assertions
 RESULT=$?
 if [ $RESULT -ne 0 ]; then
     echo "Scenario 3 failed with result $RESULT"
-    cat $LOG_PATH
     exit $RESULT
 fi
 
@@ -159,10 +159,11 @@ unset ASSERTIONS
 declare -A ASSERTIONS=(
     ["language"]="en"
     ["hass-enabled"]="true"
-    ["mqtt-broker"]="127.0.0.1"
-    ["mqtt-port"]="1883"
-    ["mqtt-username"]="mock_mqtt_user"
-    ["mqtt-password"]="super_secret_mock_password"
+    ["SIGENERGY2MQTT_MQTT_BROKER"]="127.0.0.1"
+    ["SIGENERGY2MQTT_MQTT_PORT"]="1883"
+    ["SIGENERGY2MQTT_MQTT_TLS"]="false"
+    ["SIGENERGY2MQTT_MQTT_USERNAME"]="mock_mqtt_user"
+    ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password"
     ["no-metrics"]="true"
     ["modbus-host"]="127.0.0.1"
 )
@@ -171,7 +172,6 @@ export_assertions
 RESULT=$?
 if [ $RESULT -ne 0 ]; then
     echo "Scenario 4 failed with result $RESULT"
-    cat $LOG_PATH
     exit $RESULT
 fi
 
@@ -200,10 +200,11 @@ unset ASSERTIONS
 declare -A ASSERTIONS=(
     ["language"]="en"
     ["hass-enabled"]="true"
-    ["mqtt-broker"]="127.0.0.1"
-    ["mqtt-port"]="1883"
-    ["mqtt-username"]="mock_mqtt_user"
-    ["mqtt-password"]="super_secret_mock_password"
+    ["SIGENERGY2MQTT_MQTT_BROKER"]="127.0.0.1"
+    ["SIGENERGY2MQTT_MQTT_PORT"]="1883"
+    ["SIGENERGY2MQTT_MQTT_TLS"]="false"
+    ["SIGENERGY2MQTT_MQTT_USERNAME"]="mock_mqtt_user"
+    ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password"
     ["no-metrics"]="true"
     ["modbus-host"]="127.0.0.1"
 )
@@ -212,7 +213,6 @@ export_assertions
 RESULT=$?
 if [ $RESULT -ne 0 ]; then
     echo "Scenario 5 failed with result $RESULT"
-    cat $LOG_PATH
     exit $RESULT
 fi
 #endregion
@@ -226,10 +226,11 @@ unset ASSERTIONS
 declare -A ASSERTIONS=(
     ["language"]="en"
     ["hass-enabled"]="true"
-    ["mqtt-broker"]="127.0.0.1"
-    ["mqtt-port"]="1883"
-    ["mqtt-username"]="mock_mqtt_user"
-    ["mqtt-password"]="super_secret_mock_password"
+    ["SIGENERGY2MQTT_MQTT_BROKER"]="127.0.0.1"
+    ["SIGENERGY2MQTT_MQTT_PORT"]="1883"
+    ["SIGENERGY2MQTT_MQTT_TLS"]="false"
+    ["SIGENERGY2MQTT_MQTT_USERNAME"]="mock_mqtt_user"
+    ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password"
     ["no-metrics"]="true"
     ["modbus-host"]="127.0.0.1"
 )
@@ -238,7 +239,6 @@ export_assertions
 RESULT=$?
 if [ $RESULT -ne 0 ]; then
     echo "Scenario 6 failed with result $RESULT"
-    cat $LOG_PATH
     exit $RESULT
 fi
 #endregion
@@ -261,7 +261,6 @@ for lang in $(find ../../sigenergy2mqtt/translations -type f -name "*.yaml" -exe
 if [[ -z "${lang_map[$lang]}" ]]; then
     echo "Scenario 7 ($lang): No language name found?" > $LOG_PATH
     echo "Scenario 7 ($lang_map[$lang] $lang) failed with result $RESULT"
-    cat $LOG_PATH
     exit $RESULT
 fi
 cat << EOF > $MOCK_OPTIONS_PATH
@@ -274,10 +273,11 @@ unset ASSERTIONS
 declare -A ASSERTIONS=(
     ["language"]="${lang}"
     ["hass-enabled"]="true"
-    ["mqtt-broker"]="127.0.0.1"
-    ["mqtt-port"]="1883"
-    ["mqtt-username"]="mock_mqtt_user"
-    ["mqtt-password"]="super_secret_mock_password"
+    ["SIGENERGY2MQTT_MQTT_BROKER"]="127.0.0.1"
+    ["SIGENERGY2MQTT_MQTT_PORT"]="1883"
+    ["SIGENERGY2MQTT_MQTT_TLS"]="false"
+    ["SIGENERGY2MQTT_MQTT_USERNAME"]="mock_mqtt_user"
+    ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password"
     ["no-metrics"]="true"
     ["modbus-host"]="127.0.0.1"
 )
@@ -286,7 +286,6 @@ export_assertions
 RESULT=$?
 if [ $RESULT -ne 0 ]; then
     echo "Scenario 7 ($lang_map[$lang] $lang) failed with result $RESULT"
-    cat $LOG_PATH
     exit $RESULT
 fi
 done

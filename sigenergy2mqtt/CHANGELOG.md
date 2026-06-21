@@ -1,5 +1,45 @@
 # Changelog
 
+## [2026.6.21] - 2026-06-21
+
+### Added
+
+- Added metrics tracking for PVOutput uploads, errors, and skipped uploads, including localized metric labels
+- Added configurable log level control for PVOutput upload payload logging
+- Added sanity-check limits for SystemTime and SystemTimeZone Modbus entities
+- Added client identifiers to connection and disconnection logging for improved diagnostics
+
+### Changed
+
+- Standardized client disconnection handling across all client types
+- Centralized Modbus validation logic and replaced Pydantic ValidationError usage with a custom ConfigurationError
+- Upgraded Docker base image to Python 3.14 on Alpine 3.24
+- Upgraded `pydantic-settings` from 2.14.1 to 2.14.2
+- Upgraded `pymodbus` from 3.13.0 to 3.13.1
+- Reduced application log verbosity and general log noise
+- Improved device discovery logging detail
+- Deferred PVOutput metrics reporting and skipped-upload logging until processing completion
+- Standardized default log level naming to the technical value INFO across translations
+- Updated release workflow to pull the latest changes before dependency checks
+
+### Fixed
+
+- Fixed PV generation sensor state_class values to prevent sanity-check validation issues ([#200](https://github.com/seud0nym/sigenergy2mqtt/issues/200))
+- Fixed ConfigurationError raised for valid Modbus configurations with auto-discovery cache ([#203](https://github.com/seud0nym/sigenergy2mqtt/issues/203))
+- PV Total Generation Today and PV Total Generation Yesterday were incorrectly marked as enabled by default in Home Assistant
+- Corrected unsigned integer sanity-check range validation logic
+- Corrected minimum delta validation for unsigned integer values
+- Fixed double-counting of PVOutput upload errors on HTTP failures
+- Reset PVOutput skipped status when payload changes are detected
+- Corrected Japanese translations affected by an unintended replacement of the term "情報"
+- Improved handling of timezone retrieval failures by defaulting to UTC
+- Added handling for missing timezone offset values
+- Refined timezone-related logging and error reporting
+- Adjusted PVCurrentSensor minimum sane value to allow for measurement errors (or potential wiring issues?) ([#203](https://github.com/seud0nym/sigenergy2mqtt/issues/203))
+
+---
+
+
 ## [2026.6.14] - 2026-06-14
 
 ### Added
