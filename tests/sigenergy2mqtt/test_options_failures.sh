@@ -23,7 +23,7 @@ pvoutput:
     enabled: true
 mqtt:
 logging:
-smartport:
+influxdb:
 EOF
 
 # We expect this to fail
@@ -36,9 +36,6 @@ fi
 grep -q "PVOutput enabled, but API Key and/or System ID not configured" $LOG_PATH
 if [ $? -ne 0 ]; then
    echo "Did not find expected error message for PVOutput missing keys"
-   echo "--- LOG START ---"
-   cat $LOG_PATH
-   echo "--- LOG END ---"
    exit 1
 fi
 #endregion

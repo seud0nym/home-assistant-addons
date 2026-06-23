@@ -91,6 +91,7 @@ pvoutput-log-level
 pvoutput-output-hour
 pvoutput-system-id
 pvoutput-temp-topic
+pvoutput-upload-log-level
 pvoutput-voltage
 repeated-state-publish-interval
 sanity-check-default-kw
