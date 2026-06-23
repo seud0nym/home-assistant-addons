@@ -1,5 +1,18 @@
 # Changelog
 
+## [2026.6.23b1] - 2026.06.23
+
+### Changed
+
+- Adjusted minimum sanity check value to PV Current/Voltage sensors to allow for small negative values ([#207](https://github.com/seud0nym/sigenergy2mqtt/issues/207))
+- Adjusted some more logging messages to reduce noise
+
+### Fixed
+
+- Fixed sequencing of pymodbus logging configuration for suppression of Modbus "ERROR: request ask for ... Skipping." log messages
+
+---
+
 ## [2026.6.21] - 2026-06-21
 
 ### Added
@@ -38,7 +51,6 @@
 - Adjusted PVCurrentSensor minimum sane value to allow for measurement errors (or potential wiring issues?) ([#203](https://github.com/seud0nym/sigenergy2mqtt/issues/203))
 
 ---
-
 
 ## [2026.6.14] - 2026-06-14
 
