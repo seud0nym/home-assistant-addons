@@ -1,6 +1,6 @@
 # Changelog
 
-## [2026.6.24b1] - 2026.06.24
+## [2026.6.27b1] - 2026.06.27
 
 ### Added
 
@@ -9,13 +9,18 @@
 
 ### Changed
 
+- Simplified application initialization and configuration handling
 - Adjusted some more logging messages to reduce noise
 - Refactored application of sensor overrides to enhance debug logging
+- Increased the default Modbus auto-discovery timeout from 0.25 s to 0.5 s
 
 ### Fixed
 
 - Fixed sequencing of pymodbus logging configuration for suppression of Modbus "ERROR: request ask for ... Skipping." log messages
 - Fixed merging of sensor overrides to prevent over-writing
+- Relaxed PV power sanity checking to allow small negative values and removed the zero minimum restriction. ([#207](https://github.com/seud0nym/sigenergy2mqtt/issues/207))
+- Clamped negative self-consumed power values to zero
+- Improved MQTT reconnection state handling during restarts
 
 ---
 
