@@ -1,6 +1,6 @@
 # Changelog
 
-## [2026.6.27b1] - 2026.06.27
+## [2026.6.28b1] - 2026.06.28
 
 ### Added
 
@@ -21,6 +21,7 @@
 - Relaxed PV power sanity checking to allow small negative values and removed the zero minimum restriction. ([#207](https://github.com/seud0nym/sigenergy2mqtt/issues/207))
 - Clamped negative self-consumed power values to zero
 - Improved MQTT reconnection state handling during restarts
+- Implemented defensive futures cancellation and proper async persistence offloading to mitigate StateStore TimeoutErrors (#207)
 
 ---
 
