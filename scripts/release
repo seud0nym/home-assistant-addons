@@ -76,15 +76,6 @@ git checkout "$target_branch"
 target_branch_orig=$(git rev-parse HEAD)
 git merge -X theirs "$source_branch" -m "Merge ${source_branch} into ${target_branch}"
 
-# --- Sanity check commits ---
-
-scripts/pre-commit || {
-  echo "ERROR: Pre-commit checks failed. Resetting ${target_branch} to its pre-merge state..."
-  git reset --hard "$target_branch_orig"
-  echo "Reset complete. No changes have been made."
-  exit 1
-}
-
 # --- Update files on target branch ---
 
 echo "Updating config.yaml and repository.yaml for ${target_branch}..."
@@ -106,6 +97,17 @@ elif [[ "$target_branch" == "main" ]]; then
 fi
 
 git add "$CONFIG" "$REPO_YAML"
+
+# --- Sanity check commits ---
+
+echo "Running pre-commit checks..."
+scripts/pre-commit || {
+  echo "ERROR: Pre-commit checks failed. Resetting ${target_branch} to its pre-merge state..."
+  git reset --hard "$target_branch_orig"
+  echo "Reset complete. No changes have been made."
+  exit 1
+}
+
 git commit -m "chore(release): bump ${ADDON_DIR} to $(grep version: "$CONFIG" | cut -d'"' -f2)"
 
 # --- Push ---
