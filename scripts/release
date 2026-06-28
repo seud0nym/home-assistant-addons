@@ -9,11 +9,17 @@
 #
 # This script:
 # 1. Validates it is run from the alpha or beta branch with a clean working tree
-# 2. Merges the current branch into the target branch
-# 3. Updates config.yaml and repository.yaml for the target branch
-# 4. Commits changes on the target branch
-# 5. Pushes the target branch
-# 6. Switches back to the source branch
+# 2. Merges the current branch into the target branch (staged, not committed)
+# 3. Restores the target branch's own metadata files, discarding source metadata
+# 4. Writes the correct metadata for the target branch
+# 5. Commits the merge + metadata update on the target branch
+# 6. Pushes the target branch
+# 7. Switches back to the source branch
+#
+# Metadata files (config.yaml, repository.yaml) are never taken from the source
+# branch — they are always restored to the target branch's pre-merge state and
+# then updated in place. This prevents alpha/beta-specific values from leaking
+# into downstream branches, and keeps each branch's metadata self-contained.
 # ==============================================================================
 set -euo pipefail
 
@@ -69,44 +75,73 @@ echo "  Branch: ${source_branch} → ${target_branch}"
 echo "======================="
 echo ""
 
-# --- Merge source branch into target branch ---
+# --- Merge source branch into target branch (staged only) ---
 
-echo "Switching to ${target_branch} and merging ${source_branch}..."
+echo "Switching to ${target_branch} and staging merge from ${source_branch}..."
 git checkout "$target_branch"
 target_branch_orig=$(git rev-parse HEAD)
-git merge -X theirs "$source_branch" -m "Merge ${source_branch} into ${target_branch}"
+
+# Merge without committing so we can fix up metadata before the commit.
+# -X theirs resolves conflicts in favour of the source branch (real content),
+# but we immediately override the metadata files below.
+if ! git merge --no-commit --no-ff -X theirs "$source_branch"; then
+  echo "ERROR: Merge failed. Aborting."
+  git merge --abort
+  git checkout "$source_branch"
+  exit 1
+fi
+
+# --- Restore and rewrite metadata files ---
+#
+# Discard whatever the merge staged for the metadata files and restore the
+# target branch's own pre-merge versions. Then write the correct values for
+# the target branch from scratch. This means alpha-specific values (name,
+# stage, URLs) never land on beta or main, and a future backmerge from beta
+# to alpha cannot reintroduce downstream metadata.
+
+echo "Restoring ${target_branch} metadata files and updating for ${target_branch}..."
+
+# Restore target branch's pre-merge versions of the metadata files
+git checkout HEAD -- "$CONFIG" "$REPO_YAML"
+
+if [[ "$target_branch" == "beta" ]]; then
+  # config.yaml: set name, stage, and update any tree URLs from alpha → beta
+  yq -i '.name = "sigenergy2mqtt (beta)"' "$CONFIG"
+  yq -i '.stage = "beta"' "$CONFIG"
+  yq -i '.. |= (select(tag == "!!str") |= sub("/tree/alpha/", "/tree/beta/"))' "$CONFIG"
+
+  # repository.yaml: update display name suffix and URL fragment
+  yq -i '.name |= sub(" \(Alpha\)", " (Beta)")' "$REPO_YAML"
+  yq -i '.url  |= sub("#alpha",    "#beta")'    "$REPO_YAML"
+
+elif [[ "$target_branch" == "main" ]]; then
+  # config.yaml: set name, remove stage, and update any tree URLs to main
+  yq -i '.name = "sigenergy2mqtt"' "$CONFIG"
+  yq -i 'del(.stage)' "$CONFIG"
+  yq -i ".. |= (select(tag == \"!!str\") |= sub(\"/tree/${source_branch}/\", \"/tree/main/\"))" "$CONFIG"
+
+  # repository.yaml: strip display name suffix and URL fragment
+  yq -i '.name |= sub(" \((Alpha|Beta)\)", "")' "$REPO_YAML"
+  yq -i ".url  |= sub(\"#(alpha|beta)\",   \"\")"  "$REPO_YAML"
+fi
+
+git add "$CONFIG" "$REPO_YAML"
 
 # --- Sanity check commits ---
 
-scripts/pre-commit || {
-  echo "ERROR: Pre-commit checks failed. Resetting ${target_branch} to its pre-merge state..."
-  git reset --hard "$target_branch_orig"
+bash scripts/pre-commit || {
+  echo "ERROR: Pre-commit checks failed. Aborting merge and resetting ${target_branch}..."
+  git merge --abort 2>/dev/null || git reset --hard "$target_branch_orig"
+  git checkout "$source_branch"
   echo "Reset complete. No changes have been made."
   exit 1
 }
 
-# --- Update files on target branch ---
+# --- Commit ---
 
-echo "Updating config.yaml and repository.yaml for ${target_branch}..."
-
-if [[ "$target_branch" == "beta" ]]; then
-  # Arriving from alpha
-  sed -i 's/^name: .*$/name: sigenergy2mqtt (beta)/' "$CONFIG"
-  sed -i 's|/tree/alpha/|/tree/beta/|g' "$CONFIG"
-  sed -i 's/ (Alpha)/ (Beta)/' "$REPO_YAML"
-  sed -i 's/#alpha/#beta/' "$REPO_YAML"
-
-elif [[ "$target_branch" == "main" ]]; then
-  # Arriving from alpha or beta
-  sed -i 's/^name: .*$/name: sigenergy2mqtt/' "$CONFIG"
-  sed -i "s|/tree/${source_branch}/|/tree/main/|g" "$CONFIG"
-  sed -i '/^stage:/d' "$CONFIG"
-  sed -i 's/ (Alpha)\| (Beta)//' "$REPO_YAML"
-  sed -i 's/#alpha\|#beta//' "$REPO_YAML"
-fi
-
-git add "$CONFIG" "$REPO_YAML"
-git commit -m "chore(release): bump ${ADDON_DIR} to $(grep version: "$CONFIG" | cut -d'"' -f2)"
+version=$(yq '.version' "$CONFIG")
+git commit -m "Merge ${source_branch} into ${target_branch}" \
+           -m "chore(release): bump ${ADDON_DIR} to ${version}"
 
 # --- Push ---
 
