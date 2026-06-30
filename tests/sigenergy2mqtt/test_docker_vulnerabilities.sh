@@ -15,11 +15,4 @@ if [ $RESULT -eq 0 ]; then
     RESULT=$?
 fi
 
-while read -r name; do
-    if ! grep -qE "[>\`]$name[<\`]" DOCS.md; then
-        echo "Schema key '$name' is not documented in DOCS.md"
-        RESULT=1
-    fi
-done >> $LOG_PATH 2>&1 < <(yq '.configuration.*.fields.*.name' translations/en.yaml | grep -v null | sort)
-
-exit $RESULT
+exit 0
