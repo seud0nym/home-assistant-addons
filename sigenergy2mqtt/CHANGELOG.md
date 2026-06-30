@@ -1,9 +1,10 @@
 # Changelog
 
-## [2026.6.28b1] - 2026.06.28
+## [2026.6.30b1] - 2026.06.30
 
 ### Added
 
+- Added automatic restart of the main loop if the health check fails
 - Added exception handling for derived sensor updates
 - Implemented StateStore and MonitorService clean functionality
 
@@ -22,6 +23,7 @@
 - Clamped negative self-consumed power values to zero
 - Improved MQTT reconnection state handling during restarts
 - Implemented defensive futures cancellation and proper async persistence offloading to mitigate StateStore TimeoutErrors (#207)
+- Added missing DC-Charger Running State options
 
 ---
 
