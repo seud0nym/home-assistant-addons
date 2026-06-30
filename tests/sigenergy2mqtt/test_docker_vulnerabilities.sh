@@ -15,4 +15,4 @@ if [ $RESULT -eq 0 ]; then
     RESULT=$?
 fi
 
-exit 0
+exit $RESULT
