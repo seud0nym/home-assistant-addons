@@ -1,6 +1,6 @@
 # Changelog
 
-## [2026.6.30b2] - 2026.06.30
+## [2026.7.2b1] - 2026.07.02
 
 ### Added
 
@@ -14,6 +14,7 @@
 - Adjusted some more logging messages to reduce noise
 - Refactored application of sensor overrides to enhance debug logging
 - Increased the default Modbus auto-discovery timeout from 0.25 s to 0.5 s
+- Simplified MQTT client health checks to prioritize last message timing and improve logging clarity
 
 ### Fixed
 
@@ -22,8 +23,9 @@
 - Relaxed PV power sanity checking to allow small negative values and removed the zero minimum restriction. ([#207](https://github.com/seud0nym/sigenergy2mqtt/issues/207))
 - Clamped negative self-consumed power values to zero
 - Improved MQTT reconnection state handling during restarts
-- Implemented defensive futures cancellation and proper async persistence offloading to mitigate StateStore TimeoutErrors (#207)
+- Implemented defensive futures cancellation and proper async persistence offloading to mitigate StateStore TimeoutErrors ([#207](https://github.com/seud0nym/sigenergy2mqtt/issues/207))
 - Added missing DC-Charger Running State options
+- Mitigated Docker-related security findings
 
 ---
 
