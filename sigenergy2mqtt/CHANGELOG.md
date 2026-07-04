@@ -1,5 +1,35 @@
 # Changelog
 
+## [2026.7.4] - 2026.07.04
+
+### Added
+
+- Added automatic restart of the main loop if the health check fails
+- Added exception handling for derived sensor updates
+- Implemented StateStore and MonitorService clean functionality
+
+### Changed
+
+- Simplified application initialization and configuration handling
+- Adjusted some more logging messages to reduce noise
+- Refactored application of sensor overrides to enhance debug logging
+- Increased the default Modbus auto-discovery timeout from 0.25 s to 0.5 s
+- Simplified MQTT client health checks to prioritize last message timing and improve logging clarity
+
+### Fixed
+
+- Fixed sequencing of pymodbus logging configuration for suppression of Modbus "ERROR: request ask for ... Skipping." log messages
+- Fixed merging of sensor overrides to prevent over-writing
+- Relaxed PV power sanity checking to allow small negative values and removed the zero minimum restriction. ([#207](https://github.com/seud0nym/sigenergy2mqtt/issues/207))
+- Implemented defensive futures cancellation and proper async persistence offloading to mitigate StateStore TimeoutErrors ([#207](https://github.com/seud0nym/sigenergy2mqtt/issues/207))
+- Clamped negative self-consumed power values to zero
+- Improved MQTT reconnection state handling during restarts
+- Added missing DC-Charger Running State options
+- Mitigated Docker-related security findings
+- Fixed PowerFactor fallback calculation to correctly handle when active/reactive power are not publishable or not yet acquired
+
+---
+
 ## [2026.6.21] - 2026-06-21
 
 ### Added
@@ -38,7 +68,6 @@
 - Adjusted PVCurrentSensor minimum sane value to allow for measurement errors (or potential wiring issues?) ([#203](https://github.com/seud0nym/sigenergy2mqtt/issues/203))
 
 ---
-
 
 ## [2026.6.14] - 2026-06-14
 
