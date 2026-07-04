@@ -1,6 +1,6 @@
 # Changelog
 
-## [2026.7.2b1] - 2026.07.02
+## [2026.7.4] - 2026.07.04
 
 ### Added
 
@@ -21,11 +21,12 @@
 - Fixed sequencing of pymodbus logging configuration for suppression of Modbus "ERROR: request ask for ... Skipping." log messages
 - Fixed merging of sensor overrides to prevent over-writing
 - Relaxed PV power sanity checking to allow small negative values and removed the zero minimum restriction. ([#207](https://github.com/seud0nym/sigenergy2mqtt/issues/207))
+- Implemented defensive futures cancellation and proper async persistence offloading to mitigate StateStore TimeoutErrors ([#207](https://github.com/seud0nym/sigenergy2mqtt/issues/207))
 - Clamped negative self-consumed power values to zero
 - Improved MQTT reconnection state handling during restarts
-- Implemented defensive futures cancellation and proper async persistence offloading to mitigate StateStore TimeoutErrors ([#207](https://github.com/seud0nym/sigenergy2mqtt/issues/207))
 - Added missing DC-Charger Running State options
 - Mitigated Docker-related security findings
+- Fixed PowerFactor fallback calculation to correctly handle when active/reactive power are not publishable or not yet acquired
 
 ---
 
