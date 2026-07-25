@@ -35,6 +35,8 @@ RUN apk upgrade --no-cache curl
 # https://security.snyk.io/vuln/SNYK-ALPINE324-EXPAT-17662033
 # https://security.snyk.io/vuln/SNYK-ALPINE324-EXPAT-17662034
 RUN apk upgrade --no-cache libexpat
+# https://security.snyk.io/vuln/SNYK-ALPINE324-CARES-17896522
+RUN apk upgrade --no-cache c-ares
 
 ENV PYTHONUNBUFFERED=1
 
