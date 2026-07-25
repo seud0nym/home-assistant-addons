@@ -1,5 +1,27 @@
 # Changelog
 
+## [2026.7.25b3] - 2026-07-25
+
+### Added
+
+- Health monitoring of InfluxDB writes and PVOutput uploads (if these services are enabled)
+- Added new monitorable state property to allow health monitoring to be disabled for specific sensors via sensor overrides
+- Added new derived sensor for battery status ('Charging', 'Discharging', 'Full', 'Empty', 'Cutoff', 'Idle', and 'Unknown')
+
+### Fixed
+
+- Fixed infinite tight loop in PVOutput status service when lock times out
+- Fixed "Task was destroyed but it is pending!" warning during restart after firmware upgrade (or other restart event)
+- Fixed missing device classes and state classes for Home Assistant (#219)
+- Fixed DerivedSensors did not respect the repeated state publishing interval setting
+
+### Changed
+
+- Health monitoring of topic updates are now enabled by default (previously only enabled during debugging)
+- Upgraded `pymodbus` from 3.13.1 to 3.14.0
+
+---
+
 ## [2026.7.4] - 2026.07.04
 
 ### Added

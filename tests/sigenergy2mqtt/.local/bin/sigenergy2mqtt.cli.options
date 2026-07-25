@@ -70,8 +70,11 @@ mqtt-tls-insecure
 mqtt-transport
 mqtt-username
 no-ems-mode-check
+no-influxdb-health-monitoring
 no-metrics
 no-persistence-mqtt-redundancy
+no-pvoutput-health-monitoring
+no-topic-update-monitoring
 persistence-cache-warmup-timeout
 persistence-debug
 persistence-mqtt-state-prefix

@@ -41,4 +41,4 @@ ENV PYTHONUNBUFFERED=1
 COPY rootfs /
 RUN chmod +x /etc/services.d/sigenergy2mqtt/*
 
-RUN pip install --root-user-action=ignore --break-system-packages --no-cache-dir /dist/sigenergy2mqtt-2026.7.4-py3-none-any.whl
+RUN pip install --root-user-action=ignore --break-system-packages --no-cache-dir /dist/sigenergy2mqtt-2026.7.25b3-py3-none-any.whl
