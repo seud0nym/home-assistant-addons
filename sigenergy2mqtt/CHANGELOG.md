@@ -1,6 +1,28 @@
 # Changelog
 
-## [2026.7.2b1] - 2026.07.02
+## [2026.7.25b3] - 2026-07-25
+
+### Added
+
+- Health monitoring of InfluxDB writes and PVOutput uploads (if these services are enabled)
+- Added new monitorable state property to allow health monitoring to be disabled for specific sensors via sensor overrides
+- Added new derived sensor for battery status ('Charging', 'Discharging', 'Full', 'Empty', 'Cutoff', 'Idle', and 'Unknown')
+
+### Fixed
+
+- Fixed infinite tight loop in PVOutput status service when lock times out
+- Fixed "Task was destroyed but it is pending!" warning during restart after firmware upgrade (or other restart event)
+- Fixed missing device classes and state classes for Home Assistant (#219)
+- Fixed DerivedSensors did not respect the repeated state publishing interval setting
+
+### Changed
+
+- Health monitoring of topic updates are now enabled by default (previously only enabled during debugging)
+- Upgraded `pymodbus` from 3.13.1 to 3.14.0
+
+---
+
+## [2026.7.4] - 2026.07.04
 
 ### Added
 
@@ -21,11 +43,12 @@
 - Fixed sequencing of pymodbus logging configuration for suppression of Modbus "ERROR: request ask for ... Skipping." log messages
 - Fixed merging of sensor overrides to prevent over-writing
 - Relaxed PV power sanity checking to allow small negative values and removed the zero minimum restriction. ([#207](https://github.com/seud0nym/sigenergy2mqtt/issues/207))
+- Implemented defensive futures cancellation and proper async persistence offloading to mitigate StateStore TimeoutErrors ([#207](https://github.com/seud0nym/sigenergy2mqtt/issues/207))
 - Clamped negative self-consumed power values to zero
 - Improved MQTT reconnection state handling during restarts
-- Implemented defensive futures cancellation and proper async persistence offloading to mitigate StateStore TimeoutErrors ([#207](https://github.com/seud0nym/sigenergy2mqtt/issues/207))
 - Added missing DC-Charger Running State options
 - Mitigated Docker-related security findings
+- Fixed PowerFactor fallback calculation to correctly handle when active/reactive power are not publishable or not yet acquired
 
 ---
 

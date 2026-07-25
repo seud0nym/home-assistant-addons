@@ -35,10 +35,12 @@ RUN apk upgrade --no-cache curl
 # https://security.snyk.io/vuln/SNYK-ALPINE324-EXPAT-17662033
 # https://security.snyk.io/vuln/SNYK-ALPINE324-EXPAT-17662034
 RUN apk upgrade --no-cache libexpat
+# https://security.snyk.io/vuln/SNYK-ALPINE324-CARES-17896522
+RUN apk upgrade --no-cache c-ares
 
 ENV PYTHONUNBUFFERED=1
 
 COPY rootfs /
 RUN chmod +x /etc/services.d/sigenergy2mqtt/*
 
-RUN pip install --root-user-action=ignore --break-system-packages --no-cache-dir /dist/sigenergy2mqtt-2026.7.2b1-py3-none-any.whl
+RUN pip install --root-user-action=ignore --break-system-packages --no-cache-dir /dist/sigenergy2mqtt-2026.7.25b3-py3-none-any.whl

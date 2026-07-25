@@ -21,7 +21,7 @@ jobs:
       changed_apps: ${{ steps.filter.outputs.changed_apps }}
     steps:
       - name: Check out the repository
-        uses: actions/checkout@v7.0.0
+        uses: actions/checkout@v7.0.1
 
       - name: Get changed files
         id: changed_files
@@ -31,27 +31,70 @@ jobs:
         id: apps
         uses: home-assistant/actions/helpers/find-addons@master
 
+      - name: Install yq
+        run: |
+          sudo wget -q https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
+          sudo chmod +x /usr/local/bin/yq
+
       - name: Filter changed apps
         id: filter
         env:
           APPS: ${{ steps.apps.outputs.addons }}
           CHANGED_FILES: ${{ steps.changed_files.outputs.all_changed_files }}
+          REF_NAME: ${{ github.ref_name }}
         run: |
-          changed_apps=()
+          # Reads the "version" key from an app's config.json/.yaml/.yml, whichever exists.
+          get_version() {
+            local app="$1"
+            if [[ -f "${app}/config.json" ]]; then
+              jq -r '.version // empty' "${app}/config.json"
+            elif [[ -f "${app}/config.yaml" ]]; then
+              yq -r '.version // ""' "${app}/config.yaml"
+            elif [[ -f "${app}/config.yml" ]]; then
+              yq -r '.version // ""' "${app}/config.yml"
+            fi
+          }
+
+          # On the alpha branch, automatic (push-triggered) builds only proceed
+          # when the app's version ends with "a" followed by one or more digits
+          # (e.g. "1.2.3a1"). This gate only applies to push-triggered runs;
+          # manual workflow_dispatch runs of build-app.yaml are unaffected.
+          version_allowed() {
+            local app="$1"
+            if [[ "${REF_NAME}" != "alpha" ]]; then
+              return 0
+            fi
+            local version
+            version=$(get_version "${app}")
+            if [[ "${version}" =~ a[0-9]+$ ]]; then
+              return 0
+            fi
+            echo "Skipping ${app}: version '${version}' does not match alpha pattern (ends in a<digits>)" >&2
+            return 1
+          }
+
+          candidate_apps=()
 
           # If the workflow file itself changed, rebuild all apps
           if [[ "${CHANGED_FILES}" =~ \.github/workflows/(builder|build-app)\.yaml ]]; then
-            changed_apps=(${APPS})
+            candidate_apps=(${APPS})
           else
             for app in ${APPS}; do
               for file in ${MONITORED_FILES}; do
                 if [[ "${CHANGED_FILES}" =~ ${app}/${file} ]]; then
-                  changed_apps+=("${app}")
+                  candidate_apps+=("${app}")
                   break
                 fi
               done
             done
           fi
+
+          changed_apps=()
+          for app in "${candidate_apps[@]}"; do
+            if version_allowed "${app}"; then
+              changed_apps+=("${app}")
+            fi
+          done
 
           if [[ ${#changed_apps[@]} -gt 0 ]]; then
             echo "changed=true" >> "$GITHUB_OUTPUT"
