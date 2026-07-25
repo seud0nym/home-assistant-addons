@@ -9,7 +9,7 @@ image: "ghcr.io/seud0nym/home-assistant-addon-sigenergy2mqtt"
 init: false
 map:
   - addon_config
-name: sigenergy2mqtt
+name: sigenergy2mqtt (beta)
 options:
   auto_discovery:
     status: "Automatic"
@@ -175,6 +175,6 @@ schema:
 services:
   - "mqtt:want"
 slug: sigenergy2mqtt
-url: "https://github.com/seud0nym/home-assistant-addons/tree/alpha/sigenergy2mqtt"
+url: "https://github.com/seud0nym/home-assistant-addons/tree/beta/sigenergy2mqtt"
 version: "2026.7.25b3"
 stage: experimental
