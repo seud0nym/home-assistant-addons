@@ -31,6 +31,7 @@ EOF
 declare -A ASSERTIONS=(
     ["language"]="en"
     ["hass-enabled"]="true"
+    ["SIGENERGY2MQTT_DIAGNOSTICS_ALLOWED_IPS"]="172.30.32.2" # Default
     ["SIGENERGY2MQTT_MQTT_BROKER"]="127.0.0.1"
     ["SIGENERGY2MQTT_MQTT_PORT"]="1883"
     ["SIGENERGY2MQTT_MQTT_TLS"]="false"
@@ -78,6 +79,7 @@ unset ASSERTIONS
 declare -A ASSERTIONS=(
     ["language"]="en"
     ["hass-enabled"]="true"
+    ["SIGENERGY2MQTT_DIAGNOSTICS_ALLOWED_IPS"]="172.30.32.2" # Default
     ["SIGENERGY2MQTT_MQTT_BROKER"]="127.0.0.1"
     ["SIGENERGY2MQTT_MQTT_PORT"]="1883"
     ["SIGENERGY2MQTT_MQTT_TLS"]="false"
@@ -119,6 +121,7 @@ unset ASSERTIONS
 declare -A ASSERTIONS=(
     ["language"]="en"
     ["hass-enabled"]="true"
+    ["SIGENERGY2MQTT_DIAGNOSTICS_ALLOWED_IPS"]="172.30.32.2" # Default
     ["SIGENERGY2MQTT_MQTT_BROKER"]="127.0.0.1"
     ["SIGENERGY2MQTT_MQTT_PORT"]="1883"
     ["SIGENERGY2MQTT_MQTT_TLS"]="false"
@@ -159,6 +162,7 @@ unset ASSERTIONS
 declare -A ASSERTIONS=(
     ["language"]="en"
     ["hass-enabled"]="true"
+    ["SIGENERGY2MQTT_DIAGNOSTICS_ALLOWED_IPS"]="172.30.32.2" # Default
     ["SIGENERGY2MQTT_MQTT_BROKER"]="127.0.0.1"
     ["SIGENERGY2MQTT_MQTT_PORT"]="1883"
     ["SIGENERGY2MQTT_MQTT_TLS"]="false"
@@ -200,6 +204,7 @@ unset ASSERTIONS
 declare -A ASSERTIONS=(
     ["language"]="en"
     ["hass-enabled"]="true"
+    ["SIGENERGY2MQTT_DIAGNOSTICS_ALLOWED_IPS"]="172.30.32.2"
     ["SIGENERGY2MQTT_MQTT_BROKER"]="127.0.0.1"
     ["SIGENERGY2MQTT_MQTT_PORT"]="1883"
     ["SIGENERGY2MQTT_MQTT_TLS"]="false"
@@ -207,6 +212,7 @@ declare -A ASSERTIONS=(
     ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password"
     ["no-metrics"]="true"
     ["modbus-host"]="127.0.0.1"
+    ["SIGENERGY2MQTT_DIAGNOSTICS_ALLOWED_IPS"]="172.30.32.2"
 )
 export_assertions
 ( source ../../sigenergy2mqtt/rootfs/etc/services.d/sigenergy2mqtt/run ) > $LOG_PATH 2>&1
@@ -226,6 +232,7 @@ unset ASSERTIONS
 declare -A ASSERTIONS=(
     ["language"]="en"
     ["hass-enabled"]="true"
+    ["SIGENERGY2MQTT_DIAGNOSTICS_ALLOWED_IPS"]="172.30.32.2" # Default
     ["SIGENERGY2MQTT_MQTT_BROKER"]="127.0.0.1"
     ["SIGENERGY2MQTT_MQTT_PORT"]="1883"
     ["SIGENERGY2MQTT_MQTT_TLS"]="false"
@@ -273,6 +280,7 @@ unset ASSERTIONS
 declare -A ASSERTIONS=(
     ["language"]="${lang}"
     ["hass-enabled"]="true"
+    ["SIGENERGY2MQTT_DIAGNOSTICS_ALLOWED_IPS"]="172.30.32.2"
     ["SIGENERGY2MQTT_MQTT_BROKER"]="127.0.0.1"
     ["SIGENERGY2MQTT_MQTT_PORT"]="1883"
     ["SIGENERGY2MQTT_MQTT_TLS"]="false"

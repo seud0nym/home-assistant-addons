@@ -68,10 +68,10 @@ add_boolean_cmd_parameter() {
   local value="${2:-false}"
   local add_if="${3:-true}"
   if [[ "$value" == "$add_if" ]]; then
-    bashio::log.debug "*** Parameter '$parameter' added (value=$value addif=$add_if)"
+    bashio::log.debug "*** Parameter '$parameter' added (value=$value add_if=$add_if)"
     CMD_PARAMETERS+=($parameter)
   else
-    bashio::log.debug "### Parameter '$parameter' SKIPPED (value=$value addif=$add_if)"
+    bashio::log.debug "### Parameter '$parameter' SKIPPED (value=$value add_if=$add_if)"
   fi
 }
 
@@ -151,6 +151,7 @@ add_advanced_parameters() {
   local count="$(bashio::config 'advanced.envvars|length')"
   if [[ -n "$count" && "$count" != "null" ]]; then
     bashio::log.info "Setting up sigenergy2mqtt service environment..."
+    export_envvar "SIGENERGY2MQTT_DIAGNOSTICS_ALLOWED_IPS" "172.30.32.2"
     for ((i=0; i<count; i++)); do
       local name="$(bashio::config "advanced.envvars[${i}].name")"
       local value="$(bashio::config "advanced.envvars[${i}].value")"

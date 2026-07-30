@@ -238,6 +238,7 @@ declare -A ASSERTIONS=(
     ["SIGENERGY2MQTT_HASS_ENTITY_ID_PREFIX"]="entity"
     ["SIGENERGY2MQTT_HASS_UNIQUE_ID_PREFIX"]="unique"
     ["hass-sigenergy-local-modbus-naming"]="true"
+    ["SIGENERGY2MQTT_DIAGNOSTICS_ALLOWED_IPS"]="172.30.32.2"
 )
 #endregion
 

@@ -99,6 +99,7 @@ unset ASSERTIONS
 declare -A ASSERTIONS=(
     ["language"]="en"
     ["hass-enabled"]="true"
+    ["SIGENERGY2MQTT_DIAGNOSTICS_ALLOWED_IPS"]="172.30.32.2" # Default
     ["SIGENERGY2MQTT_MQTT_BROKER"]="127.0.0.1" # Inherited
     ["SIGENERGY2MQTT_MQTT_PORT"]="1883" # Inherited
     ["SIGENERGY2MQTT_MQTT_TLS"]="true"
