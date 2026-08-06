@@ -10,7 +10,6 @@
 - Added the ability to over-ride the MQTT QoS and retain flags via sensor overrides
 - Added derived sensor for battery status ('Charging', 'Discharging', 'Full', 'Empty', 'Cutoff', 'Idle', and 'Unknown')
 - Added derived sensor for grid activity ('Importing', 'Exporting', 'Idle', and 'Unknown')
-- Added the ability to over-ride the MQTT QoS and retain flags via sensor overrides
 
 ### Fixed
 
