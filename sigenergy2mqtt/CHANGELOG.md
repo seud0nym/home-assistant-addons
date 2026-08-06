@@ -1,19 +1,26 @@
 # Changelog
 
-## [2026.7.25b3] - 2026-07-25
+## [2026.8.6b2] - 2026-08-06
 
 ### Added
 
-- Health monitoring of InfluxDB writes and PVOutput uploads (if these services are enabled)
-- Added new monitorable state property to allow health monitoring to be disabled for specific sensors via sensor overrides
-- Added new derived sensor for battery status ('Charging', 'Discharging', 'Full', 'Empty', 'Cutoff', 'Idle', and 'Unknown')
+- Added diagnostics Web UI
+- Added health monitoring of InfluxDB writes and PVOutput uploads (if these services are enabled)
+- Added monitorable state property to allow health monitoring to be disabled for specific sensors via sensor overrides
+- Added the ability to over-ride the MQTT QoS and retain flags via sensor overrides
+- Added derived sensor for battery status ('Charging', 'Discharging', 'Full', 'Empty', 'Cutoff', 'Idle', and 'Unknown')
+- Added derived sensor for grid activity ('Importing', 'Exporting', 'Idle', and 'Unknown')
+- Added the ability to over-ride the MQTT QoS and retain flags via sensor overrides
 
 ### Fixed
 
 - Fixed infinite tight loop in PVOutput status service when lock times out
 - Fixed "Task was destroyed but it is pending!" warning during restart after firmware upgrade (or other restart event)
-- Fixed missing device classes and state classes for Home Assistant (#219)
+- Fixed missing device classes and state classes for Home Assistant ([#219](https://github.com/seud0nym/sigenergy2mqtt/issues/219))
 - Fixed DerivedSensors did not respect the repeated state publishing interval setting
+- Ignored accumulation intervals of two hours or longer to avoid clock-jump spikes
+- Reset daily energy sensors when their upstream lifetime counter decreases
+- InfluxDBService was not properly shutdown aware
 
 ### Changed
 

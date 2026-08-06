@@ -4,6 +4,7 @@ consumption
 debug-sensor
 diagnostics-allowed-ips
 diagnostics-host
+diagnostics-log-level
 diagnostics-port
 diagnostics-refresh-interval
 hass-device-name-prefix

@@ -151,7 +151,6 @@ add_advanced_parameters() {
   local count="$(bashio::config 'advanced.envvars|length')"
   if [[ -n "$count" && "$count" != "null" ]]; then
     bashio::log.info "Setting up sigenergy2mqtt service environment..."
-    export_envvar "SIGENERGY2MQTT_DIAGNOSTICS_ALLOWED_IPS" "172.30.32.2"
     for ((i=0; i<count; i++)); do
       local name="$(bashio::config "advanced.envvars[${i}].name")"
       local value="$(bashio::config "advanced.envvars[${i}].value")"
@@ -273,6 +272,13 @@ add_influxdb_parameters() {
     bashio::log.debug "### InfluxDB not configured, skipping InfluxDB parameters"
   fi
   bashio::log.debug "<<< Exiting add_influxdb_parameters()"
+}
+
+add_diagnostics_parameters() {
+  bashio::log.debug ">>> Entering add_diagnostics_parameters()"
+  add_value_cmd_parameter --diagnostics-host '0.0.0.0'
+  add_value_cmd_parameter --diagnostics-allowed-ips '172.30.32.2'
+  bashio::log.debug "<<< Exiting add_diagnostics_parameters()"
 }
 
 add_language_parameter() {
@@ -736,6 +742,7 @@ add_scan_interval_parameters
 add_pvoutput_parameters
 add_influxdb_parameters
 add_logging_parameters
+add_diagnostics_parameters
 add_language_parameter
 # Advanced Settings must be processed LAST before execution, so that any environment variables set by the user will override settings defined in the Add-On configuration
 add_advanced_parameters
