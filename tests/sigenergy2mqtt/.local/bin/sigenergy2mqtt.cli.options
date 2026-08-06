@@ -2,6 +2,11 @@ clean
 config
 consumption
 debug-sensor
+diagnostics-allowed-ips
+diagnostics-host
+diagnostics-log-level
+diagnostics-port
+diagnostics-refresh-interval
 hass-device-name-prefix
 hass-discovery-only
 hass-discovery-prefix
@@ -69,6 +74,7 @@ mqtt-tls
 mqtt-tls-insecure
 mqtt-transport
 mqtt-username
+no-diagnostics
 no-ems-mode-check
 no-influxdb-health-monitoring
 no-metrics

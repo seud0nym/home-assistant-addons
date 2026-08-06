@@ -6,6 +6,10 @@ description: Publish Modbus data from Sigenergy to an MQTT Broker, with optional
 homeassistant_api: true
 host_network: true
 image: "ghcr.io/seud0nym/home-assistant-addon-sigenergy2mqtt"
+ingress: true
+ingress_entry: "diagnostics/"
+ingress_port: 8502
+ingress_stream: true
 init: false
 map:
   - addon_config
@@ -175,6 +179,6 @@ schema:
 services:
   - "mqtt:want"
 slug: sigenergy2mqtt
-url: "https://github.com/seud0nym/home-assistant-addons/tree/beta/sigenergy2mqtt"
-version: "2026.7.25b3"
+url: "https://github.com/seud0nym/home-assistant-addons/tree/alpha/sigenergy2mqtt"
+version: "2026.8.6b2"
 stage: experimental

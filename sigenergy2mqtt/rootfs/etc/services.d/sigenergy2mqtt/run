@@ -68,10 +68,10 @@ add_boolean_cmd_parameter() {
   local value="${2:-false}"
   local add_if="${3:-true}"
   if [[ "$value" == "$add_if" ]]; then
-    bashio::log.debug "*** Parameter '$parameter' added (value=$value addif=$add_if)"
+    bashio::log.debug "*** Parameter '$parameter' added (value=$value add_if=$add_if)"
     CMD_PARAMETERS+=($parameter)
   else
-    bashio::log.debug "### Parameter '$parameter' SKIPPED (value=$value addif=$add_if)"
+    bashio::log.debug "### Parameter '$parameter' SKIPPED (value=$value add_if=$add_if)"
   fi
 }
 
@@ -272,6 +272,13 @@ add_influxdb_parameters() {
     bashio::log.debug "### InfluxDB not configured, skipping InfluxDB parameters"
   fi
   bashio::log.debug "<<< Exiting add_influxdb_parameters()"
+}
+
+add_diagnostics_parameters() {
+  bashio::log.debug ">>> Entering add_diagnostics_parameters()"
+  add_value_cmd_parameter --diagnostics-host '0.0.0.0'
+  add_value_cmd_parameter --diagnostics-allowed-ips '172.30.32.2'
+  bashio::log.debug "<<< Exiting add_diagnostics_parameters()"
 }
 
 add_language_parameter() {
@@ -735,6 +742,7 @@ add_scan_interval_parameters
 add_pvoutput_parameters
 add_influxdb_parameters
 add_logging_parameters
+add_diagnostics_parameters
 add_language_parameter
 # Advanced Settings must be processed LAST before execution, so that any environment variables set by the user will override settings defined in the Add-On configuration
 add_advanced_parameters
