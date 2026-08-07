@@ -1,6 +1,6 @@
 # Changelog
 
-## [2026.8.6b2] - 2026-08-06
+## [2026.8.7b1] - 2026-08-07
 
 ### Added
 
@@ -20,6 +20,7 @@
 - Ignored accumulation intervals of two hours or longer to avoid clock-jump spikes
 - Reset daily energy sensors when their upstream lifetime counter decreases
 - InfluxDBService was not properly shutdown aware
+- The `no-metrics` configuration flags now only disable metric publishing to MQTT as documented, but metrics are still recorded for the diagnostics web UI
 
 ### Changed
 
