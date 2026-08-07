@@ -180,5 +180,5 @@ services:
   - "mqtt:want"
 slug: sigenergy2mqtt
 url: "https://github.com/seud0nym/home-assistant-addons/tree/alpha/sigenergy2mqtt"
-version: "2026.8.7b1"
+version: "2026.8.7b3"
 stage: experimental
