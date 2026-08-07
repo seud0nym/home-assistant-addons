@@ -1,6 +1,6 @@
 # Changelog
 
-## [2026.8.7b1] - 2026-08-07
+## [2026.8.7b3] - 2026-08-07
 
 ### Added
 
@@ -21,6 +21,7 @@
 - Reset daily energy sensors when their upstream lifetime counter decreases
 - InfluxDBService was not properly shutdown aware
 - The `no-metrics` configuration flags now only disable metric publishing to MQTT as documented, but metrics are still recorded for the diagnostics web UI
+- Always use sigenergy2mqtt object_id for topic naming when `sigenergy_local_modbus_naming` enabled otherwise dashboard presentation is broken ([#236](https://github.com/seud0nym/sigenergy2mqtt/issues/236))
 
 ### Changed
 
