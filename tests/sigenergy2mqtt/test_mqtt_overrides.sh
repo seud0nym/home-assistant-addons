@@ -28,6 +28,8 @@ EOF
 declare -A ASSERTIONS=(
     ["language"]="en"
     ["hass-enabled"]="true"
+    ["diagnostics-host"]="0.0.0.0" # Default
+    ["diagnostics-allowed-ips"]="172.30.32.2" # Default
     ["SIGENERGY2MQTT_MQTT_BROKER"]="127.0.0.1" # Default
     ["SIGENERGY2MQTT_MQTT_PORT"]="1883" # Default
     ["SIGENERGY2MQTT_MQTT_TLS"]="false" # Default
@@ -69,6 +71,8 @@ unset ASSERTIONS
 declare -A ASSERTIONS=(
     ["language"]="en"
     ["hass-enabled"]="true"
+    ["diagnostics-host"]="0.0.0.0" # Default
+    ["diagnostics-allowed-ips"]="172.30.32.2" # Default
     ["SIGENERGY2MQTT_MQTT_BROKER"]="192.168.1.100"
     ["SIGENERGY2MQTT_MQTT_PORT"]="9999"
     ["SIGENERGY2MQTT_MQTT_TLS"]="false" # Default
@@ -99,6 +103,8 @@ unset ASSERTIONS
 declare -A ASSERTIONS=(
     ["language"]="en"
     ["hass-enabled"]="true"
+    ["diagnostics-host"]="0.0.0.0" # Default
+    ["diagnostics-allowed-ips"]="172.30.32.2" # Default
     ["SIGENERGY2MQTT_MQTT_BROKER"]="127.0.0.1" # Inherited
     ["SIGENERGY2MQTT_MQTT_PORT"]="1883" # Inherited
     ["SIGENERGY2MQTT_MQTT_TLS"]="true"

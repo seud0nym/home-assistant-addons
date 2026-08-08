@@ -31,6 +31,8 @@ EOF
 declare -A ASSERTIONS=(
     ["language"]="en"
     ["hass-enabled"]="true"
+    ["diagnostics-host"]="0.0.0.0"
+    ["diagnostics-allowed-ips"]="172.30.32.2" # Default
     ["SIGENERGY2MQTT_MQTT_BROKER"]="127.0.0.1"
     ["SIGENERGY2MQTT_MQTT_PORT"]="1883"
     ["SIGENERGY2MQTT_MQTT_TLS"]="false"
@@ -78,6 +80,8 @@ unset ASSERTIONS
 declare -A ASSERTIONS=(
     ["language"]="en"
     ["hass-enabled"]="true"
+    ["diagnostics-host"]="0.0.0.0"
+    ["diagnostics-allowed-ips"]="172.30.32.2" # Default
     ["SIGENERGY2MQTT_MQTT_BROKER"]="127.0.0.1"
     ["SIGENERGY2MQTT_MQTT_PORT"]="1883"
     ["SIGENERGY2MQTT_MQTT_TLS"]="false"
@@ -119,6 +123,8 @@ unset ASSERTIONS
 declare -A ASSERTIONS=(
     ["language"]="en"
     ["hass-enabled"]="true"
+    ["diagnostics-host"]="0.0.0.0"
+    ["diagnostics-allowed-ips"]="172.30.32.2" # Default
     ["SIGENERGY2MQTT_MQTT_BROKER"]="127.0.0.1"
     ["SIGENERGY2MQTT_MQTT_PORT"]="1883"
     ["SIGENERGY2MQTT_MQTT_TLS"]="false"
@@ -159,6 +165,8 @@ unset ASSERTIONS
 declare -A ASSERTIONS=(
     ["language"]="en"
     ["hass-enabled"]="true"
+    ["diagnostics-host"]="0.0.0.0"
+    ["diagnostics-allowed-ips"]="172.30.32.2" # Default
     ["SIGENERGY2MQTT_MQTT_BROKER"]="127.0.0.1"
     ["SIGENERGY2MQTT_MQTT_PORT"]="1883"
     ["SIGENERGY2MQTT_MQTT_TLS"]="false"
@@ -200,6 +208,8 @@ unset ASSERTIONS
 declare -A ASSERTIONS=(
     ["language"]="en"
     ["hass-enabled"]="true"
+    ["diagnostics-host"]="0.0.0.0"
+    ["diagnostics-allowed-ips"]="172.30.32.2"
     ["SIGENERGY2MQTT_MQTT_BROKER"]="127.0.0.1"
     ["SIGENERGY2MQTT_MQTT_PORT"]="1883"
     ["SIGENERGY2MQTT_MQTT_TLS"]="false"
@@ -226,6 +236,8 @@ unset ASSERTIONS
 declare -A ASSERTIONS=(
     ["language"]="en"
     ["hass-enabled"]="true"
+    ["diagnostics-host"]="0.0.0.0"
+    ["diagnostics-allowed-ips"]="172.30.32.2" # Default
     ["SIGENERGY2MQTT_MQTT_BROKER"]="127.0.0.1"
     ["SIGENERGY2MQTT_MQTT_PORT"]="1883"
     ["SIGENERGY2MQTT_MQTT_TLS"]="false"
@@ -273,6 +285,8 @@ unset ASSERTIONS
 declare -A ASSERTIONS=(
     ["language"]="${lang}"
     ["hass-enabled"]="true"
+    ["diagnostics-host"]="0.0.0.0"
+    ["diagnostics-allowed-ips"]="172.30.32.2"
     ["SIGENERGY2MQTT_MQTT_BROKER"]="127.0.0.1"
     ["SIGENERGY2MQTT_MQTT_PORT"]="1883"
     ["SIGENERGY2MQTT_MQTT_TLS"]="false"

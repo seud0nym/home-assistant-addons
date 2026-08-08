@@ -1,4 +1,6 @@
-# Home Assistant App: sigenergy2mqtt
+# sigenergy2mqtt
+
+<img src="./logo.png" alt="sigenergy2mqtt"><br>
 
 [![License](https://img.shields.io/github/license/seud0nym/sigenergy2mqtt.svg?style=flat)](https://github.com/seud0nym/sigenergy2mqtt/blob/master/LICENSE) 
 ![Dynamic YAML Badge](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fseud0nym%2Fhome-assistant-addons%2Frefs%2Fheads%2Fmain%2Fsigenergy2mqtt%2Fconfig.yaml&query=%24.version&label=stable)

@@ -6,44 +6,44 @@ description: Publish Modbus data from Sigenergy to an MQTT Broker, with optional
 homeassistant_api: true
 host_network: true
 image: "ghcr.io/seud0nym/home-assistant-addon-sigenergy2mqtt"
+ingress: true
+ingress_entry: "diagnostics/"
+ingress_port: 8502
+ingress_stream: true
 init: false
 map:
   - addon_config
 name: sigenergy2mqtt
 options:
-  auto_discovery: {
-    status: "Automatic",
-    max_device_id: 10,
-  }
-  manual_config: {
-    host: "",
-    inverter_device_id: "",
-    accharger_device_id: "",
-    dccharger_device_id: "",
-  }
+  auto_discovery:
+    status: "Automatic"
+    max_device_id: 10
+  manual_config:
+    host: ""
+    inverter_device_id: ""
+    accharger_device_id: ""
+    dccharger_device_id: ""
   scan_interval: {}
-  pvoutput: {
-    enabled: false,
-    api_key: "",
-    system_id: "",
-    consumption: false,
-    exports: true,
-    imports: true,
-    eod_update: true,
-    voltage: "Line to Neutral Average",
-  }
+  pvoutput:
+    enabled: false
+    api_key: ""
+    system_id: ""
+    consumption: false
+    exports: true
+    imports: true
+    eod_update: true
+    voltage: "Line to Neutral Average"
   mqtt: {}
-  advanced: {
-    clean: false,
-    read_only: false,
-    no_remote_ems: false,
-    no_ems_mode_check: false,
-    edit_pct_box: false,
-    sigenergy_local_modbus_naming: false,
-    metrics_enabled: false,
+  advanced:
+    clean: false
+    read_only: false
+    no_remote_ems: false
+    no_ems_mode_check: false
+    edit_pct_box: false
+    sigenergy_local_modbus_naming: false
+    metrics_enabled: false
     envvars: []
-  }
-  influxdb: 
+  influxdb:
     enabled: false
     host: "a0d7b954-influxdb"
     include: []
@@ -179,5 +179,6 @@ schema:
 services:
   - "mqtt:want"
 slug: sigenergy2mqtt
-url: "https://github.com/seud0nym/home-assistant-addons/tree/main/sigenergy2mqtt"
-version: "2026.7.4"
+url: "https://github.com/seud0nym/home-assistant-addons/tree/alpha/sigenergy2mqtt"
+version: "2026.8.8"
+stage: experimental
