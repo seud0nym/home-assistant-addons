@@ -1,6 +1,6 @@
 # Changelog
 
-## [2026.8.28-1] - 2026-08.28
+## [2026.8.28-2] - 2026-08.28
 
 - test: add AC charger and DC charger power sensors seed values to modbus test server
 - refactor: reduce mock data range limits in test server

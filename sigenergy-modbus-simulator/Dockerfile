@@ -1,11 +1,6 @@
 # https://developers.home-assistant.io/docs/apps/configuration#app-dockerfile
-# ARG BUILD_FROM=ghcr.io/home-assistant/amd64-base:latest
-# FROM ${BUILD_FROM}
-
-# The Supervisor always injects BUILD_FROM pointing to the plain base image, overriding the ARG default. 
-# But you can just hardcode the FROM without the ARG at all:
-FROM ghcr.io/home-assistant/base-python:3.14-alpine3.24
 # Supported images can be found at https://github.com/home-assistant/docker-base/pkgs/container/base-python#python-images
+FROM ghcr.io/home-assistant/base-python:3.14-alpine3.24
 
 # https://security.snyk.io/vuln/SNYK-ALPINE324-OPENSSL-19257375
 # https://security.snyk.io/vuln/SNYK-ALPINE324-OPENSSL-19257376
