@@ -19,10 +19,10 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
 # Clone the sigenergy2mqtt repository (which contains the Modbus simulator)
-RUN apk add --no-cache bash git \
-    && git clone --depth=1 https://github.com/seud0nym/sigenergy2mqtt.git /app \
-    && /app/scripts/dependencies --install-only --skip-build-deps \
-    && apk del git
+RUN apk add --no-cache bash git && git clone --depth=1 https://github.com/seud0nym/sigenergy2mqtt.git /app && apk del git
+   
+# Install the dependencies
+RUN /app/scripts/dependencies --install-only --skip-build-deps
 
 # Displayed by the simulator at start-up
 RUN echo "$(date +"%Y-%m-%dT%H:%M:%S%z")" > /app/build_date.txt
