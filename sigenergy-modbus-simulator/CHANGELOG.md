@@ -2,14 +2,14 @@
 
 ## [2026.8.28-1] - 2026-08.28
 
-a5905e55 test: add AC charger and DC charger power sensors seed values to modbus test server
-80b806ce refactor: reduce mock data range limits in test server
-a430909d refactor: constrain test server generated values to safe subsets to avoid overflows and unrealistic readings
-30674ea9 refactor: Protocol version references to use ProtocolVersion
-78b76a02 refactor: optimize modbus test server logic
-c4c8ed92 fix: update modbus test server to use unsigned uint16 register packing
-7ae25542 refactor: introduce UNSIGNED_DATA_TYPES for code readability and maintainability
-ee3648e5 refactor: reduced log noise
+- test: add AC charger and DC charger power sensors seed values to modbus test server
+- refactor: reduce mock data range limits in test server
+- refactor: constrain test server generated values to safe subsets to avoid overflows and unrealistic readings
+- refactor: Protocol version references to use ProtocolVersion
+- refactor: optimize modbus test server logic
+- fix: update modbus test server to use unsigned uint16 register packing
+- refactor: introduce UNSIGNED_DATA_TYPES for code readability and maintainability
+- refactor: reduced log noise
 
 ---
 
