@@ -71,4 +71,5 @@ if bashio::config.has_value 'modbus_host'; then
 fi
 
 bashio::log.info "Starting Sigenergy Modbus Simulator on port 502..."
+source /app/.venv/bin/activate
 exec python3 /app/tests/utils/modbus_test_server.py
