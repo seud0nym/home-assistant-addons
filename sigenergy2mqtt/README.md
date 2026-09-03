@@ -14,6 +14,7 @@
 
 * Auto-discovery of Sigenergy hosts and device IDs for inverters and chargers (or you can manually specify them)
 * Automatic detection of Home Assistant language, and translations into German, Spanish, French, Italian, Japanese, Korean, Dutch, Portuguese and Simplified Chinese
+* Web UI to view diagnostics and performance metrics, configure transient runtime settings, and display a simple solar/battery dashboard
 * [_Optional_] You can automatically upload your generation, battery (for donators only) and optionally, consumption, exports and imports, data to [PVOutput](https://pvoutput.org/).
 * [_Optional_] You can automatically publish _all_ sensor data to InfluxDB (v1/2). This is different to the Home Assistant integration with InfluxDB, which only publishes enabled sensors, and does not publish repeating data. You can also import historical `sigenergy2mqtt` sensor data from an existing InfluxDB 'homeassistant' database.
 

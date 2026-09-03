@@ -1,19 +1,19 @@
 # Changelog
 
-## [2026.8.30b1] - 2026-08-30
+## [2026.9.4b2] - 2026-09-04
 
 ### Added
 
-- Added MQTT-configurable runtime settings sensors
-- Added configuration of runtime settings via diagnostics web UI
+- Added configuration of runtime settings via MQTT and the diagnostics web UI
+- Added ability to set sensor debug logging state via MQTT and the diagnostics web UI
 - Added enhanced logging for unconsumed source values in derived sensors
-- Added ability to set sensor debug logging state via MQTT
 
 ### Fixed
 
 - Fixed state class validation for energy sensors and update DC Charger capacity sensors to correct state class ([#238](https://github.com/seud0nym/sigenergy2mqtt/issues/238))
 - Fixed index out of range error during MQTT state store retries drain
 - Fixed bug that allowed derived sensors to bind to stale devices on restart, causing them to fail to update
+- Reduced log level for expected WebSocket timeout errors in diagnostics server
 
 ### Changed
 
