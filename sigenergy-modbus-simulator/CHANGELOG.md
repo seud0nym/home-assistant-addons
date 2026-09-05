@@ -1,6 +1,10 @@
 # Changelog
 
-## [2026.8.29] - 2026-08.29
+## [2026.9.5] - 2026-09-05
+
+- feat: use DC charger rated power values to set max dis/charging power and update DC charger initialization in test utilities
+
+## [2026.8.29] - 2026-08-29
 
 - fix: used Python venv for execution
 - test: add AC charger and DC charger power sensors seed values to modbus test server
