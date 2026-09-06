@@ -1,5 +1,10 @@
 # Changelog
 
+## [2026.9.6] - 2026-09-06
+
+- fix: ensured WriteOnlySensorMixin sensors are correctly seeded in Modbus test server to prevent ILLEGAL_ADDRESS errors
+- fix: logging level overrides were not be being applied
+
 ## [2026.9.5] - 2026-09-05
 
 - feat: use DC charger rated power values to set max dis/charging power and update DC charger initialization in test utilities
