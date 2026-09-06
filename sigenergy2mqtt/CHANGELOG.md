@@ -1,6 +1,6 @@
 # Changelog
 
-## [2026.9.4b2] - 2026-09-04
+## [2026.9.6b2] - 2026-09-06
 
 ### Added
 
@@ -13,6 +13,7 @@
 - Fixed state class validation for energy sensors and update DC Charger capacity sensors to correct state class ([#238](https://github.com/seud0nym/sigenergy2mqtt/issues/238))
 - Fixed index out of range error during MQTT state store retries drain
 - Fixed bug that allowed derived sensors to bind to stale devices on restart, causing them to fail to update
+- Fixed Home Assistant start-up log message "No device components to cleanup for sigen_diagnostics, node_id 'None'"
 - Reduced log level for expected WebSocket timeout errors in diagnostics server
 
 ### Changed
@@ -22,6 +23,8 @@
 - Refactored Protocol class name to ProtocolVersion because it shadowed typing.Protocol
 - Implemented improved firmware update detection and subsequent restart policy
 - Implemented stale state solutions for Derived Sensors
+- Simplified Metrics sensors by removing the need for _update_internal_state to be overridden in most cases
+- Set maximum value for DC Charger Max Charging/Discharging Power Limit from Rated Charging/Discharging Power
 - Upgraded `pydantic-settings` from 2.14.2 to 2.15.0
 - Upgraded `pymodbus` from 3.14.0 to 3.15.0
 
