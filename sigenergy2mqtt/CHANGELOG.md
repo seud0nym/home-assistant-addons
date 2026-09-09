@@ -1,5 +1,37 @@
 # Changelog
 
+## [2026.9.9] - 2026-09-09
+
+### Added
+
+- Added configuration of runtime settings via MQTT and the diagnostics web UI
+- Added ability to set sensor debug logging state via MQTT and the diagnostics web UI
+- Added enhanced logging for unconsumed source values in derived sensors
+- Added derived sensor that estimates the remaining battery duration in hours (negative values indicate time to discharge; positive time to charge)
+
+### Fixed
+
+- Fixed state class validation for energy sensors and update DC Charger capacity sensors to correct state class ([#238](https://github.com/seud0nym/sigenergy2mqtt/issues/238))
+- Fixed index out of range error during MQTT state store retries drain
+- Fixed bug that allowed derived sensors to bind to stale devices on restart, causing them to fail to update
+- Fixed Home Assistant start-up log message "No device components to cleanup for sigen_diagnostics, node_id 'None'"
+- Reduced log level for expected WebSocket timeout errors in diagnostics server
+
+### Changed
+
+- Added Lifetime RTE, Plant Active Power, Plant PV power and Third-party PV Power gauges to dashboard
+- Refactored writeable sensor mixins to separate transport from entity behaviour
+- Refactored Protocol class name to ProtocolVersion because it shadowed typing.Protocol
+- Implemented improved firmware update detection and subsequent restart policy
+- Implemented stale state solutions for Derived Sensors
+- Simplified Metrics sensors by removing the need for _update_internal_state to be overridden in most cases
+- Set maximum value for DC Charger Max Charging/Discharging Power Limit from Rated Charging/Discharging Power
+- Upgraded `pydantic-settings` from 2.14.2 to 2.15.0
+- Upgraded `pymodbus` from 3.14.0 to 3.15.0
+
+---
+
+
 ## [2026.8.8] - 2026-08-08
 
 ### Added
