@@ -1,12 +1,13 @@
 # Changelog
 
-## [2026.9.6b2] - 2026-09-06
+## [2026.9.9] - 2026-09-09
 
 ### Added
 
 - Added configuration of runtime settings via MQTT and the diagnostics web UI
 - Added ability to set sensor debug logging state via MQTT and the diagnostics web UI
 - Added enhanced logging for unconsumed source values in derived sensors
+- Added derived sensor that estimates the remaining battery duration in hours (negative values indicate time to discharge; positive time to charge)
 
 ### Fixed
 
