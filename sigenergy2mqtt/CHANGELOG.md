@@ -1,5 +1,17 @@
 # Changelog
 
+## [2026.9.10] - 2026-09-10
+
+### Fixed
+
+- Fixed startup crash when probing Protocol V2.9 DC Charger sensors on firmware supporting only V2.8 or lower (#264)
+
+### Changed
+
+- Refactored WriteableSensorMixin and derived classes to use transport-agnostic pattern
+
+---
+
 ## [2026.9.9] - 2026-09-09
 
 ### Added
