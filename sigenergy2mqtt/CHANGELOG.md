@@ -1,10 +1,26 @@
 # Changelog
 
+## [2026.9.15] - 2026-09-15
+
+### Fixed
+
+- Fixed crash risk in InfluxDB _matches_filter service.py
+- Fixed startup sequence race condition that caused command-line logging level options to be ignored (exposed in logs for [#269](https://github.com/seud0nym/sigenergy2mqtt/issues/269))
+
+### Changed
+
+- Enhanced escaping in InfluxDB line protocol for tags and fields
+- Refactored InfluxDB writer logic to prepare for v3 implementation
+- Restored the documented precedence so explicit command-line options override existing environment variables (exposed in logs for [#269](https://github.com/seud0nym/sigenergy2mqtt/issues/269))
+- Added undocumented 2-phase OutputType "Double Live Wire" (L1/L2) to prevent start-up crash ([#269](https://github.com/seud0nym/sigenergy2mqtt/issues/269))
+
+---
+
 ## [2026.9.10] - 2026-09-10
 
 ### Fixed
 
-- Fixed startup crash when probing Protocol V2.9 DC Charger sensors on firmware supporting only V2.8 or lower (#264)
+- Fixed startup crash when probing Protocol V2.9 DC Charger sensors on firmware supporting only V2.8 or lower ([#264](https://github.com/seud0nym/sigenergy2mqtt/issues/264))
 
 ### Changed
 
