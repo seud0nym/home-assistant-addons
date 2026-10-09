@@ -70,6 +70,21 @@ if bashio::config.has_value 'modbus_host'; then
     fi
 fi
 
-bashio::log.info "Starting Sigenergy Modbus Simulator on port 502..."
+# --- Live Cloud seeding (all optional) --------------------------------------
+if bashio::config.has_value 'cloud_port'; then
+    export MODBUS_TEST_SERVER_CLOUD_PORT="$(bashio::config 'cloud_port')"
+fi
+if bashio::config.has_value 'cloud_username'; then
+    export MODBUS_TEST_SERVER_CLOUD_USERNAME="$(bashio::config 'cloud_username')"
+fi
+if bashio::config.has_value 'cloud_password'; then
+    export MODBUS_TEST_SERVER_CLOUD_PASSWORD="$(bashio::config 'cloud_password')"
+fi
+if bashio::config.has_value 'simulate_internet_outage'; then
+    export MODBUS_TEST_SERVER_SIMULATE_INTERNET_OUTAGE="$(bashio::config 'simulate_internet_outage')"
+fi
+
+
+bashio::log.info "Starting Sigenergy Modbus/Cloud Simulator..."
 source /app/.venv/bin/activate
 exec python3 /app/tests/utils/modbus_test_server.py

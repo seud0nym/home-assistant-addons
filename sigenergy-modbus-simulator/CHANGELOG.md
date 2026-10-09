@@ -1,5 +1,31 @@
 # Changelog
 
+## [2026.10.10] - 2026.10.10
+
+- fix: Remove "Custom Operation Mode" to match SigenergyCloudClient
+- fix: support Fahrenheit cloud temperature units
+- test: rework tests to match fixed API and updated code
+- fix: instant control internal state and removed installerSetEnable from battery export limitation update
+- fix: incorrect test data
+- test: exercise Cloud API editor reload behaviour
+- feat: add live Cloud API test server editor
+- refactor: disable import grid limit
+- feat: add environment variable documentation for modbus test server
+- refactor: reformatted
+- test: simulate cloud internet outages
+- test: add three-phase cloud gateway endpoint
+- refactor: organize sensors by device type
+- refactor: renamed community cloud adapter to mySigen cloud adapter
+- fix: fixed modbus_test_server.py to handle None values for protocol_version and grid_status_initial_state.
+- test: fixed linting errors in test
+- test: seed Modbus inverter identities consistently
+- test: align cloud API fixtures with Modbus devices
+- feat: add community cloud device list retrieval
+- fix: add battery export limitation control
+- fix: support cloud test token refresh
+- feat: add cloud API integration test server
+- fix: reset default logging level to INFO
+
 ## [2026.9.6] - 2026-09-06
 
 - fix: ensured WriteOnlySensorMixin sensors are correctly seeded in Modbus test server to prevent ILLEGAL_ADDRESS errors

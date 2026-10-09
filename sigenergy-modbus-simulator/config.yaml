@@ -1,10 +1,12 @@
 name: "Sigenergy Modbus Simulator"
 description: >-
-  Modbus TCP simulator for SigenStor/Sigenergy inverters.
+  Modbus TCP and Cloud API simulator for SigenStor/Sigenergy inverters.
   Runs the modbus_test_server from the sigenergy2mqtt project on port 502,
   allowing testing of sigenergy2mqtt without a physical inverter.
+  Also runs a cloud API simulator on port 8080, allowing testing of the
+  sigenergy2mqtt cloud API integration.
 image: "ghcr.io/seud0nym/home-assistant-app-sigenergy-modbus-simulator"
-version: "2026.9.6"
+version: "2026.10.10"
 slug: "sigenergy-modbus-simulator"
 url: "https://github.com/seud0nym/home-assistant-addons/tree/test/sigenergy-modbus-simulator"
 init: false
@@ -16,8 +18,10 @@ arch:
 host_network: true
 ports:
   502/tcp: 502
+  8080/tcp: 8080
 ports_description:
   502/tcp: "Modbus TCP (simulator)"
+  8080/tcp: "Cloud API (simulator)"
 
 options:
   log_level: "INFO"
@@ -32,7 +36,11 @@ options:
   mqtt_log_level: "WARNING"
   modbus_host: ""
   modbus_port: 502
- 
+  cloud_port: 8080
+  cloud_username: "cloud_api_user"
+  cloud_password: "drowssap_ipa_duolc"
+  simulate_internet_outage: false
+
 schema:
   log_level: "list(DEBUG|INFO|WARNING|ERROR|CRITICAL|Default)"
   initial_firmware: "str?"
@@ -50,3 +58,7 @@ schema:
   mqtt_log_level: "list(DEBUG|INFO|WARNING|ERROR|CRITICAL|Default)?"
   modbus_host: "str?"
   modbus_port: "port?"
+  cloud_port: "port?"
+  cloud_username: "str?"
+  cloud_password: "password?"
+  simulate_internet_outage: "bool"
