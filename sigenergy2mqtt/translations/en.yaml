@@ -53,6 +53,9 @@ configuration:
       realtime:
         name: Near Realtime Frequency
         description: The scan interval in seconds for sensors that are to be scanned in near-real time. Default is 5 (seconds), and the minimum value is 1.
+      cloud:
+        name: Cloud Frequency
+        description: The scan interval in seconds for retrieving cloud data. Default is 5 (seconds), and the minimum value is 1.
   pvoutput:
     name: PVOutput.org Integration
     description: Configuration for integrating with PVOutput.org to upload generation and consumption data
@@ -190,6 +193,28 @@ configuration:
       influxdb:
         name: InfluxDB
         description: Set the InfluxDB logging level. WARNING! Setting this to DEBUG may produce very verbose output.
+      cloud:
+        name: Cloud
+        description: Set the Cloud logging level. WARNING! Setting this to DEBUG may produce very verbose output.
+  cloud:
+    name: Cloud Configuration
+    description: Configuration for accessing the unofficial Sigenergy mySigen Cloud API to retrieve data from your Sigenergy devices.
+    fields:
+      region:
+        name: Region
+        description: The region where your Sigenergy mySigen account is located.
+      username:
+        name: Username
+        description: Your Sigenergy Cloud username. It is strongly recommended that you create and use a delegated account with "View and Edit" access instead of the primary mySigen account, and that this account is not used for any other purpose. See the documentation for instructions on creating a delegated account.
+      password:
+        name: Password
+        description: Your Sigenergy Cloud password.
+      accept_unofficial_api_risk:
+        name: Accept Unofficial API Risk
+        description: This Cloud integration uses unofficial mySigen APIs that may be subject to change, and may be disabled at any time by Sigenergy. By enabling this option, you acknowledge that you understand the risks of using unofficial APIs, and that you accept that this integration may stop working at any time without notice.
+      discover_inverters:
+        name: Discover Inverters
+        description: Enable discovery of inverters. Usually leave this disabled because the cloud API does not at this time provide additional information to that provided by the Modbus interface.
   influxdb:
     name: InfluxDB Configuration
     description: Configuration for writing sensor data to your InfluxDB database. (This is different to the Home Assistant integration with InfluxDB, which only publishes enabled sensors, and does not publish repeating data.)
@@ -236,6 +261,7 @@ configuration:
             name: Sensor
             description: The sensor to exclude when publishing to InfluxDB.
   # Deprecated options left in for backward compatibility. The run script will migrate them to their replacements if found.
+  # Do NOT translate these options, as they are not used in the Add-On configuration, and are only used for backward compatibility with older versions of sigenergy2mqtt.
   consumption_method:
     description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: Consumption Method - DEPRECATED

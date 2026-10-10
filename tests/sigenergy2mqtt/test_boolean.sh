@@ -26,7 +26,6 @@ declare -A ASSERTIONS=(
     ["SIGENERGY2MQTT_MQTT_USERNAME"]="mock_mqtt_user" # Default
     ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password" # Default
     ["modbus-auto-discovery"]="once"
-    ["no-metrics"]="true"
 )
 
 cd $HOME
@@ -74,7 +73,6 @@ declare -A ASSERTIONS=(
     ["SIGENERGY2MQTT_MQTT_USERNAME"]="mock_mqtt_user" # Default
     ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password" # Default
     ["modbus-auto-discovery"]="once"
-    ["no-metrics"]="true"
 )
 export_assertions
 ( source ../../sigenergy2mqtt/rootfs/etc/services.d/sigenergy2mqtt/run ) > $LOG_PATH 2>&1
@@ -144,6 +142,7 @@ declare -A ASSERTIONS=(
     ["influxdb-username"]="username"
     ["influxdb-password"]="password"
     ["influxdb-database"]="database"
+    ["publish-metrics"]="true"
 )
 export_assertions
 ( source ../../sigenergy2mqtt/rootfs/etc/services.d/sigenergy2mqtt/run ) > $LOG_PATH 2>&1

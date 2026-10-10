@@ -116,6 +116,7 @@ declare -A ASSERTIONS=(
     ["SIGENERGY2MQTT_HASS_UNIQUE_ID_PREFIX"]="unique"
     ["diagnostics-host"]="0.0.0.0"
     ["diagnostics-allowed-ips"]="172.30.32.2" # Default
+    ["publish-metrics"]="true"
 )
 #endregion
 

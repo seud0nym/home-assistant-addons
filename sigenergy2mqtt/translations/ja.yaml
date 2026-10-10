@@ -30,13 +30,13 @@ configuration:
         description: Sigenergy デバイスのModbusポート番号。
       inverter_device_id:
         name: インバーターデバイスID
-        description: Sigenergy インバーターのModbusデバイスID。複数のインバーターの場合は、スペース区切りのリストを使用してください。
+        description: Sigenergy インバーターの Modbus デバイス ID。複数のインバーターがある場合は、スペース区切りの ID リストを指定できます。Modbus ホストが指定されていない場合は無視されます。その場合、自動検出がインバーターデバイスを識別できます。
       accharger_device_id:
         name: AC充電器デバイスID
-        description: Sigenergy AC充電器のModbusデバイスID。
+        description: Sigenergy AC 充電器の Modbus デバイス ID。Modbus ホストが指定されていない場合は無視されます。その場合、自動検出が AC 充電器デバイスを識別できます。
       dccharger_device_id:
         name: DC充電器デバイスID
-        description: Sigenergy DC充電器のModbusデバイスID（通常はインバーターIDと同じ）。
+        description: Sigenergy DC 充電器の Modbus デバイス ID（通常はインバーターデバイス ID と同じ）。Modbus ホストが指定されていない場合は無視されます。その場合、自動検出が DC 充電器デバイスを識別できます。
   scan_interval:
     name: センサースキャン間隔
     description: 異なるセンサークラスのスキャン間隔の設定
@@ -53,9 +53,12 @@ configuration:
       realtime:
         name: ほぼリアルタイム
         description: リアルタイムセンサーのスキャン間隔（秒）。デフォルト5、最小1。
+      cloud:
+        name: クラウド頻度
+        description: クラウドデータを取得するスキャン間隔（秒）。デフォルト5、最小1。
   pvoutput:
     name: PVOutput.org 連携
-    description: PVOutput.org との連携設定
+    description: 発電量と消費量のデータをアップロードするための PVOutput.org との連携設定
     fields:
       enabled:
         name: アップロードを有効化
@@ -77,10 +80,10 @@ configuration:
         description: インポートデータを PVOutput に送信します。
       eod_update:
         name: 日終アップロードを有効化
-        description: ピーク発電量と日次合計を一日の終わりに送信します。
+        description: 有効にすると、ピーク発電量とエクスポート・インポート（有効な場合）の日次合計が、一日の終わりに PVOutput へ送信されます。無効にすると、これらの値はステータス更新と同じスケジュールでアップロードされます。
       voltage:
         name: 電圧ソース
-        description: PVOutput に送信する電圧値のソース。単相は 'Phase A'、三相は 'Phase B/C' または 'Line to Line Average'。
+        description: PVOutput に送信する電圧値のソース。単相システムには 'Phase A'、三相システムには 'Phase B'、'Phase C' または 'Line to Line Average'、どちらにも使えるものとして 'Line to Neutral Average' または 'PV Average' を使用します。
       ext_v7:
         name: 拡張データ v7
         description: PVOutput の v7 拡張フィールドに入力するために使用するソース。センサークラス名、'sensor.' プレフィックスなしのエンティティ ID、直接 MQTT トピック（または mqtt:<topic>）、または Home Assistant センサーエンティティ ID（sensor.<id> または ha:sensor.<id>）を指定できます。指定されていない場合、または寄付ステータスが最新でない場合、このフィールドは PVOutput に送信されません。
@@ -104,7 +107,7 @@ configuration:
         description: PVOutput に送信される現在の温度のソース。直接 MQTT トピック（または mqtt:<topic>）または Home Assistant センサーエンティティ ID（sensor.<id> または ha:sensor.<id>）を指定できます。指定されていない場合、温度は PVOutput に送信されません。
   mqtt:
     name: MQTT 設定
-    description: MQTT ブローカーへの接続設定
+    description: MQTT ブローカーへの接続設定。Home Assistant の MQTT アプリを使用している場合、このセクションを設定する必要はありません。
     fields:
       broker:
         name: ブローカーアドレス
@@ -114,7 +117,7 @@ configuration:
         description: MQTT ブローカーのリスニングポート。デフォルト1883、TLS使用時は8883。
       tls:
         name: TLS 通信を有効化
-        description: TLS/SSL によるセキュア通信を有効にします。
+        description: TLS/SSL による MQTT ブローカーへのセキュア通信を有効にします（ブローカーが対応している場合）。
       username:
         name: ユーザー名
         description: MQTT ブローカーのユーザー名。
@@ -127,31 +130,31 @@ configuration:
     fields:
       clean:
         name: MQTT 保持メッセージをクリア
-        description: MQTT 保持メッセージをクリアします。**注意！** Home Assistant ヘルパーは削除されます。
+        description: MQTT 保持メッセージをクリアして、Home Assistant の sigenergy2mqtt MQTT デバイスを更新します。**注意して使用してください！** sigenergy2mqtt センサーを参照している Home Assistant ヘルパーはすべて*削除*されます！
       consumption_method:
         name: 消費量計算方式
-        description: "'Plant Consumed Power' の計算方式。V2.8 ではデフォルト 'Total Load'。"
+        description: "`Plant Consumed Power` センサーの計算方式。Modbus プロトコル V2.8 に対応するより前のファームウェアでは、使用できるオプションは 'Calculated' のみで、他の値はすべて_無視_されます。V2.8 ファームウェアではデフォルトは 'Total Load' です。"
       read_only:
         name: 読み取り専用を有効化
-        description: データの読み取りのみ、書き込みは行いません。
+        description: 有効にすると、Sigenergy デバイスからのデータ読み取りのみを行います。無効にすると、Sigenergy デバイスへのデータ書き込みが可能になります。
       no_remote_ems:
         name: リモート EMS を無効化
-        description: リモート EMS 用の読み書きセンサーを非表示にします。
+        description: 有効にすると、リモートエネルギーマネジメントシステム（EMS）連携に使用するすべての読み書きセンサーを非表示にします。'Modbus Read Only' が有効な場合は無視されます。
       no_ems_mode_check:
         name: リモート EMS チェックを無効化
-        description: ESS 制限の検証を無効にします。
+        description: 有効にすると、リモート EMS 制御モードが Command Charging/Discharging でない場合に ESS Max Charging/Discharging および PV Max Power の制限を無効にする検証をオフにします。'No Remote EMS' が有効な場合は無視されます。（詳細設定 - 注意して使用してください）
       edit_pct_box:
         name: パーセントボックスエディタを有効化
-        description: パーセントセンサーにスライダーではなく数値入力ボックスを使用します。
+        description: 有効にすると、パーセントセンサーの値を数値入力ボックスで変更します。無効のままにするとスライダーで変更します。
       sigenergy_local_modbus_naming:
         name: Sigenergy-Local-Modbus 命名
         description: センサーに TypQxQ/Sigenergy-Local-Modbus エンティティ命名規則を使用するには有効にしてください。（このオプションを変更する際は MQTT メッセージのクリーニングも有効にしてください。有効にしない場合、新しいエンティティ名は Home Assistant に無視されます。）
       metrics_enabled:
         name: メトリクスを有効化
-        description: sigenergy2mqtt メトリクスを公開します。
+        description: sigenergy2mqtt メトリクスの Home Assistant への公開を有効にします。
       sanity_check_default_kw:
         name: サニティチェックのデフォルト kW
-        description: サニティチェック用のデフォルト値（kW）。デフォルトは500 kW。
+        description: 電力センサーの実測値およびエネルギーセンサーの差分値の最大値・最小値を検証するサニティチェックに使用するデフォルト値（kW）。デフォルトは毎秒 500 kW で、±500 の範囲外の測定値は無視されます。
       language:
         name: 言語
         description: sigenergy2mqtt に使用する言語。デフォルトは「設定」→「システム」→「言語」で定義されたものです。その言語がサポートされていない場合、デフォルトは英語になります。
@@ -174,22 +177,44 @@ configuration:
         description: sigenergy2mqtt のログレベルを設定します。
       debug_sensor:
         name: デバッグするセンサー
-        description: デバッグするセンサーを指定します。
+        description: デバッグするセンサーを、完全なエンティティ ID、部分的なエンティティ ID、完全なセンサークラス名、または部分的なセンサークラス名で指定します。正規表現も使用できます。たとえば 'daily' を指定すると、エンティティ名に daily を含むすべてのセンサーに一致します。指定した場合、sigenergy2mqtt のログも強制的に DEBUG になります。
       app:
         name: アドオン実行スクリプト
-        description: アドオンスクリプトのログレベル。
+        description: アドオン実行スクリプトのログレベルを設定します。警告！ALL、TRACE、DEBUG に設定すると非常に冗長な出力になります。
       modbus:
         name: Modbus
-        description: pymodbus のログレベル。
+        description: pymodbus のログレベルを設定します。警告！DEBUG に設定すると非常に冗長な出力になります。
       pvoutput:
         name: PVOutput
         description: PVOutput のログレベル。
       mqtt:
         name: MQTT
-        description: paho.mqtt のログレベル。
+        description: paho.mqtt のログレベルを設定します。警告！DEBUG に設定すると非常に冗長な出力になります。
       influxdb:
         name: InfluxDB
-        description: InfluxDB のログレベル。
+        description: InfluxDB のログレベルを設定します。警告！DEBUG に設定すると非常に冗長な出力になる場合があります。
+      cloud:
+        name: クラウド
+        description: クラウドのログレベルを設定します。警告！DEBUG に設定すると非常に冗長な出力になる場合があります。
+  cloud:
+    name: クラウド設定
+    description: 非公式の Sigenergy mySigen Cloud API にアクセスして Sigenergy デバイスのデータを取得するための設定。
+    fields:
+      region:
+        name: リージョン
+        description: Sigenergy mySigen アカウントが存在するリージョン。
+      username:
+        name: ユーザー名
+        description: Sigenergy Cloud のユーザー名。メインの mySigen アカウントではなく、"View and Edit" アクセス権を持つ委任アカウントを作成して使用し、そのアカウントを他の目的に使用しないことを強くお勧めします。委任アカウントの作成手順についてはドキュメントを参照してください。
+      password:
+        name: パスワード
+        description: Sigenergy Cloud のパスワード。
+      accept_unofficial_api_risk:
+        name: 非公式APIのリスクを承諾
+        description: このクラウド連携は、変更される可能性があり、Sigenergy によりいつでも無効化される可能性がある非公式の mySigen API を使用します。このオプションを有効にすることで、非公式 API を使用するリスクを理解し、この連携が予告なくいつでも動作しなくなる可能性があることを承諾したものとみなされます。
+      discover_inverters:
+        name: インバーターを検出
+        description: インバーターの検出を有効にします。現時点ではクラウド API が Modbus インターフェースで提供される情報以上の追加情報を提供しないため、通常は無効のままにしてください。
   influxdb:
     name: InfluxDB 設定
     description: センサーデータを InfluxDB データベースに書き込むための設定。（これは Home Assistant の InfluxDB 統合とは異なり、有効なセンサーのみを公開し、繰り返しデータは公開しません。）

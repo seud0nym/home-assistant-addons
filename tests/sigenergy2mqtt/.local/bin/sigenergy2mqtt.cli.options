@@ -1,4 +1,10 @@
 clean
+cloud-accept-unofficial-api-risk
+cloud-discover-inverters
+cloud-log-level
+cloud-password
+cloud-region
+cloud-username
 config
 consumption
 debug-sensor
@@ -78,6 +84,7 @@ no-diagnostics
 no-ems-mode-check
 no-influxdb-health-monitoring
 no-metrics
+no-metrics is deprecated; metrics publishing is disabled by default. Use --publish-metrics to enable it.
 no-persistence-mqtt-redundancy
 no-pvoutput-health-monitoring
 no-topic-update-monitoring
@@ -85,6 +92,8 @@ persistence-cache-warmup-timeout
 persistence-debug
 persistence-mqtt-state-prefix
 persistence-sync-timeout
+publish-metrics
+publish-runtime-config
 pvoutput-api-key
 pvoutput-consumption
 pvoutput-enabled
@@ -104,6 +113,7 @@ pvoutput-upload-log-level
 pvoutput-voltage
 repeated-state-publish-interval
 sanity-check-default-kw
+scan-interval-cloud
 scan-interval-high
 scan-interval-low
 scan-interval-medium

@@ -38,7 +38,6 @@ declare -A ASSERTIONS=(
     ["SIGENERGY2MQTT_MQTT_TLS"]="false"
     ["SIGENERGY2MQTT_MQTT_USERNAME"]="mock_mqtt_user"
     ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password"
-    ["no-metrics"]="true"
     ["modbus-host"]="127.0.0.1"
     ["modbus-readonly"]="true"
     # Expect others to be absent
@@ -87,7 +86,6 @@ declare -A ASSERTIONS=(
     ["SIGENERGY2MQTT_MQTT_TLS"]="false"
     ["SIGENERGY2MQTT_MQTT_USERNAME"]="mock_mqtt_user"
     ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password"
-    ["no-metrics"]="true"
     ["modbus-host"]="127.0.0.1"
     ["modbus-no-remote-ems"]="true"
 )
@@ -130,7 +128,6 @@ declare -A ASSERTIONS=(
     ["SIGENERGY2MQTT_MQTT_TLS"]="false"
     ["SIGENERGY2MQTT_MQTT_USERNAME"]="mock_mqtt_user"
     ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password"
-    ["no-metrics"]="true"
     ["modbus-host"]="127.0.0.1"
     ["no-ems-mode-check"]="true"
 )
@@ -172,7 +169,6 @@ declare -A ASSERTIONS=(
     ["SIGENERGY2MQTT_MQTT_TLS"]="false"
     ["SIGENERGY2MQTT_MQTT_USERNAME"]="mock_mqtt_user"
     ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password"
-    ["no-metrics"]="true"
     ["modbus-host"]="127.0.0.1"
 )
 export_assertions
@@ -215,7 +211,6 @@ declare -A ASSERTIONS=(
     ["SIGENERGY2MQTT_MQTT_TLS"]="false"
     ["SIGENERGY2MQTT_MQTT_USERNAME"]="mock_mqtt_user"
     ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password"
-    ["no-metrics"]="true"
     ["modbus-host"]="127.0.0.1"
 )
 export_assertions
@@ -243,7 +238,6 @@ declare -A ASSERTIONS=(
     ["SIGENERGY2MQTT_MQTT_TLS"]="false"
     ["SIGENERGY2MQTT_MQTT_USERNAME"]="mock_mqtt_user"
     ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password"
-    ["no-metrics"]="true"
     ["modbus-host"]="127.0.0.1"
 )
 export_assertions
@@ -292,7 +286,6 @@ declare -A ASSERTIONS=(
     ["SIGENERGY2MQTT_MQTT_TLS"]="false"
     ["SIGENERGY2MQTT_MQTT_USERNAME"]="mock_mqtt_user"
     ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password"
-    ["no-metrics"]="true"
     ["modbus-host"]="127.0.0.1"
 )
 export_assertions

@@ -138,8 +138,8 @@ export_envvar() {
 add_advanced_parameters() {
   bashio::log.debug ">>> Entering add_advanced_parameters()"
   add_boolean_cmd_parameter_from_config --hass-edit-pct-box 'advanced.edit_pct_box'
-  add_boolean_cmd_parameter_from_config --hass-sigenergy-local-modbus-naming 'advanced.sigenergy_local_modbus_naming' true
-  add_boolean_cmd_parameter_from_config --no-metrics 'advanced.metrics_enabled' false
+  add_boolean_cmd_parameter_from_config --hass-sigenergy-local-modbus-naming 'advanced.sigenergy_local_modbus_naming'
+  add_boolean_cmd_parameter_from_config --publish-metrics 'advanced.metrics_enabled'
   add_value_cmd_parameter_from_config --sanity-check-default-kw 'advanced.sanity_check_default_kw'
   if bashio::config.has_value 'advanced.consumption_method'; then
     case "$(bashio::config 'advanced.consumption_method')" in
@@ -160,6 +160,66 @@ add_advanced_parameters() {
     bashio::log.debug "### SKIPPING environment variables setup because advanced.envvars is not set"
   fi
   bashio::log.debug "<<< Exiting add_advanced_parameters()"
+}
+
+add_cloud_parameters() {
+  bashio::log.debug ">>> Entering add_cloud_parameters()"
+  local CLOUD_REGION=""
+  local CLOUD_USERNAME=""
+  local CLOUD_PASSWORD=""
+  local CLOUD_ACCEPT_UNOFFICIAL_API_RISK="false"
+  local CLOUD_DISCOVER_INVERTERS="false"
+  if bashio::config.has_value 'cloud.accept_unofficial_api_risk'; then
+    CLOUD_ACCEPT_UNOFFICIAL_API_RISK="$(bashio::config 'cloud.accept_unofficial_api_risk')"
+    if [[ "${CLOUD_ACCEPT_UNOFFICIAL_API_RISK}" == "true" ]]; then
+      if bashio::config.has_value 'cloud.region' && bashio::config.has_value 'cloud.username' && bashio::config.has_value 'cloud.password'; then
+        CLOUD_USERNAME="$(bashio::config 'cloud.username')"
+        CLOUD_PASSWORD="$(bashio::config 'cloud.password')"
+        CLOUD_REGION="$(bashio::config 'cloud.region')"
+        local count="$(bashio::config 'advanced.envvars|length')"
+        if [[ -n "$count" && "$count" != "null" ]]; then
+          for ((i=0; i<count; i++)); do
+            local name="$(bashio::config "advanced.envvars[${i}].name")"
+            if [[ "$name" == "SIGENERGY2MQTT_CLOUD_TESTING_URL" ]]; then
+              bashio::log.info "### FOUND environment variable 'SIGENERGY2MQTT_CLOUD_TESTING_URL' so setting cloud region to 'testing'"
+              CLOUD_REGION="testing"
+              break
+            fi
+          done
+        fi
+        case "${CLOUD_REGION}" in
+          "Australia")      add_value_cmd_parameter --cloud-region aus;;
+          "Asia-Pacific")   add_value_cmd_parameter --cloud-region apac;;
+          "China")          add_value_cmd_parameter --cloud-region cn;;
+          "EU")             add_value_cmd_parameter --cloud-region eu;;
+          "US")             add_value_cmd_parameter --cloud-region us;;
+          "testing")        add_value_cmd_parameter --cloud-region testing;;
+        esac
+        add_value_cmd_parameter --cloud-username "${CLOUD_USERNAME}"
+        add_value_cmd_parameter --cloud-password "${CLOUD_PASSWORD}"
+        add_boolean_cmd_parameter --cloud-accept-unofficial-api-risk "${CLOUD_ACCEPT_UNOFFICIAL_API_RISK}"
+        add_boolean_cmd_parameter_from_config --cloud-discover-inverters 'cloud.discover_inverters'
+        add_value_cmd_parameter_from_config --scan-interval-cloud 'scan_interval.cloud'
+        local count="$(bashio::config 'advanced.envvars|length')"
+        if [[ -n "$count" && "$count" != "null" ]]; then
+          for ((i=0; i<count; i++)); do
+            local name="$(bashio::config "advanced.envvars[${i}].name")"
+            if [[ "$name" == "SIGENERGY2MQTT_CLOUD_TESTING_URL" ]]; then
+              bashio::log.info "### FOUND environment variable 'SIGENERGY2MQTT_CLOUD_TESTING_URL' so setting cloud region to 'testing'"
+              continue
+            fi
+            local value="$(bashio::config "advanced.envvars[${i}].value")"
+            export_envvar "${name}" "${value}"
+          done
+        fi
+      else
+        bashio::log.debug "### SKIPPING Cloud configuration because credentials not configured"
+      fi
+    else
+      bashio::log.debug "### SKIPPING Cloud configuration because accept_unofficial_api_risk is false"
+    fi
+  fi
+  bashio::log.debug "<<< Exiting add_cloud_parameters()"
 }
 
 add_influxdb_parameters() {
@@ -329,7 +389,7 @@ add_language_parameter() {
 add_logging_parameters() {
   bashio::log.debug ">>> Entering add_logging_parameters()"
   local OPTION
-  for OPTION in logging.sigenergy2mqtt:log-level logging.modbus:modbus-log-level logging.mqtt:mqtt-log-level logging.influxdb:influxdb-log-level logging.pvoutput:pvoutput-log-level; do
+  for OPTION in logging.sigenergy2mqtt:log-level logging.modbus:modbus-log-level logging.mqtt:mqtt-log-level logging.influxdb:influxdb-log-level logging.pvoutput:pvoutput-log-level logging.cloud:cloud-log-level; do
     if bashio::config.has_value "${OPTION%%:*}"; then
       local VALUE="$(bashio::config "${OPTION%%:*}")"
       local PARAMETER="${OPTION##*:}"
@@ -729,19 +789,20 @@ run_service() {
 #endregion
 
 
-bashio::log.info "Version $(bashio::addon.version)"
+bashio::log.info "Version $(bashio::app.version)"
 
 bashio::log.info "Configuring sigenergy2mqtt service options..."
 
 handle_legacy_options
 
 config_file_check
+add_logging_parameters
 add_mqtt_parameters
 add_modbus_parameters
 add_scan_interval_parameters
+add_cloud_parameters
 add_pvoutput_parameters
 add_influxdb_parameters
-add_logging_parameters
 add_diagnostics_parameters
 add_language_parameter
 # Advanced Settings must be processed LAST before execution, so that any environment variables set by the user will override settings defined in the Add-On configuration

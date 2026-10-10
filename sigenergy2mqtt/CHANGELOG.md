@@ -1,5 +1,31 @@
 # Changelog
 
+## [2026.10.10] - 2026-10-10
+
+### Added
+
+- Optional Sigenergy Cloud access using the unofficial mySigen API to expose controls and sensors not available via local Modbus
+- MQTT Connection metrics
+
+### Fixed
+
+- Fixed "DiagnosticsRegistry Provider 'pvoutput' failed: 'NoneType' object has no attribute 'value'" error message ([#323](https://github.com/seud0nym/sigenergy2mqtt/issues/323))
+- Improved pymodbus 'Skipping' logging filter to catch subsequent 'Repeating'  messages
+
+### Changed
+
+- Refactored former monolithic main module into separate concerns modules
+- Removed the SensorProtocol Protocol from the sensor implementation and exports, and stop inheriting the Protocol from Sensor
+- Converted Device and ModbusDevice to concrete base classes by removing the ABCMeta metaclass
+- Removed needless ABC inheritance from several sensor base classes such as RemoteEMSLimit and ESSPreHeatingTOUTime
+- Refactored the InfluxDB query methods into the Home Assistant backfill workflow to keep core functionality focussed on writes
+- Removed InfluxDB query metrics when HA sync disabled
+- Metrics and Runtime Configuration publishing to MQTT now require explicit opt-in (both are still available through the diagnostics web UI)
+- Changed the state store persistence default to prefer MQTT over local disk storage
+- Updated home-assistant/builder from `2026.06.0` to `2026.09.0`
+
+---
+
 ## [2026.9.15] - 2026-09-15
 
 ### Fixed

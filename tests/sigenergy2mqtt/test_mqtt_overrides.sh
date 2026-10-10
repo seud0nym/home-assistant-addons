@@ -43,9 +43,6 @@ declare -A ASSERTIONS=(
 # If assertion is missing for a present param, it fails? No, logic is:
 # "Mismatch in number of parsed options" -> Yes, it fails count check.
 # So we need ALL default params.
-# Defaults from run script:
-# --no-metrics (if advanced missing)
-ASSERTIONS["no-metrics"]="true"
 
 cd $HOME
 source "../mock_bashio.sh"
@@ -79,7 +76,6 @@ declare -A ASSERTIONS=(
     ["SIGENERGY2MQTT_MQTT_USERNAME"]="mock_mqtt_user" # Inherited from auto-discovery
     ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password" # Inherited
     ["modbus-host"]="127.0.0.1"
-    ["no-metrics"]="true"
 )
 export_assertions
 ( source ../../sigenergy2mqtt/rootfs/etc/services.d/sigenergy2mqtt/run ) > $LOG_PATH 2>&1
@@ -111,7 +107,6 @@ declare -A ASSERTIONS=(
     ["SIGENERGY2MQTT_MQTT_USERNAME"]="myuser"
     ["SIGENERGY2MQTT_MQTT_PASSWORD"]="mypassword"
     ["modbus-host"]="127.0.0.1"
-    ["no-metrics"]="true"
 )
 export_assertions
 ( source ../../sigenergy2mqtt/rootfs/etc/services.d/sigenergy2mqtt/run ) > $LOG_PATH 2>&1
