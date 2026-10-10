@@ -1,5 +1,3 @@
-# sigenergy2mqtt
-
 <img src="https://github.com/seud0nym/sigenergy2mqtt/raw/main/src/sigenergy2mqtt/diagnostics/static/logo.png" alt="sigenergy2mqtt"><br>
 
 [![License](https://img.shields.io/github/license/seud0nym/sigenergy2mqtt.svg?style=flat)](https://github.com/seud0nym/sigenergy2mqtt/blob/master/LICENSE) 

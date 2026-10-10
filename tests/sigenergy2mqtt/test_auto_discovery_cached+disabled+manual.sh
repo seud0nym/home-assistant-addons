@@ -31,7 +31,6 @@ declare -A ASSERTIONS=(
     ["SIGENERGY2MQTT_MQTT_TLS"]="false" # Default
     ["SIGENERGY2MQTT_MQTT_USERNAME"]="mock_mqtt_user" # Default
     ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password" # Default
-    ["no-metrics"]="true" # Default
     ["modbus-host"]="127.0.0.1"
 )
 #endregion

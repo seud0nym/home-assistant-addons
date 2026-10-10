@@ -253,8 +253,9 @@ declare -A ASSERTIONS=(
     ["cloud-region"]="apac"
     ["cloud-username"]="test@cloud.user"
     ["cloud-password"]="test_cloud_password"
-    ["cloud-accept_unofficial_api_risk"]="true"
-    ["cloud-discover_inverters"]="true"
+    ["cloud-accept-unofficial-api-risk"]="true"
+    ["cloud-discover-inverters"]="true"
+    ["publish-metrics"]="true"
 )
 #endregion
 

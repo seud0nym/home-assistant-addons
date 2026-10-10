@@ -104,7 +104,7 @@ function bashio::addon.option() {
 }
 
 # --- Addon Information Functions ---
-function bashio::addon.version() { 
+function bashio::app.version() { 
     yq .version  ../../sigenergy2mqtt/config.yaml | tr -d '\n'
 }
 
