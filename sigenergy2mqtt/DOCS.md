@@ -68,6 +68,7 @@ The Sigenergy Modbus Host and the Device IDs for Inverters, AC Chargers, and DC 
 | `High Frequency` | The scan interval in seconds for Modbus registers that are to be scanned at a high frequency. Default is **10** (seconds), and the minimum value is 1. |
 | `Medium Frequency` | The scan interval in seconds for Modbus registers that are to be scanned at a medium frequency. Default is **60** (seconds), and the minimum value is 1. |
 | `Low Frequency` | The scan interval in seconds for Modbus registers that are to be scanned at a low frequency. Default is **600** (seconds), and the minimum value is 1. |
+| `Cloud Frequency` | The scan interval in seconds for retrieving cloud data. Default is 5 (seconds), and the minimum value is 1. |
 
 #### PVOutput.org Integration
 
@@ -249,4 +250,20 @@ If both v1 credentials (username/password) and v2 credentials (token) are provid
 | `PVOutput` | Set the PVOutput services logging level. |
 | `MQTT` | Set the paho.mqtt logging level. **WARNING!** Setting this to DEBUG will produce very verbose output. |
 | `InfluxDB` | Set the InfluxDB logging level. **WARNING!** Setting this to DEBUG may produce very verbose output. |
+| `Cloud` | Set the Cloud logging level. **WARNING!** Setting this to DEBUG may produce very verbose output. |
 
+#### Cloud Configuration
+
+The official Sigenergy Cloud API is designed for applications that work as a backend service, and which are not deployed to local customer infrastructure as `sigenergy2mqtt` is. Whilst they are currently working on making the changes that would support local deployment, it is not yet available.
+
+However, there is an unofficial Cloud API that provides access to the Cloud features, which is what has now been incorporated into `sigenergy2mqtt` until the official API is available. There is no documentation for this API, and features have been discerned through observing the web app network traffic. Some features may therefore not work exactly as expected.
+
+To use the Cloud API in `sigenergy2mqtt`, it is _strongly_ recommended that you use delegated access created through the `mySigen` app. Navigate to `Settings` → `System Settings` → `System Share`, and add another email address (not your primary mySigen login email address) with "View and Edit" permission. When you receive the invitation email, log in and set your password. Use this new email address and password when configuring Cloud access in `sigenergy2mqtt`. _Only_ use this delegated email for the `sigenergy2mqtt` Cloud connection, and for no other purpose, because too many sessions cause connections to be dropped.
+
+| Option | Description |
+|--------|-------------|
+| `Accept Unofficial API Risk` | This Cloud integration uses unofficial mySigen APIs that may be subject to change, and may be disabled at any time by Sigenergy. By enabling this option, you acknowledge that you understand the risks of using unofficial APIs, and that you accept that this integration may stop working at any time without notice. |
+| `Region` | The region where your Sigenergy mySigen account is located. |
+| `Username` | Your Sigenergy Cloud username. |
+| `Password` | Your Sigenergy Cloud password. |
+| `Discover Inverters` | Enable discovery of inverters. Usually leave this disabled because the cloud API does not at this time provide additional information to that provided by the Modbus interface. |

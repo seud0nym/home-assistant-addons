@@ -49,6 +49,10 @@ options:
     include: []
     exclude: []
   logging: {}
+  cloud:
+    region: "Australia"
+    accept_unofficial_api_risk: false
+    discover_inverters: false
 schema:
   auto_discovery:
     status: "list(Automatic|Forced|Enabled|Disabled)"
@@ -67,6 +71,7 @@ schema:
     medium: "int(1,)?"
     high: "int(1,)?"
     realtime: "int(1,)?"
+    cloud: "int(1,)?"
   pvoutput:
     enabled: "bool"
     api_key: "str?"
@@ -125,6 +130,13 @@ schema:
     pvoutput: "list(DEBUG|INFO|WARNING|ERROR|CRITICAL|Default)?"
     mqtt: "list(DEBUG|INFO|WARNING|ERROR|CRITICAL|Default)?"
     influxdb: "list(DEBUG|INFO|WARNING|ERROR|CRITICAL|Default)?"
+    cloud: "list(DEBUG|INFO|WARNING|ERROR|CRITICAL|Default)?"
+  cloud:
+    region: "list(Australia|Asia-Pacific|China|EU|US)"
+    username: "str?"
+    password: "password?"
+    accept_unofficial_api_risk: "bool"
+    discover_inverters: "bool"
   #region  Deprecated options left in for backward compatibility. The run script will migrate them to their replacements if found.
   consumption_method: "list(Calculated|Total Load|General Load)?"
   debug_sensor: "str?"
@@ -180,5 +192,5 @@ services:
   - "mqtt:want"
 slug: sigenergy2mqtt
 url: "https://github.com/seud0nym/home-assistant-addons/tree/alpha/sigenergy2mqtt"
-version: "2026.9.15"
+version: "2026.10.10"
 stage: experimental

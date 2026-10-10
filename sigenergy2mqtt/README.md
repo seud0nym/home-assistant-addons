@@ -1,6 +1,6 @@
 # sigenergy2mqtt
 
-<img src="./logo.png" alt="sigenergy2mqtt"><br>
+<img src="https://github.com/seud0nym/sigenergy2mqtt/raw/main/src/sigenergy2mqtt/diagnostics/static/logo.png" alt="sigenergy2mqtt"><br>
 
 [![License](https://img.shields.io/github/license/seud0nym/sigenergy2mqtt.svg?style=flat)](https://github.com/seud0nym/sigenergy2mqtt/blob/master/LICENSE) 
 ![Dynamic YAML Badge](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fseud0nym%2Fhome-assistant-addons%2Frefs%2Fheads%2Fmain%2Fsigenergy2mqtt%2Fconfig.yaml&query=%24.version&label=stable)
@@ -17,6 +17,7 @@
 * Web UI to view diagnostics and performance metrics, configure transient runtime settings, and display a simple solar/battery dashboard
 * [_Optional_] You can automatically upload your generation, battery (for donators only) and optionally, consumption, exports and imports, data to [PVOutput](https://pvoutput.org/).
 * [_Optional_] You can automatically publish _all_ sensor data to InfluxDB (v1/2). This is different to the Home Assistant integration with InfluxDB, which only publishes enabled sensors, and does not publish repeating data. You can also import historical `sigenergy2mqtt` sensor data from an existing InfluxDB 'homeassistant' database.
+* [_Optional_] You can use the unofficial Sigenergy Cloud API for cloud-only operations like Instant Manual Control and operational mode selection.
 
 ## Minimum Requirements
 
@@ -29,9 +30,16 @@ For each Sigenergy host, an MQTT device will be created in Home Assistant. A hos
 
 The first host will be called `Sigenergy Plant` (plant is the terminology used in the "Sigenergy Modbus Protocol", and is in the context of a power plant). Each plant will have one or more related MQTT devices, such as `Sigenergy Plant Grid Sensor` and `Sigenergy Plant Statistics`. Plants will also have associated inverters, and their names will include the model and serial number (e.g. `SigenStor EC 6.0 SP CMUxxxxxxxxxx`). Each inverter will have an an Energy Storage System device (e.g. `SigenStor CMUxxxxxxxxxx ESS`) and as many PV String devices as the inverter supports. Chargers will be named `Sigenergy AC Charger` and `Sigenergy DC Charger`.
 
+If Cloud API access is enabled, the Cloud and Gateway devices will also be created, along with a device for each battery and, optionally, a device for each inverter.
+
 Example:
 ```
 Sigenergy Plant
+   ├─ Sigenergy Cloud
+   │    ├─ SigenStor BAT 8.0 1
+   │    ├─ SigenStor BAT 8.0 2
+   │    ├─ SigenStor xxxxxxxxxx Energy Controller
+   │    └─ Sigen Gateway SP AU
    ├─ Sigenergy Plant ESS Pre-Heating
    ├─ Sigenergy Plant Grid Code
    ├─ Sigenergy Plant Grid Sensor

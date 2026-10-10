@@ -30,13 +30,13 @@ configuration:
         description: Numero porta Modbus del dispositivo Sigenergy.
       inverter_device_id:
         name: ID dispositivo inverter
-        description: ID dispositivo Modbus dell'inverter Sigenergy. Per più inverter, usa un elenco separato da spazi.
+        description: L'ID dispositivo Modbus dell'inverter Sigenergy. Se si hanno più inverter, è possibile specificare un elenco di ID separati da spazi. Ignorato se non è specificato alcun host Modbus; in tal caso il rilevamento automatico può identificare gli inverter.
       accharger_device_id:
         name: ID dispositivo caricatore AC
-        description: ID dispositivo Modbus del caricatore AC Sigenergy.
+        description: L'ID dispositivo Modbus del caricatore AC Sigenergy. Ignorato se non è specificato alcun host Modbus; in tal caso il rilevamento automatico può identificare i caricatori AC.
       dccharger_device_id:
         name: ID dispositivo caricatore DC
-        description: ID dispositivo Modbus del caricatore DC Sigenergy (solitamente uguale all'ID dell'inverter).
+        description: L'ID dispositivo Modbus del caricatore DC Sigenergy (solitamente uguale all'ID dell'inverter). Ignorato se non è specificato alcun host Modbus; in tal caso il rilevamento automatico può identificare i caricatori DC.
   scan_interval:
     name: Intervalli di scansione sensori
     description: Configurazione degli intervalli di scansione per diverse classi di sensori
@@ -53,9 +53,12 @@ configuration:
       realtime:
         name: Quasi tempo reale
         description: Intervallo di scansione in secondi per sensori in tempo reale. Predefinito 5, minimo 1.
+      cloud:
+        name: Frequenza cloud
+        description: Intervallo di scansione in secondi per il recupero dei dati cloud. Predefinito 5, minimo 1.
   pvoutput:
     name: Integrazione PVOutput.org
-    description: Configurazione per l'integrazione con PVOutput.org
+    description: Configurazione per l'integrazione con PVOutput.org per caricare i dati di generazione e consumo
     fields:
       enabled:
         name: Abilita caricamento
@@ -77,10 +80,10 @@ configuration:
         description: Invia dati di importazione a PVOutput.
       eod_update:
         name: Abilita caricamento fine giornata
-        description: Invia picco di generazione e totali giornalieri a fine giornata.
+        description: Se abilitato, il picco di generazione e i totali giornalieri di esportazioni e importazioni (se abilitati) vengono inviati a PVOutput a fine giornata. Se disabilitato, questi valori vengono caricati con la stessa cadenza degli aggiornamenti di stato.
       voltage:
         name: Sorgente tensione
-        description: Sorgente del valore di tensione per PVOutput. 'Phase A' per monofase, 'Phase B/C' o 'Line to Line Average' per trifase.
+        description: La sorgente del valore di tensione da inviare a PVOutput. Usare 'Phase A' per i sistemi monofase, 'Phase B', 'Phase C' o 'Line to Line Average' per i sistemi trifase oppure 'Line to Neutral Average' o 'PV Average' per entrambi.
       ext_v7:
         name: Dati estesi v7
         description: Una sorgente utilizzata per popolare il campo esteso v7 in PVOutput. È possibile specificare un nome di classe del sensore, un ID entità senza il prefisso 'sensor.', un topic MQTT diretto (o mqtt:<topic>) o un ID entità del sensore di Home Assistant (sensor.<id> o ha:sensor.<id>). Se non specificato, O se lo stato della donazione non è aggiornato, questo campo non verrà inviato a PVOutput.
@@ -104,7 +107,7 @@ configuration:
         description: Una sorgente per la temperatura corrente inviata a PVOutput. È possibile specificare un topic MQTT diretto (o mqtt:<topic>) o un ID entità del sensore di Home Assistant (sensor.<id> o ha:sensor.<id>). Se non specificato, la temperatura non verrà inviata a PVOutput.
   mqtt:
     name: Configurazione MQTT
-    description: Configurazione per la connessione al broker MQTT
+    description: Configurazione per la connessione al broker MQTT. Non è necessario configurare questa sezione se si utilizza l'app MQTT di Home Assistant.
     fields:
       broker:
         name: Indirizzo broker
@@ -114,7 +117,7 @@ configuration:
         description: Porta di ascolto del broker MQTT. Predefinito 1883, o 8883 con TLS.
       tls:
         name: Abilita comunicazione TLS
-        description: Abilita comunicazione sicura tramite TLS/SSL.
+        description: Abilita la comunicazione sicura con il broker MQTT tramite TLS/SSL (se il broker la supporta).
       username:
         name: Nome utente
         description: Nome utente per il broker MQTT.
@@ -127,31 +130,31 @@ configuration:
     fields:
       clean:
         name: Pulisci messaggi MQTT conservati
-        description: Pulisci messaggi MQTT conservati. **ATTENZIONE!** Gli helper di Home Assistant verranno rimossi.
+        description: Pulisci i messaggi MQTT conservati per aggiornare i dispositivi MQTT di sigenergy2mqtt in Home Assistant. **USARE CON CAUTELA!** Tutti gli helper di Home Assistant definiti che fanno riferimento ai sensori di sigenergy2mqtt verranno *rimossi*!
       consumption_method:
         name: Metodo di consumo
-        description: Metodo di calcolo per 'Plant Consumed Power'. Predefinito 'Total Load' per V2.8.
+        description: Il metodo di calcolo del sensore `Plant Consumed Power`. Sul firmware precedente a quello che supporta il protocollo Modbus V2.8, l'unica opzione disponibile è 'Calculated' e tutti gli altri valori vengono _ignorati_. Per il firmware V2.8, il valore predefinito è 'Total Load'.
       read_only:
         name: Abilita sola lettura
-        description: Solo lettura dati, nessuna scrittura.
+        description: Abilita per leggere solo i dati dal dispositivo Sigenergy. Disabilita per consentire la scrittura dei dati sul dispositivo Sigenergy.
       no_remote_ems:
         name: Disabilita EMS remoto
-        description: Nascondi sensori di lettura/scrittura per EMS remoto.
+        description: Abilita per nascondere tutti i sensori di lettura/scrittura utilizzati per l'integrazione del sistema di gestione dell'energia (EMS) remoto. Ignorato se 'Modbus Read Only' è abilitato.
       no_ems_mode_check:
         name: Disabilita controlli EMS remoto
-        description: Disabilita validazione per limiti ESS.
+        description: Abilita per DISATTIVARE la validazione che disabilita i limiti ESS Max Charging/Discharging e PV Max Power quando la modalità di controllo EMS remoto non è Command Charging/Discharging. Ignorato se 'No Remote EMS' è abilitato. (Impostazione avanzata - usare con cautela)
       edit_pct_box:
         name: Abilita editor casella percentuale
-        description: Usa casella di input numerico invece di slider per sensori percentuale.
+        description: Abilita per usare una casella di input numerico per modificare il valore dei sensori percentuali, oppure lascia disabilitato per usare un cursore.
       sigenergy_local_modbus_naming:
         name: Denominazione Sigenergy-Local-Modbus
         description: Abilitare per utilizzare la convenzione di denominazione delle entità TypQxQ/Sigenergy-Local-Modbus per i sensori. (È consigliabile abilitare anche la pulizia dei messaggi MQTT quando si modifica questa opzione, altrimenti i nuovi nomi delle entità verranno ignorati da Home Assistant.)
       metrics_enabled:
         name: Abilita metriche
-        description: Pubblica metriche di sigenergy2mqtt.
+        description: Abilita la pubblicazione delle metriche di sigenergy2mqtt su Home Assistant.
       sanity_check_default_kw:
         name: kW predefinito per verifica
-        description: Valore predefinito in kW per le verifiche. Predefinito 500 kW.
+        description: Il valore predefinito in kW utilizzato per le verifiche di coerenza, per convalidare i valori massimo e minimo del valore effettivo dei sensori di potenza e del valore delta dei sensori di energia. Il valore predefinito è 500 kW al secondo, il che significa che le letture al di fuori dell'intervallo ±500 vengono ignorate.
       language:
         name: Lingua
         description: La lingua da utilizzare per sigenergy2mqtt. L'impostazione predefinita è quella definita in Impostazioni → Sistema → Lingua o, se tale lingua non è supportata, l'impostazione predefinita è l'inglese.
@@ -174,22 +177,44 @@ configuration:
         description: Imposta livello di registrazione di sigenergy2mqtt.
       debug_sensor:
         name: Sensore da debuggare
-        description: Specifica un sensore da debuggare.
+        description: Specifica un sensore da debuggare usando l'ID entità completo, un ID entità parziale, il nome completo della classe del sensore o un nome parziale della classe. È possibile usare anche le espressioni regolari. Ad esempio, specificando 'daily' verrebbero individuati tutti i sensori con daily nel nome dell'entità. Se specificato, anche la registrazione di sigenergy2mqtt viene forzata a DEBUG.
       app:
         name: Script di esecuzione app
-        description: Livello di registrazione dello script app.
+        description: Imposta il livello di registrazione dello script di esecuzione dell'app. ATTENZIONE! Impostarlo su ALL, TRACE o DEBUG produrrà un output molto dettagliato.
       modbus:
         name: Modbus
-        description: Livello di registrazione di pymodbus.
+        description: Imposta il livello di registrazione di pymodbus. ATTENZIONE! Impostarlo su DEBUG produrrà un output molto dettagliato.
       pvoutput:
         name: PVOutput
         description: Livello di registrazione di PVOutput.
       mqtt:
         name: MQTT
-        description: Livello di registrazione di paho.mqtt.
+        description: Imposta il livello di registrazione di paho.mqtt. ATTENZIONE! Impostarlo su DEBUG produrrà un output molto dettagliato.
       influxdb:
         name: InfluxDB
-        description: Livello di registrazione di InfluxDB.
+        description: Imposta il livello di registrazione di InfluxDB. ATTENZIONE! Impostarlo su DEBUG può produrre un output molto dettagliato.
+      cloud:
+        name: Cloud
+        description: Imposta livello di registrazione del cloud. ATTENZIONE! Impostarlo su DEBUG può produrre un output molto dettagliato.
+  cloud:
+    name: Configurazione cloud
+    description: Configurazione per accedere all'API non ufficiale Sigenergy mySigen Cloud e recuperare i dati dai dispositivi Sigenergy.
+    fields:
+      region:
+        name: Regione
+        description: La regione in cui si trova l'account Sigenergy mySigen.
+      username:
+        name: Nome utente
+        description: Il nome utente Sigenergy Cloud. Si consiglia vivamente di creare e utilizzare un account delegato con accesso "View and Edit" al posto dell'account mySigen principale e di non utilizzare questo account per altri scopi. Consultare la documentazione per le istruzioni sulla creazione di un account delegato.
+      password:
+        name: Parola chiave
+        description: La password dell'account Sigenergy Cloud.
+      accept_unofficial_api_risk:
+        name: Accetta rischio API non ufficiale
+        description: Questa integrazione cloud utilizza API mySigen non ufficiali che potrebbero cambiare e che Sigenergy può disabilitare in qualsiasi momento. Abilitando questa opzione, si riconosce di comprendere i rischi dell'uso di API non ufficiali e di accettare che questa integrazione possa smettere di funzionare in qualsiasi momento senza preavviso.
+      discover_inverters:
+        name: Rileva inverter
+        description: Abilita il rilevamento degli inverter. Di solito va lasciato disabilitato perché l'API cloud al momento non fornisce informazioni aggiuntive rispetto a quelle dell'interfaccia Modbus.
   influxdb:
     name: Configurazione InfluxDB
     description: Configurazione per scrivere i dati dei sensori nel database InfluxDB. (Questo è diverso dall'integrazione di Home Assistant con InfluxDB, che pubblica solo i sensori abilitati e non pubblica dati ripetuti.)

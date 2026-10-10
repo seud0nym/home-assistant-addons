@@ -60,6 +60,13 @@ logging:
     pvoutput: INFO
     sigenergy2mqtt: DEBUG
     influxdb: CRITICAL
+    cloud: DEBUG
+cloud:
+    region: Asia-Pacific
+    username: "test@cloud.user"
+    password: "test_cloud_password"
+    accept_unofficial_api_risk: true
+    discover_inverters: true
 manual_config:
     accharger_device_id: 2,4
     dccharger_device_id: 1
@@ -93,6 +100,7 @@ scan_interval:
     low: 300
     medium: 30
     realtime: 1
+    cloud: 1
 
 # Deprecated flat keys for completeness check
 consumption_method: "Total Load"
@@ -233,6 +241,7 @@ declare -A ASSERTIONS=(
     ["scan-interval-low"]="300"
     ["scan-interval-medium"]="30"
     ["scan-interval-realtime"]="1"
+    ["scan-interval-cloud"]="1"
     ["SIGENERGY2MQTT_HASS_DEVICE_NAME_PREFIX"]="device"
     ["SIGENERGY2MQTT_HASS_DISCOVERY_PREFIX"]="discover"
     ["SIGENERGY2MQTT_HASS_ENTITY_ID_PREFIX"]="entity"
@@ -240,6 +249,12 @@ declare -A ASSERTIONS=(
     ["hass-sigenergy-local-modbus-naming"]="true"
     ["diagnostics-host"]="0.0.0.0"
     ["diagnostics-allowed-ips"]="172.30.32.2"
+    ["cloud-log-level"]="DEBUG"
+    ["cloud-region"]="apac"
+    ["cloud-username"]="test@cloud.user"
+    ["cloud-password"]="test_cloud_password"
+    ["cloud-accept_unofficial_api_risk"]="true"
+    ["cloud-discover_inverters"]="true"
 )
 #endregion
 

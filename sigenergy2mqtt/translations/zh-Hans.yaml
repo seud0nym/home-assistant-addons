@@ -30,13 +30,13 @@ configuration:
         description: Sigenergy 设备的 Modbus 端口号。
       inverter_device_id:
         name: 逆变器设备 ID
-        description: Sigenergy 逆变器 Modbus 设备 ID。多个逆变器请使用空格分隔的列表。
+        description: Sigenergy 逆变器 Modbus 设备 ID。如果有多个逆变器，可以指定以空格分隔的 ID 列表。未指定 Modbus 主机时将被忽略，此时自动发现可以识别逆变器设备。
       accharger_device_id:
         name: AC 充电器设备 ID
-        description: Sigenergy AC 充电器 Modbus 设备 ID。
+        description: Sigenergy AC 充电器 Modbus 设备 ID。未指定 Modbus 主机时将被忽略，此时自动发现可以识别 AC 充电器设备。
       dccharger_device_id:
         name: DC 充电器设备 ID
-        description: Sigenergy DC 充电器 Modbus 设备 ID（通常与逆变器 ID 相同）。
+        description: Sigenergy DC 充电器 Modbus 设备 ID（通常与逆变器设备 ID 相同）。未指定 Modbus 主机时将被忽略，此时自动发现可以识别 DC 充电器设备。
   scan_interval:
     name: 传感器扫描间隔
     description: 不同传感器类别的扫描间隔配置
@@ -53,9 +53,12 @@ configuration:
       realtime:
         name: 近实时
         description: 实时传感器的扫描间隔（秒）。默认 5，最小值 1。
+      cloud:
+        name: 云端频率
+        description: 获取云端数据的扫描间隔（秒）。默认 5，最小值 1。
   pvoutput:
     name: PVOutput.org 集成
-    description: 与 PVOutput.org 集成的配置
+    description: 用于与 PVOutput.org 集成以上传发电量和消费量数据的配置
     fields:
       enabled:
         name: 启用上传
@@ -77,10 +80,10 @@ configuration:
         description: 向 PVOutput 发送导入数据。
       eod_update:
         name: 启用日终上传
-        description: 在一天结束时发送峰值发电量和日总计。
+        description: 启用后，峰值发电量以及导出和导入（如已启用）的每日总计将在一天结束时发送到 PVOutput。禁用后，这些值将按与状态更新相同的时间表上传。
       voltage:
         name: 电压源
-        description: 发送到 PVOutput 的电压值来源。单相用 'Phase A'，三相用 'Phase B/C' 或 'Line to Line Average'。
+        description: 发送到 PVOutput 的电压值来源。单相系统使用 'Phase A'，三相系统使用 'Phase B'、'Phase C' 或 'Line to Line Average'，两者均可使用 'Line to Neutral Average' 或 'PV Average'。
       ext_v7:
         name: 扩展数据 v7
         description: 用于填充 PVOutput 中 v7 扩展字段的数据源。您可以指定传感器类名、不带 'sensor.' 前缀的实体 ID、直接 MQTT 主题（或 mqtt:<topic>）或 Home Assistant 传感器实体 ID（sensor.<id> 或 ha:sensor.<id>）。如果未指定或您的捐赠状态不是最新的,此字段将不会发送到 PVOutput。
@@ -104,7 +107,7 @@ configuration:
         description: 发送到 PVOutput 的当前温度的数据源。您可以指定直接 MQTT 主题（或 mqtt:<topic>）或 Home Assistant 传感器实体 ID（sensor.<id> 或 ha:sensor.<id>）。如果未指定,温度将不会发送到 PVOutput。
   mqtt:
     name: MQTT 配置
-    description: 连接到 MQTT 代理的配置
+    description: 连接到 MQTT 代理的配置。如果您使用的是 Home Assistant MQTT 应用，则无需配置此部分。
     fields:
       broker:
         name: 代理地址
@@ -114,7 +117,7 @@ configuration:
         description: MQTT 代理的监听端口。默认 1883，使用 TLS 时为 8883。
       tls:
         name: 启用 TLS 通信
-        description: 启用通过 TLS/SSL 的安全通信。
+        description: 启用通过 TLS/SSL 与 MQTT 代理的安全通信（如果代理支持）。
       username:
         name: 用户名
         description: MQTT 代理的用户名。
@@ -127,31 +130,31 @@ configuration:
     fields:
       clean:
         name: 清除 MQTT 保留消息
-        description: 清除 MQTT 保留消息。**警告！** Home Assistant 助手将被删除。
+        description: 清除 MQTT 保留消息以刷新 Home Assistant 中的 sigenergy2mqtt MQTT 设备。**请谨慎使用！** 所有引用 sigenergy2mqtt 传感器的 Home Assistant 助手都将被*删除*！
       consumption_method:
         name: 消费计算方式
-        description: "'Plant Consumed Power' 的计算方式。V2.8 默认为 'Total Load'。"
+        description: "`Plant Consumed Power` 传感器的计算方式。在早于支持 Modbus 协议 V2.8 的固件上，唯一可用的选项是 'Calculated'，所有其他值都将被_忽略_。对于 V2.8 固件，默认值为 'Total Load'。"
       read_only:
         name: 启用只读
-        description: 仅读取数据，不写入。
+        description: 启用后仅从 Sigenergy 设备读取数据。禁用后允许向 Sigenergy 设备写入数据。
       no_remote_ems:
         name: 禁用远程 EMS
-        description: 隐藏远程 EMS 的读写传感器。
+        description: 启用后隐藏用于远程能源管理系统（EMS）集成的所有读写传感器。如果启用了 'Modbus Read Only'，则忽略此选项。
       no_ems_mode_check:
         name: 禁用远程 EMS 检查
-        description: 禁用 ESS 限制验证。
+        description: 启用后将关闭以下验证：当远程 EMS 控制模式不是 Command Charging/Discharging 时，禁用 ESS Max Charging/Discharging 和 PV Max Power 限制。如果启用了 'No Remote EMS'，则忽略此选项。（高级设置 - 请谨慎使用）
       edit_pct_box:
         name: 启用百分比框编辑器
-        description: 对百分比传感器使用数字输入框而非滑块。
+        description: 启用后使用数字输入框更改百分比传感器的值；保持禁用则使用滑块更改。
       sigenergy_local_modbus_naming:
         name: Sigenergy-Local-Modbus 命名
         description: 启用后将对传感器使用 TypQxQ/Sigenergy-Local-Modbus 实体命名规范。（更改此选项时，您还应启用 MQTT 消息清理，否则 Home Assistant 将忽略新的实体名称。）
       metrics_enabled:
         name: 启用指标
-        description: 发布 sigenergy2mqtt 指标。
+        description: 启用向 Home Assistant 发布 sigenergy2mqtt 指标。
       sanity_check_default_kw:
         name: 验证默认 kW
-        description: 验证用的默认值（kW）。默认 500 kW。
+        description: 用于验证功率传感器实际值的最大值和最小值以及能量传感器增量值的默认验证值（kW）。默认值为每秒 500 kW，即超出 ±500 范围的读数将被忽略。
       language:
         name: 语言
         description: sigenergy2mqtt使用的语言。默认值为"设置"→"系统"→"语言"中定义的语言，如果不支持该语言，则默认为英语。
@@ -174,22 +177,44 @@ configuration:
         description: 设置 sigenergy2mqtt 日志级别。
       debug_sensor:
         name: 要调试的传感器
-        description: 指定要调试的传感器。
+        description: 使用完整实体 ID、部分实体 ID、完整传感器类名或部分传感器类名指定要调试的传感器。也可以使用正则表达式。例如，指定 'daily' 将匹配实体名称中包含 daily 的所有传感器。如果已指定，sigenergy2mqtt 日志也将被强制设置为 DEBUG。
       app:
         name: 附加组件运行脚本
-        description: 附加组件脚本的日志级别。
+        description: 设置附加组件运行脚本的日志级别。警告！设置为 ALL、TRACE 或 DEBUG 将产生非常详细的输出。
       modbus:
         name: Modbus
-        description: pymodbus 日志级别。
+        description: 设置 pymodbus 日志级别。警告！设置为 DEBUG 将产生非常详细的输出。
       pvoutput:
         name: PVOutput
         description: PVOutput 日志级别。
       mqtt:
         name: MQTT
-        description: paho.mqtt 日志级别。
+        description: 设置 paho.mqtt 日志级别。警告！设置为 DEBUG 将产生非常详细的输出。
       influxdb:
         name: InfluxDB
-        description: InfluxDB 日志级别。
+        description: 设置 InfluxDB 日志级别。警告！设置为 DEBUG 可能会产生非常详细的输出。
+      cloud:
+        name: 云端
+        description: 设置云端日志级别。警告！设置为 DEBUG 可能会产生非常详细的输出。
+  cloud:
+    name: 云端配置
+    description: 用于访问非官方 Sigenergy mySigen Cloud API 以获取 Sigenergy 设备数据的配置。
+    fields:
+      region:
+        name: 区域
+        description: 您的 Sigenergy mySigen 账户所在的区域。
+      username:
+        name: 用户名
+        description: 您的 Sigenergy Cloud 用户名。强烈建议创建并使用具有 "View and Edit" 权限的委托账户，而不是主 mySigen 账户，并且不要将该账户用于任何其他用途。有关创建委托账户的说明，请参阅文档。
+      password:
+        name: 密码
+        description: 您的 Sigenergy Cloud 密码。
+      accept_unofficial_api_risk:
+        name: 接受非官方 API 风险
+        description: 此云端集成使用非官方 mySigen API，这些 API 可能会发生变化，并可能随时被 Sigenergy 禁用。启用此选项即表示您了解使用非官方 API 的风险，并接受此集成可能随时失效且不另行通知。
+      discover_inverters:
+        name: 发现逆变器
+        description: 启用逆变器发现。通常保持禁用，因为云端 API 目前不提供 Modbus 接口之外的额外信息。
   influxdb:
     name: InfluxDB 配置
     description: 用于将传感器数据写入 InfluxDB 数据库的配置。（这与 Home Assistant 的 InfluxDB 集成不同，后者仅发布启用的传感器，且不发布重复数据。）
