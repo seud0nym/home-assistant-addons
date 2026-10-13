@@ -1,6 +1,12 @@
 # Changelog
 
-## [2026.10.10] - 2026.10.10
+## [2026.10.13] - 2026-10-13
+
+- fix: fix ModuleNotFoundError: No module named 'sigenergy2mqtt'
+
+---
+
+## [2026.10.10] - 2026-10-10
 
 - fix: Remove "Custom Operation Mode" to match SigenergyCloudClient
 - fix: support Fahrenheit cloud temperature units
@@ -26,14 +32,20 @@
 - feat: add cloud API integration test server
 - fix: reset default logging level to INFO
 
+---
+
 ## [2026.9.6] - 2026-09-06
 
 - fix: ensured WriteOnlySensorMixin sensors are correctly seeded in Modbus test server to prevent ILLEGAL_ADDRESS errors
 - fix: logging level overrides were not be being applied
 
+---
+
 ## [2026.9.5] - 2026-09-05
 
 - feat: use DC charger rated power values to set max dis/charging power and update DC charger initialization in test utilities
+
+---
 
 ## [2026.8.29] - 2026-08-29
 

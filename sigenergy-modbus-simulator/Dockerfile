@@ -6,6 +6,7 @@ FROM ghcr.io/home-assistant/base-python:3.14-alpine3.24
 RUN apk upgrade --update --no-cache --available
 
 ENV PYTHONUNBUFFERED=1
+ENV PYTHONPATH=/app/src
 
 WORKDIR /app
 
