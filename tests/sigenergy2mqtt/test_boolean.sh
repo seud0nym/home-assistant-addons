@@ -45,6 +45,7 @@ cat << EOF > $MOCK_OPTIONS_PATH
 advanced:
     metrics_enabled: false
     edit_pct_box: false
+    child_devices: false
     sigenergy_local_modbus_naming: false
 auto_discovery:
 manual_config:
@@ -88,6 +89,7 @@ cat << EOF > $MOCK_OPTIONS_PATH
 advanced:
     metrics_enabled: true
     edit_pct_box: true
+    child_devices: true
     sigenergy_local_modbus_naming: true
     read_only: true
     no_remote_ems: true
@@ -116,6 +118,7 @@ unset ASSERTIONS
 declare -A ASSERTIONS=(
     ["language"]="en"
     ["hass-enabled"]="true"
+    ["hass-child-devices"]="true"
     ["hass-edit-pct-box"]="true"
     ["hass-sigenergy-local-modbus-naming"]="true"
     ["diagnostics-host"]="0.0.0.0"

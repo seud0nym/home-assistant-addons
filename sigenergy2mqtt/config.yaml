@@ -40,6 +40,7 @@ options:
     no_remote_ems: false
     no_ems_mode_check: false
     edit_pct_box: false
+    child_devices: false
     sigenergy_local_modbus_naming: false
     metrics_enabled: false
     envvars: []
@@ -100,6 +101,7 @@ schema:
     no_remote_ems: "bool"
     no_ems_mode_check: "bool"
     edit_pct_box: "bool"
+    child_devices: "bool"
     sigenergy_local_modbus_naming: "bool"
     metrics_enabled: "bool"
     consumption_method: "list(Calculated|Total Load|General Load)?"
@@ -191,5 +193,6 @@ schema:
 services:
   - "mqtt:want"
 slug: sigenergy2mqtt
-url: "https://github.com/seud0nym/home-assistant-addons/tree/main/sigenergy2mqtt"
-version: "2026.10.10"
+url: "https://github.com/seud0nym/home-assistant-addons/tree/alpha/sigenergy2mqtt"
+version: "2026.11.11"
+stage: experimental

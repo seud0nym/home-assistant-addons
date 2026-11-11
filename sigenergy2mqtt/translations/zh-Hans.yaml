@@ -143,6 +143,9 @@ configuration:
       no_ems_mode_check:
         name: 禁用远程 EMS 检查
         description: 启用后将关闭以下验证：当远程 EMS 控制模式不是 Command Charging/Discharging 时，禁用 ESS Max Charging/Discharging 和 PV Max Power 限制。如果启用了 'No Remote EMS'，则忽略此选项。（高级设置 - 请谨慎使用）
+      child_devices:
+        name: "Home Assistant 子设备"
+        description: "启用后，将设备的逻辑组成部分（例如光伏组串、ESS、电站电网传感器）发布为其父设备的子设备，而不是单独关联的设备。需要 Home Assistant 2026.11.0 或更高版本（旧版本中将被忽略）。请先备份 Home Assistant，并在重启应用后重新加载 MQTT 集成。恢复需要额外步骤：请参阅文档。"
       edit_pct_box:
         name: 启用百分比框编辑器
         description: 启用后使用数字输入框更改百分比传感器的值；保持禁用则使用滑块更改。

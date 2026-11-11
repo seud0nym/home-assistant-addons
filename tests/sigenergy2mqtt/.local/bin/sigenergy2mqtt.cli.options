@@ -13,6 +13,7 @@ diagnostics-host
 diagnostics-log-level
 diagnostics-port
 diagnostics-refresh-interval
+hass-child-devices
 hass-device-name-prefix
 hass-discovery-only
 hass-discovery-prefix

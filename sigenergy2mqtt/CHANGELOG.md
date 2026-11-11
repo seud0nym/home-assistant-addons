@@ -1,5 +1,57 @@
 # Changelog
 
+## [2026.11.11] - 2026-11-11
+
+> [!IMPORTANT]
+> **New opt-in option: Home Assistant child devices** (*Advanced Settings > Home Assistant Child Devices*, default off). When enabled, the logical parts of a device (for example PV strings, ESS and the plant grid sensor) appear as child devices of their parent in Home Assistant instead of as separate linked devices. Existing devices are converted in place, keeping entity history, entity IDs, device IDs and automations.
+>
+> **Requires Home Assistant 2026.11.0 or later.** The add-on checks the version and ignores the option on older releases. If Home Assistant is still starting when the add-on starts, the option is ignored for that run: restart the add-on once Home Assistant is running.
+>
+> **Action required if you enable it:** back up Home Assistant first. After restarting the add-on with the option enabled, reload the MQTT integration (*Settings > Devices & services > MQTT > ⋮ > Reload*) or restart Home Assistant. Switching the option off again needs extra steps; see the [configuration README](https://github.com/seud0nym/sigenergy2mqtt/blob/main/resources/configuration/README.md#opt_home_assistant_child_devices).
+
+### Added
+
+- Added additional individual battery sensors from Cloud API (Total Discharge Amount and Average Cell Voltage/Temperature)
+- Added battery export limitation control from Cloud API
+- Added Go Off-Grid and Go On-Grid buttons and a Grid Connection Status sensor to the Cloud API Gateway device
+- Added Reset button to Diagnostics web page
+- Added visibility of unpublishable and unsupported sensors to Diagnostics sensor debug logging page
+- Added opt-in Home Assistant child-device discovery  (requires Home Assistant 2026.11.0+; legacy `via_device` hierarchy remains the default). Existing devices are converted in place after an MQTT integration reload, preserving entity history, device IDs and automations
+- Added a persistent installation-cohort marker to support a future safe child-device default change
+
+### Fixed
+
+- Added a cool down on cloud rate limit errors with exponential backoff
+- Fixed logging identity for cloud devices
+- Reduced log spamming from every device when Home Assistant goes offline/online
+- Fixed PVOutput upload verification logic for non-donators and error counting in diagnostics
+- Improved pymodbus 'Skipping' logging filter to catch the send:/recv: DEBUG level transport dump records before subsequent 'Repeating'  messages
+- Fixed handling of alarms that return invalid values
+- Implemented ±50 W power dead band logic in BatteryStatus to prevent flapping at extremes (#346)
+- Fixed accumulation sensors using stale source samples when repeated publishes were suppressed; daily resets now follow successful read times across midnight
+- Fixed sensor scan groups retrying every 0.1 seconds (and logging an error each time) while the MQTT broker was unreachable; failed sensors now wait for their next scan interval
+- Fixed every pymodbus log message being written twice (once in pymodbus' own format)
+- Removed the hex frame dump that pymodbus appends to every error message (~20 extra log lines per Modbus timeout)
+- Fixed a restart loop when a thread closed its MQTT connection deliberately (e.g. the Services thread with `diagnostics.enabled: false`): the closed client stayed in the MQTT health registry and was reported as disconnected, so health checks failed and triggered a restart every few intervals
+- Fixed the process exiting when the MQTT broker was unreachable at startup (each thread gave up after 3 attempts and crashed); the device threads and persistence now wait, retrying every `mqtt.retry_delay` seconds, and the wait is reported as a single broker outage
+- Fixed the process exiting when the Modbus host was unreachable at startup, including after an automatic restart triggered by health check failures; startup now waits and retries (5s doubling to 60s) until the host is reachable
+- Fixed health check failures caused by an unreachable Modbus host, MQTT broker or InfluxDB server triggering an automatic restart that could not fix the problem; the status is still reported as degraded, but failures only count towards a restart once the dependency is available again (or, for Modbus, after 5 minutes if the host accepts connections but the client has not recovered)
+- Fixed the Modbus "disconnected (Nx total)" health check message always reporting 0 when pymodbus closed the connection itself
+- Fixed a Cloud API outage not being reported as ended until every sensor that failed had read successfully again, which could take up to 15 minutes (the slowest scan group's retry backoff) or never happen after a restart
+
+### Changed
+
+- Sensors now publish individual availability to Home Assistant, and will be marked unavailable if state publishing fails
+- Unchanged states are now only published every 60 seconds to reduce network traffic and MQTT broker load
+- MQTT broker, Modbus, InfluxDB and Cloud API connectivity failures are now reported as a single "outage started" error and a single "outage ended" message (with duration and count of suppressed messages), instead of one error per sensor, scan group and client. Repeated messages during an outage are logged at DEBUG level, a new kind of error is still reported once, and a reminder is logged at ERROR level every 5 minutes while the outage continues
+- Updated aiohttp from 3.14.4 to 3.14.5
+- Updated paho-mqtt from 2.1.0 to 2.2.0
+- Updated pycryptodome from 3.24.0 to 4.3.0
+- Updated pymodbus from 3.15.0 to 3.16.2
+- Updated pydantic-settings from 2.15.0 to 2.16.2
+
+---
+
 ## [2026.10.10] - 2026-10-10
 
 ### Added

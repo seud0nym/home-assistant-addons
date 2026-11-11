@@ -143,6 +143,9 @@ configuration:
       no_ems_mode_check:
         name: 원격 EMS 검사 비활성화
         description: 활성화하면 원격 EMS 제어 모드가 Command Charging/Discharging이 아닐 때 ESS Max Charging/Discharging 및 PV Max Power 제한을 비활성화하는 검증을 끕니다. 'No Remote EMS'가 활성화된 경우 무시됩니다. (고급 설정 - 주의해서 사용하세요)
+      child_devices:
+        name: "Home Assistant 하위 장치"
+        description: "활성화하면 장치의 논리적 구성 요소(예: PV 스트링, ESS, 플랜트 그리드 센서)를 별도로 연결된 장치가 아닌 상위 장치의 하위 장치로 게시합니다. Home Assistant 2026.11.0 이상이 필요합니다(이전 버전에서는 무시됨). 먼저 Home Assistant를 백업하고, 앱을 다시 시작한 후 MQTT 통합을 다시 로드하세요. 되돌리려면 추가 단계가 필요합니다. 문서를 참조하세요."
       edit_pct_box:
         name: 퍼센트 박스 편집기 활성화
         description: 활성화하면 퍼센트 센서의 값을 숫자 입력 박스로 변경합니다. 비활성화 상태로 두면 슬라이더로 변경합니다.

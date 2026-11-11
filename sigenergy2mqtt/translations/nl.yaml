@@ -143,6 +143,9 @@ configuration:
       no_ems_mode_check:
         name: Remote EMS-controles uitschakelen
         description: Inschakelen om de validatie UIT te zetten die de limieten ESS Max Charging/Discharging en PV Max Power uitschakelt wanneer de Remote EMS-regelmodus niet Command Charging/Discharging is. Wordt genegeerd als 'No Remote EMS' is ingeschakeld. (Geavanceerde instelling - met voorzichtigheid gebruiken)
+      child_devices:
+        name: "Home Assistant onderliggende apparaten"
+        description: "Inschakelen om de logische onderdelen van een apparaat (bijv. PV-strings, ESS, netsensor van de installatie) als onderliggende apparaten van hun bovenliggende apparaat te publiceren in plaats van als afzonderlijke gekoppelde apparaten. Vereist Home Assistant 2026.11.0 of later (genegeerd bij oudere versies). Maak eerst een back-up van Home Assistant en herlaad de MQTT-integratie na het herstarten van de app. Terugdraaien vereist extra stappen: zie de documentatie."
       edit_pct_box:
         name: Percentage box editor inschakelen
         description: Inschakelen om een numeriek invoerveld te gebruiken om de waarde van percentagesensoren te wijzigen, of uitgeschakeld laten om hiervoor een schuifregelaar te gebruiken.

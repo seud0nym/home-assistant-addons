@@ -12,6 +12,7 @@ export MOCK_OPTIONS_PATH="/tmp/${TEST_NAME}.yaml"
 cat << EOF > $MOCK_OPTIONS_PATH
 advanced:
     clean: false
+    child_devices: true
     consumption_method: Total Load
     edit_pct_box: true
     language: English
@@ -192,6 +193,7 @@ echo "Success: Mock options file covers all schema keys." >> $LOG_PATH 2>&1
 declare -A ASSERTIONS=(
     ["consumption"]="total"
     ["debug-sensor"]="any"
+    ["hass-child-devices"]="true"
     ["hass-edit-pct-box"]="true"
     ["hass-enabled"]="true"
     ["influxdb-bucket"]="test_influxdb_bucket"
