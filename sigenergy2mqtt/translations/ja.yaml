@@ -143,6 +143,9 @@ configuration:
       no_ems_mode_check:
         name: リモート EMS チェックを無効化
         description: 有効にすると、リモート EMS 制御モードが Command Charging/Discharging でない場合に ESS Max Charging/Discharging および PV Max Power の制限を無効にする検証をオフにします。'No Remote EMS' が有効な場合は無視されます。（詳細設定 - 注意して使用してください）
+      child_devices:
+        name: "Home Assistant 子デバイス"
+        description: "有効にすると、デバイスの論理的な構成要素（例：PV ストリング、ESS、プラントのグリッドセンサー）を、個別にリンクされたデバイスではなく親デバイスの子デバイスとして公開します。Home Assistant 2026.11.0 以降が必要です（それより古いバージョンでは無視されます）。事前に Home Assistant をバックアップし、アプリの再起動後に MQTT 統合を再読み込みしてください。元に戻すには追加の手順が必要です。ドキュメントを参照してください。"
       edit_pct_box:
         name: パーセントボックスエディタを有効化
         description: 有効にすると、パーセントセンサーの値を数値入力ボックスで変更します。無効のままにするとスライダーで変更します。

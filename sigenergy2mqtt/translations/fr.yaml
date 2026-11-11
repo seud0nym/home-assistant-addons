@@ -143,6 +143,9 @@ configuration:
       no_ems_mode_check:
         name: Désactiver les vérifications EMS distant
         description: Activer pour DÉSACTIVER la validation qui désactive les limites ESS Max Charging/Discharging et PV Max Power lorsque le mode de contrôle EMS distant n'est pas Command Charging/Discharging. Ignoré si 'No Remote EMS' est activé. (Paramètre avancé - à utiliser avec précaution)
+      child_devices:
+        name: "Appareils enfants Home Assistant"
+        description: "Activer pour publier les parties logiques d'un appareil (par ex. chaînes PV, ESS, capteur réseau de la centrale) en tant qu'appareils enfants de leur appareil parent plutôt qu'en tant qu'appareils liés séparés. Nécessite Home Assistant 2026.11.0 ou ultérieur (ignoré sur les versions antérieures). Sauvegardez d'abord Home Assistant, puis rechargez l'intégration MQTT après le redémarrage de l'application. Le retour en arrière nécessite des étapes supplémentaires : voir la documentation."
       edit_pct_box:
         name: Activer l'éditeur de boîte de pourcentage
         description: Activer pour utiliser une boîte de saisie numérique afin de modifier la valeur des capteurs de pourcentage, ou laisser désactivé pour utiliser un curseur.

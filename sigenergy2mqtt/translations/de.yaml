@@ -143,6 +143,9 @@ configuration:
       no_ems_mode_check:
         name: Remote-EMS-Prüfungen deaktivieren
         description: Aktivieren, um die Validierung ABZUSCHALTEN, die die Grenzwerte für ESS Max Charging/Discharging und PV Max Power deaktiviert, wenn der Remote-EMS-Steuermodus nicht Command Charging/Discharging ist. Wird ignoriert, wenn 'No Remote EMS' aktiviert ist. (Erweiterte Einstellung - mit Vorsicht verwenden)
+      child_devices:
+        name: "Home Assistant Untergeräte"
+        description: "Aktivieren, um die logischen Teile eines Geräts (z. B. PV-Strings, ESS, Netzsensor der Anlage) als Untergeräte ihres übergeordneten Geräts statt als separate verknüpfte Geräte zu veröffentlichen. Erfordert Home Assistant 2026.11.0 oder neuer (bei älteren Versionen ignoriert). Erstellen Sie zuerst eine Sicherung von Home Assistant und laden Sie nach dem Neustart der App die MQTT-Integration neu. Das Zurücksetzen erfordert zusätzliche Schritte: siehe Dokumentation."
       edit_pct_box:
         name: Prozent-Box-Editor aktivieren
         description: Aktivieren, um den Wert von Prozentsensoren über ein numerisches Eingabefeld zu ändern, oder deaktiviert lassen, um dafür einen Schieberegler zu verwenden.

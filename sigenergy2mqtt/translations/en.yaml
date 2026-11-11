@@ -143,6 +143,9 @@ configuration:
       no_ems_mode_check:
         name: Disable Remote EMS Checks
         description: Enable to turn OFF the validation that disables ESS Max Charging/Discharging and PV Max Power limits when Remote EMS Control Mode is not Command Charging/Discharging. Ignored if 'No Remote EMS' is enabled. (Advanced setting - use with caution)
+      child_devices:
+        name: "Home Assistant Child Devices"
+        description: "Enable to publish the logical parts of a device (e.g. PV strings, ESS, plant grid sensor) as child devices of their parent instead of as separate linked devices. Requires Home Assistant 2026.11.0 or later (ignored on older releases). Back up Home Assistant first, and reload the MQTT integration after restarting the app. Reverting needs extra steps: see the documentation."
       edit_pct_box:
         name: Enable Percentage Box Editor
         description: Enable to use a numeric entry box to change the value of percentage sensors or leave disabled to use a slider to change the value.

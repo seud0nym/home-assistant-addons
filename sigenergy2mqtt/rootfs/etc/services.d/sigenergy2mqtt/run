@@ -137,6 +137,7 @@ export_envvar() {
 #region Parameter processing functions
 add_advanced_parameters() {
   bashio::log.debug ">>> Entering add_advanced_parameters()"
+  add_boolean_cmd_parameter_from_config --hass-child-devices 'advanced.child_devices'
   add_boolean_cmd_parameter_from_config --hass-edit-pct-box 'advanced.edit_pct_box'
   add_boolean_cmd_parameter_from_config --hass-sigenergy-local-modbus-naming 'advanced.sigenergy_local_modbus_naming'
   add_boolean_cmd_parameter_from_config --publish-metrics 'advanced.metrics_enabled'
