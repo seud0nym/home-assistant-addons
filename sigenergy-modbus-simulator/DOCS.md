@@ -12,6 +12,13 @@ The following devices are simulated:
 
 ```
 Sigenergy Plant (Device ID 247)
+   ├─ Sigenergy Cloud
+   │    ├─ SigenStor BAT 8.0 1
+   │    ├─ SigenStor BAT 8.0 2
+   │    ├─ SigenStor BAT 8.0 3
+   │    ├─ SigenStor 123A45BP678 Energy Controller
+   │    ├─ SigenStor 876A54BP321 Energy Controller
+   │    └─ Sigen Gateway TP AU
    ├─ SigenStor EC 12.0 TP CMU123A45BP678 (Device ID 1)
    │    ├─ SigenStor EC 12.0 TP CMU123A45BP678 PV String 1
    │    ├─ SigenStor EC 12.0 TP CMU123A45BP678 PV String 2

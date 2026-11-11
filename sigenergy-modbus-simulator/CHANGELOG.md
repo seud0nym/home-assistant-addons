@@ -1,5 +1,15 @@
 # Changelog
 
+## [2026.11.11] - 2026-11-11
+
+- refactor: _settle_gateway_status method to update the grid side contactor status with on/off grid
+- test: align simulated off-grid transition time with a real capture
+- fix: address review feedback on cloud grid control
+- feat: add manual off-grid and on-grid control through the cloud API
+- feat: add additional individual battery sensors from Cloud API
+
+---
+
 ## [2026.10.13] - 2026-10-13
 
 - fix: fix ModuleNotFoundError: No module named 'sigenergy2mqtt'
