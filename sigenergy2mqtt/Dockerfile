@@ -1,6 +1,6 @@
 # https://developers.home-assistant.io/docs/apps/configuration#app-dockerfile
 # Supported images can be found at https://github.com/home-assistant/docker-base/pkgs/container/base-python#python-images
-FROM ghcr.io/home-assistant/base-python:3.14-alpine3.24
+FROM ghcr.io/home-assistant/base-python:3.15-alpine3.24
 
 # Update all available packages to mitigate vulnerabilities
 RUN apk upgrade --update --no-cache --available
