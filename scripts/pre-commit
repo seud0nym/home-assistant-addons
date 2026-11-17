@@ -9,11 +9,12 @@ set -euo pipefail
 
 cd "$(cd "$(dirname "$0")"/..; pwd)"
 
-# Files to watch (match by basename only)
+# Paths to watch, relative to the app directory ("*" matches any depth)
 MONITORED=(
   "config.yaml"
   "Dockerfile"
-  "rootfs"
+  "rootfs/*"
+  "translations/*"
 )
 
 # Get staged files
@@ -21,13 +22,21 @@ mapfile -t STAGED < <(git diff --cached --name-only)
 
 declare -A APPS=()
 for f in "${STAGED[@]}"; do
-  app="${f%%/*}"
-  base="${f##*/}"
+  if [[ "$f" == tests/*/* ]]; then
+    # tests/<app>/...
+    app="${f#tests/}"
+    app="${app%%/*}"
+    rel="tests"
+  else
+    app="${f%%/*}"
+    rel="${f#*/}"
+  fi
+  [[ -f "$app/config.yaml" ]] || continue
+  [[ "$rel" == "tests" ]] && { APPS["$app"]=1; continue; }
   for m in "${MONITORED[@]}"; do
-    if [[ "$base" == "$m" ]]; then
-      if [[ -f "$app/config.yaml" ]]; then
-        APPS["$app"]=1
-      fi
+    # shellcheck disable=SC2053
+    if [[ "$rel" == $m ]]; then
+      APPS["$app"]=1
       break
     fi
   done

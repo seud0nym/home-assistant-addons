@@ -406,30 +406,6 @@ configuration:
   scan_interval_realtime:
     description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: Scan Interval (Near Realtime Frequency) - DEPRECATED
-  smartport_enabled:
-    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
-    name: Smart-Port Enabled - DEPRECATED
-  smartport_host:
-    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
-    name: Smart-Port Host - DEPRECATED
-  smartport_module_name:
-    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
-    name: Smart-Port Module Name - DEPRECATED
-  smartport_mqtt_gain:
-    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
-    name: Smart-Port MQTT gain - DEPRECATED
-  smartport_mqtt_topic:
-    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
-    name: Smart-Port MQTT topic - DEPRECATED
-  smartport_password:
-    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
-    name: Smart-Port Password - DEPRECATED
-  smartport_pv_power:
-    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
-    name: Smart-Port PV power - DEPRECATED
-  smartport_username:
-    description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
-    name: Smart-Port User Name - DEPRECATED
   unique_id_prefix:
     description: This option is DEPRECATED. Do NOT use! Values will be migrated into the new structure automatically. Refresh your screen after the values have been migrated to move this option to the unused optional configuration options.
     name: Home Assistant Unique ID Prefix - DEPRECATED
