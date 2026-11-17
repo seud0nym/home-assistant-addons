@@ -1,5 +1,26 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+
+- Fixed credentials containing spaces (Cloud username/password, InfluxDB username/password/token and PVOutput API key) being split into multiple command line parameters
+- Fixed migration of legacy `device_name_prefix`, `discovery_prefix`, `entity_id_prefix` and `unique_id_prefix` options to `advanced.envvars`, which rewrote the array as a whole using properly escaped JSON
+- Legacy options are now only removed from the configuration after their replacement has been written successfully, so a failed migration no longer loses the value
+- Fixed the final service command being started with an unquoted parameter list
+- Secrets are now also redacted from the log when the name contains `secret` or `credential`, and legacy option values are logged correctly when they contain spaces
+
+### Changed
+
+- Removed the obsolete `smartport_*` legacy option migration and translations; the Smart-Port feature no longer exists
+
+### Tests
+
+- Test runners no longer delete a pre-existing `/config` or `/data` directory, and refuse to run outside CI or a container if either exists
+- The pre-commit hook now runs the tests when files under `rootfs/` or `translations/` change; `run_all.sh -q` now works as documented
+- Added tests for secrets containing spaces and log redaction, an unavailable MQTT service, and version/Dockerfile/wheel/changelog consistency
+- The mock bashio now supports raw JSON values and returns `null` for missing keys, like the real bashio
+
 ## [2026.11.11] - 2026-11-11
 
 > [!IMPORTANT]
