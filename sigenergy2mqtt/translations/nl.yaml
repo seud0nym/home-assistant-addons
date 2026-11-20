@@ -131,6 +131,9 @@ configuration:
       clean:
         name: MQTT bewaarde berichten opschonen
         description: MQTT bewaarde berichten opschonen om de sigenergy2mqtt MQTT-apparaten in Home Assistant te vernieuwen. **MET VOORZICHTIGHEID GEBRUIKEN!** Alle gedefinieerde Home Assistant helpers die naar sigenergy2mqtt-sensoren verwijzen, worden *verwijderd*!
+      clear_validation_cache:
+        name: "Sensorvalidatiecache wissen"
+        description: "Inschakelen om de opgeslagen resultaten te wissen van de controle bij het opstarten die sensoren verbergt die uw apparaat niet ondersteunt, zodat elke sensor bij de volgende start opnieuw wordt gecontroleerd. Gebruik dit als een sensor ontbreekt of op de pagina Diagnostiek als 'Unsupported' wordt weergegeven, terwijl u denkt dat uw apparaat hem wel ondersteunt. De optie wordt na de volgende start automatisch weer uitgeschakeld."
       consumption_method:
         name: Verbruiksmethode
         description: De methode voor het berekenen van de sensor `Plant Consumed Power`. Op firmware ouder dan de versie die Modbus-protocol V2.8 ondersteunt, is 'Calculated' de enige beschikbare optie en worden alle andere waarden _genegeerd_. Voor V2.8-firmware is de standaardwaarde 'Total Load'.

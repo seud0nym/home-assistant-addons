@@ -131,6 +131,9 @@ configuration:
       clean:
         name: MQTT 보관 메시지 정리
         description: MQTT 보관 메시지를 정리하여 Home Assistant의 sigenergy2mqtt MQTT 기기를 새로 고칩니다. **주의해서 사용하세요!** sigenergy2mqtt 센서를 참조하는 모든 Home Assistant 헬퍼가 *제거*됩니다!
+      clear_validation_cache:
+        name: "센서 검증 캐시 지우기"
+        description: "장치가 지원하지 않는 센서를 숨기는 시작 시 검사의 캐시된 결과를 지워, 다음 시작 시 모든 센서를 다시 검사합니다. 센서가 없거나 진단 페이지에 'Unsupported'으로 표시되지만 장치가 지원한다고 생각되는 경우 사용하십시오. 이 옵션은 다음 시작 후 자동으로 다시 꺼집니다."
       consumption_method:
         name: 소비량 계산 방식
         description: "`Plant Consumed Power` 센서의 계산 방식. Modbus 프로토콜 V2.8을 지원하는 버전보다 이전 펌웨어에서는 'Calculated'만 사용할 수 있으며 다른 모든 값은 _무시_됩니다. V2.8 펌웨어의 기본값은 'Total Load'입니다."

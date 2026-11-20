@@ -131,6 +131,9 @@ configuration:
       clean:
         name: 清除 MQTT 保留消息
         description: 清除 MQTT 保留消息以刷新 Home Assistant 中的 sigenergy2mqtt MQTT 设备。**请谨慎使用！** 所有引用 sigenergy2mqtt 传感器的 Home Assistant 助手都将被*删除*！
+      clear_validation_cache:
+        name: "清除传感器验证缓存"
+        description: "启用后将清除启动检查的缓存结果（该检查会隐藏设备不支持的传感器），以便下次启动时重新检查每个传感器。如果某个传感器缺失或在诊断页面上显示为“Unsupported”，但您认为设备支持它，请使用此选项。下次启动后，此选项会自动关闭。"
       consumption_method:
         name: 消费计算方式
         description: "`Plant Consumed Power` 传感器的计算方式。在早于支持 Modbus 协议 V2.8 的固件上，唯一可用的选项是 'Calculated'，所有其他值都将被_忽略_。对于 V2.8 固件，默认值为 'Total Load'。"

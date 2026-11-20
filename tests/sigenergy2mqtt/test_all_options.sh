@@ -12,6 +12,7 @@ export MOCK_OPTIONS_PATH="/tmp/${TEST_NAME}.yaml"
 cat << EOF > $MOCK_OPTIONS_PATH
 advanced:
     clean: false
+    clear_validation_cache: true
     child_devices: true
     consumption_method: Total Load
     edit_pct_box: true
@@ -186,6 +187,7 @@ declare -A ASSERTIONS=(
     ["consumption"]="total"
     ["debug-sensor"]="any"
     ["hass-child-devices"]="true"
+    ["clear-validation-cache"]="true"
     ["hass-edit-pct-box"]="true"
     ["hass-enabled"]="true"
     ["influxdb-bucket"]="test_influxdb_bucket"

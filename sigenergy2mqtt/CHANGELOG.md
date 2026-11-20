@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- Added the `Clear Sensor Validation Cache` option to Advanced Settings. When enabled, the next start passes `--clear-validation-cache` to sigenergy2mqtt, so every sensor is checked again for support, and the option is then reset to off so the cache is not cleared on later starts
+
 ### Fixed
 
 - Fixed credentials containing spaces (Cloud username/password, InfluxDB username/password/token and PVOutput API key) being split into multiple command line parameters

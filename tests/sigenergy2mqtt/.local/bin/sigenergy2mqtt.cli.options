@@ -1,4 +1,5 @@
 clean
+clear-validation-cache
 cloud-accept-unofficial-api-risk
 cloud-discover-inverters
 cloud-log-level

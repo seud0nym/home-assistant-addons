@@ -36,6 +36,7 @@ options:
   mqtt: {}
   advanced:
     clean: false
+    clear_validation_cache: false
     read_only: false
     no_remote_ems: false
     no_ems_mode_check: false
@@ -97,6 +98,7 @@ schema:
     password: "password?"
   advanced:
     clean: "bool"
+    clear_validation_cache: "bool"
     read_only: "bool"
     no_remote_ems: "bool"
     no_ems_mode_check: "bool"

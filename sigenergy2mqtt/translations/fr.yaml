@@ -131,6 +131,9 @@ configuration:
       clean:
         name: Nettoyer les messages MQTT conservés
         description: Nettoyer les messages MQTT conservés pour actualiser les appareils MQTT sigenergy2mqtt de Home Assistant. **À UTILISER AVEC PRÉCAUTION !** Tous les helpers Home Assistant définis qui référencent des capteurs sigenergy2mqtt seront *supprimés* !
+      clear_validation_cache:
+        name: "Vider le cache de validation des capteurs"
+        description: "Activez pour effacer les résultats mis en cache de la vérification au démarrage qui masque les capteurs non pris en charge par votre appareil, afin que chaque capteur soit vérifié à nouveau au prochain démarrage. Utilisez cette option si un capteur est absent ou affiché comme 'Unsupported' sur la page Diagnostics alors que vous pensez que votre appareil le prend en charge. L'option est automatiquement désactivée après le prochain démarrage."
       consumption_method:
         name: Méthode de consommation
         description: La méthode de calcul du capteur `Plant Consumed Power`. Sur un firmware antérieur à celui prenant en charge le protocole Modbus V2.8, la seule option disponible est 'Calculated', et toutes les autres valeurs sont _ignorées_. Pour le firmware V2.8, la valeur par défaut est 'Total Load'.

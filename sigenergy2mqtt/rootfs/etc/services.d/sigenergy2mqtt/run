@@ -152,6 +152,12 @@ export_envvar() {
 #region Parameter processing functions
 add_advanced_parameters() {
   bashio::log.debug ">>> Entering add_advanced_parameters()"
+  if bashio::config.has_value 'advanced.clear_validation_cache' && [[ "$(bashio::config 'advanced.clear_validation_cache')" == "true" ]]; then
+    bashio::log.info "Clearing the sensor validation cache for this run"
+    add_boolean_cmd_parameter --clear-validation-cache true
+    bashio::addon.option 'advanced.clear_validation_cache' 'false'
+    bashio::log.info "Reset advanced.clear_validation_cache=$(bashio::config 'advanced.clear_validation_cache')"
+  fi
   add_boolean_cmd_parameter_from_config --hass-child-devices 'advanced.child_devices'
   add_boolean_cmd_parameter_from_config --hass-edit-pct-box 'advanced.edit_pct_box'
   add_boolean_cmd_parameter_from_config --hass-sigenergy-local-modbus-naming 'advanced.sigenergy_local_modbus_naming'
