@@ -16,9 +16,18 @@ RUN apk upgrade --update --no-cache --available
 #  -  https://security.snyk.io/vuln/SNYK-GOLANG-STDNETURL-18858438
 RUN rm -f /usr/bin/tempio
 
+# Mitigate Snyk findings for Alpine 3.24 and Python 3.15
+# - https://security.snyk.io/vuln/SNYK-ALPINE324-OPENSSL-22602641
+# - https://security.snyk.io/vuln/SNYK-ALPINE324-OPENSSL-22602642
+# - https://security.snyk.io/vuln/SNYK-ALPINE324-OPENSSL-22602643
+# - https://security.snyk.io/vuln/SNYK-ALPINE324-OPENSSL-22602645
+# - https://security.snyk.io/vuln/SNYK-ALPINE324-OPENSSL-22602647
+RUN apk update && \
+    apk add --no-cache 'openssl>=3.5.9-r1' 'libcrypto3>=3.5.9-r1' 'libssl3>=3.5.9-r1'
+
 ENV PYTHONUNBUFFERED=1
 
 COPY rootfs /
 RUN chmod +x /etc/services.d/sigenergy2mqtt/*
 
-RUN pip install --root-user-action=ignore --break-system-packages --no-cache-dir /dist/sigenergy2mqtt-2026.11.11-py3-none-any.whl
+RUN pip install --root-user-action=ignore --break-system-packages --no-cache-dir /dist/sigenergy2mqtt-2026.11.23b2-py3-none-any.whl

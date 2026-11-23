@@ -1,10 +1,12 @@
 # Changelog
 
-## [Unreleased]
+## [2026.11.23b2] - 2026-11-23
 
 ### Added
 
 - Added the `Clear Sensor Validation Cache` option to Advanced Settings. When enabled, the next start passes `--clear-validation-cache` to sigenergy2mqtt, so every sensor is checked again for support, and the option is then reset to off so the cache is not cleared on later starts
+- Added a Cloud API DC Charger device for each DC charger, with the Charging Mode (Fast Charging, PV Surplus Charging or Sigen AI Mode), Battery Boost, Battery Boost Cut-off SOC and Surplus PV Priority (DC Charger First or Battery First) settings from the mySigen app, and the charger's weekly, monthly and lifetime charged energy, status, OCPP link status and server URL, V2X discharge settings and primary vehicle (#355)
+- Added Charging Power (negative while discharging to the vehicle), Vehicle SOC, Session Charged Energy and SECC Run State sensors to the Cloud API DC Charger device. These come from an endpoint that has not yet been captured during a charging session, so their meanings follow another integration using the same API and may need correcting (#355)
 
 ### Fixed
 
@@ -13,17 +15,38 @@
 - Legacy options are now only removed from the configuration after their replacement has been written successfully, so a failed migration no longer loses the value
 - Fixed the final service command being started with an unquoted parameter list
 - Secrets are now also redacted from the log when the name contains `secret` or `credential`, and legacy option values are logged correctly when they contain spaces
+- Fixed a sensor being permanently marked as unsupported (and shown as "Unsupported" on the Diagnostics page, with dashboard gauges such as Cell Temperature left empty) after the device returned a transient ILLEGAL DATA ADDRESS response during startup validation. A response is now only believed if it is repeated on up to three reads, and the result is no longer trusted blindly on later startups: sensors cached as unsupported are read again, so a wrong result corrects itself, as are sensors that the cache has not seen before (for example, those added by a software update). The cache is rewritten once on the first startup after upgrading
+- Fixed the dashboard Cell Temperature gauge being empty on systems whose firmware does not support the plant-level Average Cell Temperature register; it now shows the average of the inverters' Average Cell Temperature sensors instead (#363). Each inverter's average cell temperature is also shown in its device details
+- Fixed a stalled Cloud API request blocking cloud sensor updates for up to 5 minutes without any error being reported, while every cloud topic was logged as overdue. Cloud API requests now time out after 30 seconds (10 seconds to connect), so the outage is reported promptly, and its message is no longer empty (`CloudControlUnavailableError('')`)
+- Overdue cloud topics are logged at DEBUG level while a Cloud API outage is being reported
+- Fixed a new Instant Manual Control Mode or Duration value taking about a minute (the `repeated-state-publish-interval`) to appear in Home Assistant, which caused scripts waiting for the value before turning on Instant Manual Control to time out. A value replaced within that minute was never published at all. New values are now published as soon as they are set, without waiting for the Cloud API (#362)
+- Fixed a sensor scan group silently and permanently stopping its updates when a sensor raised an error other than a Modbus exception. The error is now logged and the group retried
+- Fixed PVOutput uploads stopping until the next restart when PVOutput (or a proxy in front of it) returned a response without rate-limit headers or with an unexpected body
+- Fixed the process exiting with a success status when a worker thread crashed or the MQTT broker refused the connection, which stopped service managers using restart-on-failure (such as the supplied systemd unit) from restarting it. It now exits with status 1
+- Fixed a worker thread crashing if the Modbus host became unreachable between device discovery and the thread starting; it now waits for the host
+- Fixed a shutdown signal being ignored when it was received while devices were being created, or during a restart
+- Fixed a refused MQTT connection shutting down sigenergy2mqtt after it had previously connected successfully (for example while the broker is restarting); this is now treated as an outage and retried
+- Fixed errors raised while handling an MQTT command being discarded without being logged
+- Fixed a DC charger that failed to initialise preventing startup, rather than being skipped like other device types
+- Fixed `SIGHUP` reloading the configuration underneath the running threads before they had been stopped
+- Fixed the range of the Active/Reactive Power Fixed Adjustment Target Value controls (plant and per-phase), which was wrong by orders of magnitude. The active power targets are now limited to ± the total rated active power of the plant, and the reactive power targets to ±60% of it
+- Fixed values written to the inverter being truncated instead of rounded (for example, setting 2.01 kW wrote 2.009 kW)
+- Fixed the PVOutput `l/l-avg` voltage option, which reported the line to neutral average. It now reports the true line to line voltage calculated from the three phase voltages (a balanced 230V system reports approximately 398V), and omits the voltage from an upload if a phase voltage is unavailable
+- Fixed daily accumulation sensors (such as Daily Self-Consumed Energy) continuing from the previous day's total when restarted on a later day
+- Fixed persistent state files being left empty if a write was interrupted (for example, by power loss), which reset accumulated totals to zero. State files are now written atomically, and an empty or corrupt state file falls back to the copy stored on the MQTT broker
+- Fixed Home Assistant discovery blocking device event loops while waiting for persistent-state reads, writes, or deletes; runtime discovery now uses the asynchronous state-store API
+- Fixed Inverter Power Factor incorrectly read as an unsigned integer, when Protocol specifies as signed
 
-### Changed
+### Changes
 
 - Removed the obsolete `smartport_*` legacy option migration and translations; the Smart-Port feature no longer exists
+- Each MQTT client now registers a Last Will on the retained topic `sigenergy2mqtt/status/{unique_id_prefix}/{client}` (where `{client}` is the client ID without its prefix, so that the topic is the same on every start) (`offline` if the connection is lost without a clean disconnect, `online` on every connect). Home Assistant discovery includes this topic in the availability of every entity, so that entities become unavailable if sigenergy2mqtt crashes, is killed or loses power, instead of showing stale values indefinitely
+- A second `SIGINT`/`SIGTERM` during shutdown now forces an immediate exit
+- Bumped Docker base python image from 3.14-alpine3.24 to 3.15-alpine3.24
+- Updated pycryptodome from 4.3.0 to 4.5.0
+- Updated pydantic from 2.14.3 to 2.14.4
 
-### Tests
-
-- Test runners no longer delete a pre-existing `/config` or `/data` directory, and refuse to run outside CI or a container if either exists
-- The pre-commit hook now runs the tests when files under `rootfs/` or `translations/` change; `run_all.sh -q` now works as documented
-- Added tests for secrets containing spaces and log redaction, an unavailable MQTT service, and version/Dockerfile/wheel/changelog consistency
-- The mock bashio now supports raw JSON values and returns `null` for missing keys, like the real bashio
+---
 
 ## [2026.11.11] - 2026-11-11
 
