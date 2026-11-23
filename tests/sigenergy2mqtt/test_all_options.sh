@@ -12,6 +12,8 @@ export MOCK_OPTIONS_PATH="/tmp/${TEST_NAME}.yaml"
 cat << EOF > $MOCK_OPTIONS_PATH
 advanced:
     clean: false
+    clear_validation_cache: true
+    child_devices: true
     consumption_method: Total Load
     edit_pct_box: true
     language: English
@@ -60,6 +62,13 @@ logging:
     pvoutput: INFO
     sigenergy2mqtt: DEBUG
     influxdb: CRITICAL
+    cloud: DEBUG
+cloud:
+    region: Asia-Pacific
+    username: "test@cloud.user"
+    password: "test_cloud_password"
+    accept_unofficial_api_risk: true
+    discover_inverters: true
 manual_config:
     accharger_device_id: 2,4
     dccharger_device_id: 1
@@ -93,6 +102,7 @@ scan_interval:
     low: 300
     medium: 30
     realtime: 1
+    cloud: 1
 
 # Deprecated flat keys for completeness check
 consumption_method: "Total Load"
@@ -143,14 +153,6 @@ scan_interval_high: 1
 scan_interval_low: 300
 scan_interval_medium: 30
 scan_interval_realtime: 1
-smartport_enabled: false
-smartport_host: 192.168.192.224
-smartport_module_name: enphase
-smartport_mqtt_gain: 1000
-smartport_mqtt_topic: mqtt/smartport
-smartport_password: test_enphase_password
-smartport_pv_power: EnphasePVPower
-smartport_username: test_enphase_user
 unique_id_prefix: unique
 EOF
 #endregion
@@ -184,6 +186,8 @@ echo "Success: Mock options file covers all schema keys." >> $LOG_PATH 2>&1
 declare -A ASSERTIONS=(
     ["consumption"]="total"
     ["debug-sensor"]="any"
+    ["hass-child-devices"]="true"
+    ["clear-validation-cache"]="true"
     ["hass-edit-pct-box"]="true"
     ["hass-enabled"]="true"
     ["influxdb-bucket"]="test_influxdb_bucket"
@@ -233,6 +237,7 @@ declare -A ASSERTIONS=(
     ["scan-interval-low"]="300"
     ["scan-interval-medium"]="30"
     ["scan-interval-realtime"]="1"
+    ["scan-interval-cloud"]="1"
     ["SIGENERGY2MQTT_HASS_DEVICE_NAME_PREFIX"]="device"
     ["SIGENERGY2MQTT_HASS_DISCOVERY_PREFIX"]="discover"
     ["SIGENERGY2MQTT_HASS_ENTITY_ID_PREFIX"]="entity"
@@ -240,6 +245,13 @@ declare -A ASSERTIONS=(
     ["hass-sigenergy-local-modbus-naming"]="true"
     ["diagnostics-host"]="0.0.0.0"
     ["diagnostics-allowed-ips"]="172.30.32.2"
+    ["cloud-log-level"]="DEBUG"
+    ["cloud-region"]="apac"
+    ["cloud-username"]="test@cloud.user"
+    ["cloud-password"]="test_cloud_password"
+    ["cloud-accept-unofficial-api-risk"]="true"
+    ["cloud-discover-inverters"]="true"
+    ["publish-metrics"]="true"
 )
 #endregion
 

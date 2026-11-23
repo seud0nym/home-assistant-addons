@@ -1,4 +1,11 @@
 clean
+clear-validation-cache
+cloud-accept-unofficial-api-risk
+cloud-discover-inverters
+cloud-log-level
+cloud-password
+cloud-region
+cloud-username
 config
 consumption
 debug-sensor
@@ -7,6 +14,7 @@ diagnostics-host
 diagnostics-log-level
 diagnostics-port
 diagnostics-refresh-interval
+hass-child-devices
 hass-device-name-prefix
 hass-discovery-only
 hass-discovery-prefix
@@ -78,6 +86,7 @@ no-diagnostics
 no-ems-mode-check
 no-influxdb-health-monitoring
 no-metrics
+no-metrics is deprecated; metrics publishing is disabled by default. Use --publish-metrics to enable it.
 no-persistence-mqtt-redundancy
 no-pvoutput-health-monitoring
 no-topic-update-monitoring
@@ -85,6 +94,8 @@ persistence-cache-warmup-timeout
 persistence-debug
 persistence-mqtt-state-prefix
 persistence-sync-timeout
+publish-metrics
+publish-runtime-config
 pvoutput-api-key
 pvoutput-consumption
 pvoutput-enabled
@@ -104,6 +115,7 @@ pvoutput-upload-log-level
 pvoutput-voltage
 repeated-state-publish-interval
 sanity-check-default-kw
+scan-interval-cloud
 scan-interval-high
 scan-interval-low
 scan-interval-medium

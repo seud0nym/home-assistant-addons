@@ -1,12 +1,167 @@
 # Changelog
 
-## [2026.9.6b2] - 2026-09-06
+## [2026.11.23b2] - 2026-11-23
+
+### Added
+
+- Added the `Clear Sensor Validation Cache` option to Advanced Settings. When enabled, the next start passes `--clear-validation-cache` to sigenergy2mqtt, so every sensor is checked again for support, and the option is then reset to off so the cache is not cleared on later starts
+- Added a Cloud API DC Charger device for each DC charger, with the Charging Mode (Fast Charging, PV Surplus Charging or Sigen AI Mode), Battery Boost, Battery Boost Cut-off SOC and Surplus PV Priority (DC Charger First or Battery First) settings from the mySigen app, and the charger's weekly, monthly and lifetime charged energy, status, OCPP link status and server URL, V2X discharge settings and primary vehicle (#355)
+- Added Charging Power (negative while discharging to the vehicle), Vehicle SOC, Session Charged Energy and SECC Run State sensors to the Cloud API DC Charger device. These come from an endpoint that has not yet been captured during a charging session, so their meanings follow another integration using the same API and may need correcting (#355)
+
+### Fixed
+
+- Fixed credentials containing spaces (Cloud username/password, InfluxDB username/password/token and PVOutput API key) being split into multiple command line parameters
+- Fixed migration of legacy `device_name_prefix`, `discovery_prefix`, `entity_id_prefix` and `unique_id_prefix` options to `advanced.envvars`, which rewrote the array as a whole using properly escaped JSON
+- Legacy options are now only removed from the configuration after their replacement has been written successfully, so a failed migration no longer loses the value
+- Fixed the final service command being started with an unquoted parameter list
+- Secrets are now also redacted from the log when the name contains `secret` or `credential`, and legacy option values are logged correctly when they contain spaces
+- Fixed a sensor being permanently marked as unsupported (and shown as "Unsupported" on the Diagnostics page, with dashboard gauges such as Cell Temperature left empty) after the device returned a transient ILLEGAL DATA ADDRESS response during startup validation. A response is now only believed if it is repeated on up to three reads, and the result is no longer trusted blindly on later startups: sensors cached as unsupported are read again, so a wrong result corrects itself, as are sensors that the cache has not seen before (for example, those added by a software update). The cache is rewritten once on the first startup after upgrading
+- Fixed the dashboard Cell Temperature gauge being empty on systems whose firmware does not support the plant-level Average Cell Temperature register; it now shows the average of the inverters' Average Cell Temperature sensors instead (#363). Each inverter's average cell temperature is also shown in its device details
+- Fixed a stalled Cloud API request blocking cloud sensor updates for up to 5 minutes without any error being reported, while every cloud topic was logged as overdue. Cloud API requests now time out after 30 seconds (10 seconds to connect), so the outage is reported promptly, and its message is no longer empty (`CloudControlUnavailableError('')`)
+- Overdue cloud topics are logged at DEBUG level while a Cloud API outage is being reported
+- Fixed a new Instant Manual Control Mode or Duration value taking about a minute (the `repeated-state-publish-interval`) to appear in Home Assistant, which caused scripts waiting for the value before turning on Instant Manual Control to time out. A value replaced within that minute was never published at all. New values are now published as soon as they are set, without waiting for the Cloud API (#362)
+- Fixed a sensor scan group silently and permanently stopping its updates when a sensor raised an error other than a Modbus exception. The error is now logged and the group retried
+- Fixed PVOutput uploads stopping until the next restart when PVOutput (or a proxy in front of it) returned a response without rate-limit headers or with an unexpected body
+- Fixed the process exiting with a success status when a worker thread crashed or the MQTT broker refused the connection, which stopped service managers using restart-on-failure (such as the supplied systemd unit) from restarting it. It now exits with status 1
+- Fixed a worker thread crashing if the Modbus host became unreachable between device discovery and the thread starting; it now waits for the host
+- Fixed a shutdown signal being ignored when it was received while devices were being created, or during a restart
+- Fixed a refused MQTT connection shutting down sigenergy2mqtt after it had previously connected successfully (for example while the broker is restarting); this is now treated as an outage and retried
+- Fixed errors raised while handling an MQTT command being discarded without being logged
+- Fixed a DC charger that failed to initialise preventing startup, rather than being skipped like other device types
+- Fixed `SIGHUP` reloading the configuration underneath the running threads before they had been stopped
+- Fixed the range of the Active/Reactive Power Fixed Adjustment Target Value controls (plant and per-phase), which was wrong by orders of magnitude. The active power targets are now limited to ± the total rated active power of the plant, and the reactive power targets to ±60% of it
+- Fixed values written to the inverter being truncated instead of rounded (for example, setting 2.01 kW wrote 2.009 kW)
+- Fixed the PVOutput `l/l-avg` voltage option, which reported the line to neutral average. It now reports the true line to line voltage calculated from the three phase voltages (a balanced 230V system reports approximately 398V), and omits the voltage from an upload if a phase voltage is unavailable
+- Fixed daily accumulation sensors (such as Daily Self-Consumed Energy) continuing from the previous day's total when restarted on a later day
+- Fixed persistent state files being left empty if a write was interrupted (for example, by power loss), which reset accumulated totals to zero. State files are now written atomically, and an empty or corrupt state file falls back to the copy stored on the MQTT broker
+- Fixed Home Assistant discovery blocking device event loops while waiting for persistent-state reads, writes, or deletes; runtime discovery now uses the asynchronous state-store API
+- Fixed Inverter Power Factor incorrectly read as an unsigned integer, when Protocol specifies as signed
+
+### Changes
+
+- Removed the obsolete `smartport_*` legacy option migration and translations; the Smart-Port feature no longer exists
+- Each MQTT client now registers a Last Will on the retained topic `sigenergy2mqtt/status/{unique_id_prefix}/{client}` (where `{client}` is the client ID without its prefix, so that the topic is the same on every start) (`offline` if the connection is lost without a clean disconnect, `online` on every connect). Home Assistant discovery includes this topic in the availability of every entity, so that entities become unavailable if sigenergy2mqtt crashes, is killed or loses power, instead of showing stale values indefinitely
+- A second `SIGINT`/`SIGTERM` during shutdown now forces an immediate exit
+- Bumped Docker base python image from 3.14-alpine3.24 to 3.15-alpine3.24
+- Updated pycryptodome from 4.3.0 to 4.5.0
+- Updated pydantic from 2.14.3 to 2.14.4
+
+---
+
+## [2026.11.11] - 2026-11-11
+
+> [!IMPORTANT]
+> **New opt-in option: Home Assistant child devices** (*Advanced Settings > Home Assistant Child Devices*, default off). When enabled, the logical parts of a device (for example PV strings, ESS and the plant grid sensor) appear as child devices of their parent in Home Assistant instead of as separate linked devices. Existing devices are converted in place, keeping entity history, entity IDs, device IDs and automations.
+>
+> **Requires Home Assistant 2026.11.0 or later.** The add-on checks the version and ignores the option on older releases. If Home Assistant is still starting when the add-on starts, the option is ignored for that run: restart the add-on once Home Assistant is running.
+>
+> **Action required if you enable it:** back up Home Assistant first. After restarting the add-on with the option enabled, reload the MQTT integration (*Settings > Devices & services > MQTT > ⋮ > Reload*) or restart Home Assistant. Switching the option off again needs extra steps; see the [configuration README](https://github.com/seud0nym/sigenergy2mqtt/blob/main/resources/configuration/README.md#opt_home_assistant_child_devices).
+
+### Added
+
+- Added additional individual battery sensors from Cloud API (Total Discharge Amount and Average Cell Voltage/Temperature)
+- Added battery export limitation control from Cloud API
+- Added Go Off-Grid and Go On-Grid buttons and a Grid Connection Status sensor to the Cloud API Gateway device
+- Added Reset button to Diagnostics web page
+- Added visibility of unpublishable and unsupported sensors to Diagnostics sensor debug logging page
+- Added opt-in Home Assistant child-device discovery  (requires Home Assistant 2026.11.0+; legacy `via_device` hierarchy remains the default). Existing devices are converted in place after an MQTT integration reload, preserving entity history, device IDs and automations
+- Added a persistent installation-cohort marker to support a future safe child-device default change
+
+### Fixed
+
+- Added a cool down on cloud rate limit errors with exponential backoff
+- Fixed logging identity for cloud devices
+- Reduced log spamming from every device when Home Assistant goes offline/online
+- Fixed PVOutput upload verification logic for non-donators and error counting in diagnostics
+- Improved pymodbus 'Skipping' logging filter to catch the send:/recv: DEBUG level transport dump records before subsequent 'Repeating'  messages
+- Fixed handling of alarms that return invalid values
+- Implemented ±50 W power dead band logic in BatteryStatus to prevent flapping at extremes (#346)
+- Fixed accumulation sensors using stale source samples when repeated publishes were suppressed; daily resets now follow successful read times across midnight
+- Fixed sensor scan groups retrying every 0.1 seconds (and logging an error each time) while the MQTT broker was unreachable; failed sensors now wait for their next scan interval
+- Fixed every pymodbus log message being written twice (once in pymodbus' own format)
+- Removed the hex frame dump that pymodbus appends to every error message (~20 extra log lines per Modbus timeout)
+- Fixed a restart loop when a thread closed its MQTT connection deliberately (e.g. the Services thread with `diagnostics.enabled: false`): the closed client stayed in the MQTT health registry and was reported as disconnected, so health checks failed and triggered a restart every few intervals
+- Fixed the process exiting when the MQTT broker was unreachable at startup (each thread gave up after 3 attempts and crashed); the device threads and persistence now wait, retrying every `mqtt.retry_delay` seconds, and the wait is reported as a single broker outage
+- Fixed the process exiting when the Modbus host was unreachable at startup, including after an automatic restart triggered by health check failures; startup now waits and retries (5s doubling to 60s) until the host is reachable
+- Fixed health check failures caused by an unreachable Modbus host, MQTT broker or InfluxDB server triggering an automatic restart that could not fix the problem; the status is still reported as degraded, but failures only count towards a restart once the dependency is available again (or, for Modbus, after 5 minutes if the host accepts connections but the client has not recovered)
+- Fixed the Modbus "disconnected (Nx total)" health check message always reporting 0 when pymodbus closed the connection itself
+- Fixed a Cloud API outage not being reported as ended until every sensor that failed had read successfully again, which could take up to 15 minutes (the slowest scan group's retry backoff) or never happen after a restart
+
+### Changed
+
+- Sensors now publish individual availability to Home Assistant, and will be marked unavailable if state publishing fails
+- Unchanged states are now only published every 60 seconds to reduce network traffic and MQTT broker load
+- MQTT broker, Modbus, InfluxDB and Cloud API connectivity failures are now reported as a single "outage started" error and a single "outage ended" message (with duration and count of suppressed messages), instead of one error per sensor, scan group and client. Repeated messages during an outage are logged at DEBUG level, a new kind of error is still reported once, and a reminder is logged at ERROR level every 5 minutes while the outage continues
+- Updated aiohttp from 3.14.4 to 3.14.5
+- Updated paho-mqtt from 2.1.0 to 2.2.0
+- Updated pycryptodome from 3.24.0 to 4.3.0
+- Updated pymodbus from 3.15.0 to 3.16.2
+- Updated pydantic-settings from 2.15.0 to 2.16.2
+
+---
+
+## [2026.10.10] - 2026-10-10
+
+### Added
+
+- Optional Sigenergy Cloud access using the unofficial mySigen API to expose controls and sensors not available via local Modbus
+- MQTT Connection metrics
+
+### Fixed
+
+- Fixed "DiagnosticsRegistry Provider 'pvoutput' failed: 'NoneType' object has no attribute 'value'" error message ([#323](https://github.com/seud0nym/sigenergy2mqtt/issues/323))
+- Improved pymodbus 'Skipping' logging filter to catch subsequent 'Repeating'  messages
+
+### Changed
+
+- Refactored former monolithic main module into separate concerns modules
+- Removed the SensorProtocol Protocol from the sensor implementation and exports, and stop inheriting the Protocol from Sensor
+- Converted Device and ModbusDevice to concrete base classes by removing the ABCMeta metaclass
+- Removed needless ABC inheritance from several sensor base classes such as RemoteEMSLimit and ESSPreHeatingTOUTime
+- Refactored the InfluxDB query methods into the Home Assistant backfill workflow to keep core functionality focussed on writes
+- Removed InfluxDB query metrics when HA sync disabled
+- Metrics and Runtime Configuration publishing to MQTT now require explicit opt-in (both are still available through the diagnostics web UI)
+- Changed the state store persistence default to prefer MQTT over local disk storage
+- Updated home-assistant/builder from `2026.06.0` to `2026.09.0`
+
+---
+
+## [2026.9.15] - 2026-09-15
+
+### Fixed
+
+- Fixed crash risk in InfluxDB _matches_filter service.py
+- Fixed startup sequence race condition that caused command-line logging level options to be ignored (exposed in logs for [#269](https://github.com/seud0nym/sigenergy2mqtt/issues/269))
+
+### Changed
+
+- Enhanced escaping in InfluxDB line protocol for tags and fields
+- Refactored InfluxDB writer logic to prepare for v3 implementation
+- Restored the documented precedence so explicit command-line options override existing environment variables (exposed in logs for [#269](https://github.com/seud0nym/sigenergy2mqtt/issues/269))
+- Added undocumented 2-phase OutputType "Double Live Wire" (L1/L2) to prevent start-up crash ([#269](https://github.com/seud0nym/sigenergy2mqtt/issues/269))
+
+---
+
+## [2026.9.10] - 2026-09-10
+
+### Fixed
+
+- Fixed startup crash when probing Protocol V2.9 DC Charger sensors on firmware supporting only V2.8 or lower ([#264](https://github.com/seud0nym/sigenergy2mqtt/issues/264))
+
+### Changed
+
+- Refactored WriteableSensorMixin and derived classes to use transport-agnostic pattern
+
+---
+
+## [2026.9.9] - 2026-09-09
 
 ### Added
 
 - Added configuration of runtime settings via MQTT and the diagnostics web UI
 - Added ability to set sensor debug logging state via MQTT and the diagnostics web UI
 - Added enhanced logging for unconsumed source values in derived sensors
+- Added derived sensor that estimates the remaining battery duration in hours (negative values indicate time to discharge; positive time to charge)
 
 ### Fixed
 

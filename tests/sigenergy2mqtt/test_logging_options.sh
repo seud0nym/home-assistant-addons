@@ -43,7 +43,6 @@ declare -A ASSERTIONS=(
     ["SIGENERGY2MQTT_MQTT_USERNAME"]="mock_mqtt_user" # Default
     ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password" # Default
     ["modbus-host"]="127.0.0.1"
-    ["no-metrics"]="true"
     # Logging assertions
     ["log-level"]="DEBUG"
     ["modbus-log-level"]="INFO"
@@ -90,7 +89,6 @@ declare -A ASSERTIONS=(
     ["SIGENERGY2MQTT_MQTT_USERNAME"]="mock_mqtt_user" # Default
     ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password" # Default
     ["modbus-host"]="127.0.0.1"
-    ["no-metrics"]="true"
 )
 
 export_assertions
@@ -144,7 +142,6 @@ declare -A ASSERTIONS=(
     ["SIGENERGY2MQTT_MQTT_USERNAME"]="mock_mqtt_user" # Default
     ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password" # Default
     ["modbus-host"]="127.0.0.1"
-    ["no-metrics"]="true"
     # Logging assertions
     ["modbus-log-level"]="INFO"
 )

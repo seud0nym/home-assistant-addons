@@ -8,8 +8,27 @@ fi
 cd "$(cd $(dirname $0); pwd)"
 export PATH=$PATH:$(pwd)/$1/.local/bin
 
+# The tests create and remove /config and /data (paths hard-coded in the run
+# script). Never touch directories that existed before the run: on a developer
+# machine they may hold real data.
+for dir in /config /data; do
+    if [ -e "$dir" ] && [ -z "${CI:-}" ] && [ ! -e /.dockerenv ]; then
+        echo "ERROR: $dir already exists; refusing to run tests that would modify it outside CI/a container." >&2
+        exit 1
+    fi
+done
+PREEXISTING=""
+for dir in /config /data; do
+    [ -e "$dir" ] && PREEXISTING="$PREEXISTING $dir"
+done
+
 cleanup_and_exit() {
-    rm -rf /config /data
+    for dir in /config /data; do
+        case " $PREEXISTING " in
+            *" $dir "*) ;;
+            *) rm -rf "$dir" ;;
+        esac
+    done
     exit $1
 }
 

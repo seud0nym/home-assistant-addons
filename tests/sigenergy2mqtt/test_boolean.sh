@@ -26,7 +26,6 @@ declare -A ASSERTIONS=(
     ["SIGENERGY2MQTT_MQTT_USERNAME"]="mock_mqtt_user" # Default
     ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password" # Default
     ["modbus-auto-discovery"]="once"
-    ["no-metrics"]="true"
 )
 
 cd $HOME
@@ -46,6 +45,7 @@ cat << EOF > $MOCK_OPTIONS_PATH
 advanced:
     metrics_enabled: false
     edit_pct_box: false
+    child_devices: false
     sigenergy_local_modbus_naming: false
 auto_discovery:
 manual_config:
@@ -74,7 +74,6 @@ declare -A ASSERTIONS=(
     ["SIGENERGY2MQTT_MQTT_USERNAME"]="mock_mqtt_user" # Default
     ["SIGENERGY2MQTT_MQTT_PASSWORD"]="super_secret_mock_password" # Default
     ["modbus-auto-discovery"]="once"
-    ["no-metrics"]="true"
 )
 export_assertions
 ( source ../../sigenergy2mqtt/rootfs/etc/services.d/sigenergy2mqtt/run ) > $LOG_PATH 2>&1
@@ -90,6 +89,7 @@ cat << EOF > $MOCK_OPTIONS_PATH
 advanced:
     metrics_enabled: true
     edit_pct_box: true
+    child_devices: true
     sigenergy_local_modbus_naming: true
     read_only: true
     no_remote_ems: true
@@ -118,6 +118,7 @@ unset ASSERTIONS
 declare -A ASSERTIONS=(
     ["language"]="en"
     ["hass-enabled"]="true"
+    ["hass-child-devices"]="true"
     ["hass-edit-pct-box"]="true"
     ["hass-sigenergy-local-modbus-naming"]="true"
     ["diagnostics-host"]="0.0.0.0"
@@ -144,6 +145,7 @@ declare -A ASSERTIONS=(
     ["influxdb-username"]="username"
     ["influxdb-password"]="password"
     ["influxdb-database"]="database"
+    ["publish-metrics"]="true"
 )
 export_assertions
 ( source ../../sigenergy2mqtt/rootfs/etc/services.d/sigenergy2mqtt/run ) > $LOG_PATH 2>&1

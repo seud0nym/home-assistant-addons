@@ -68,6 +68,7 @@ The Sigenergy Modbus Host and the Device IDs for Inverters, AC Chargers, and DC 
 | `High Frequency` | The scan interval in seconds for Modbus registers that are to be scanned at a high frequency. Default is **10** (seconds), and the minimum value is 1. |
 | `Medium Frequency` | The scan interval in seconds for Modbus registers that are to be scanned at a medium frequency. Default is **60** (seconds), and the minimum value is 1. |
 | `Low Frequency` | The scan interval in seconds for Modbus registers that are to be scanned at a low frequency. Default is **600** (seconds), and the minimum value is 1. |
+| `Cloud Frequency` | The scan interval in seconds for retrieving cloud data. Default is 5 (seconds), and the minimum value is 1. |
 
 #### PVOutput.org Integration
 
@@ -227,9 +228,11 @@ If both v1 credentials (username/password) and v2 credentials (token) are provid
 | Option | Description |
 |--------|-------------|
 | `Clean MQTT Retained Messages` | Enable to clean MQTT retained messages to refresh Home Assistant sigenergy2mqtt MQTT Devices. **USE WITH CAUTION!** Any defined Home Assistant helpers that reference `sigenergy2mqtt` sensors will be *removed*! |
+| `Clear Sensor Validation Cache` | At startup, sigenergy2mqtt checks every sensor and hides any your device rejects as unsupported. The results are cached, and sensors cached as unsupported are checked again on every start, so you should rarely need this option. Enable it if a sensor is missing, or shown as *Unsupported* on the Diagnostics page, but you believe your device supports it: the cache is cleared and every sensor is checked again on the next start. The option is switched off again automatically, so the cache is only cleared once. |
 | `Enable Read Only` | Enable to only read data from the Sigenergy device. Disable to allow writing data to the Sigenergy device. |
 | `Disable Remote EMS` | Enable to hide all read/write sensors used for remote Energy Management System (EMS) integration. This may be applicable if, for example, you are part of a VPP which manages the battery. Ignored if `Read Only' is enabled. |
 | `Disable Remote EMS Checks` | Enable to turn OFF the validation that disables ESS Max Charging/Discharging and PV Max Power limits when Remote EMS Control Mode is not Command Charging/Discharging. This setting does NOT comply with the Sigenergy Modbus Protocol documentation, and may lead to changes not being applied in some instances. Use with caution! Ignored if `Disable Remote EMS` is enabled. |
+| `Home Assistant Child Devices` | Enable to publish the logical parts of a device (for example PV strings, ESS and the plant grid sensor) as child devices of their parent in Home Assistant, instead of as separate devices linked with `via_device`. Existing devices are converted in place, keeping entity history, entity IDs, device IDs, areas and automations.<br><br>**Requires Home Assistant 2026.11.0 or later.** The app checks the Home Assistant version at startup and ignores this option on older releases. If Home Assistant is still starting when the app starts, the option is ignored for that run: restart the app once Home Assistant is running.<br><br>**Before enabling**, back up Home Assistant. After restarting the app with the option enabled, reload the MQTT integration (*Settings > Devices & services > MQTT > ⋮ > Reload*) or restart Home Assistant. Until then, Home Assistant logs `Unable to register MQTT device` warnings, but entities keep working.<br><br>**To revert**, disable the option and restart the app, delete the sigenergy2mqtt child devices in Home Assistant, then reload the MQTT integration. The devices return as regular devices with the same device IDs, entity IDs and history. See the [configuration README](https://github.com/seud0nym/sigenergy2mqtt/blob/main/resources/configuration/README.md#opt_home_assistant_child_devices). |
 | `Enable Percentage Box Editor` | Enable to use a numeric entry box to change the value of percentage sensors or leave disabled to use a slider to change the value. |
 | `Sigenergy-Local-Modbus Naming` | Enable to use the TypQxQ/Sigenergy-Local-Modbus entity naming convention for sensors. You should also enable `Clean MQTT Retained Messages` when changing this option, otherwise the new entity names will be ignored by Home Assistant.<br><br>Note that this only affects the _naming_ of the entity id. The underlying unique id is unchanged and will be different from the unique id used by Sigenergy-Local-Modbus, so you will need to remove the old entities from Home Assistant before enabling this option. This also means that it is not possible to migrate historical data from Sigenergy-Local-Modbus to sigenergy2mqtt. |
 | `Enable Metrics` | Enable the publication of sigenergy2mqtt metrics to Home Assistant. |
@@ -249,4 +252,20 @@ If both v1 credentials (username/password) and v2 credentials (token) are provid
 | `PVOutput` | Set the PVOutput services logging level. |
 | `MQTT` | Set the paho.mqtt logging level. **WARNING!** Setting this to DEBUG will produce very verbose output. |
 | `InfluxDB` | Set the InfluxDB logging level. **WARNING!** Setting this to DEBUG may produce very verbose output. |
+| `Cloud` | Set the Cloud logging level. **WARNING!** Setting this to DEBUG may produce very verbose output. |
 
+#### Cloud Configuration
+
+The official Sigenergy Cloud API is designed for applications that work as a backend service, and which are not deployed to local customer infrastructure as `sigenergy2mqtt` is. Whilst they are currently working on making the changes that would support local deployment, it is not yet available.
+
+However, there is an unofficial Cloud API that provides access to the Cloud features, which is what has now been incorporated into `sigenergy2mqtt` until the official API is available. There is no documentation for this API, and features have been discerned through observing the web app network traffic. Some features may therefore not work exactly as expected.
+
+To use the Cloud API in `sigenergy2mqtt`, it is _strongly_ recommended that you use delegated access created through the `mySigen` app. Navigate to `Settings` → `System Settings` → `System Share`, and add another email address (not your primary mySigen login email address) with "View and Edit" permission. When you receive the invitation email, log in and set your password. Use this new email address and password when configuring Cloud access in `sigenergy2mqtt`. _Only_ use this delegated email for the `sigenergy2mqtt` Cloud connection, and for no other purpose, because too many sessions cause connections to be dropped.
+
+| Option | Description |
+|--------|-------------|
+| `Accept Unofficial API Risk` | This Cloud integration uses unofficial mySigen APIs that may be subject to change, and may be disabled at any time by Sigenergy. By enabling this option, you acknowledge that you understand the risks of using unofficial APIs, and that you accept that this integration may stop working at any time without notice. |
+| `Region` | The region where your Sigenergy mySigen account is located. |
+| `Username` | Your Sigenergy Cloud username. |
+| `Password` | Your Sigenergy Cloud password. |
+| `Discover Inverters` | Enable discovery of inverters. Usually leave this disabled because the cloud API does not at this time provide additional information to that provided by the Modbus interface. |

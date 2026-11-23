@@ -39,7 +39,8 @@ fi
 function bashio::config() {
     local key=${1:-}
     local value=$(yq ".$key" "$MOCK_OPTIONS_PATH" | tr -d '\n''"')
-    [ "$value" == "null" ] && value=""
+    # Like the real bashio, a missing key yields the literal string "null"
+    # (an empty string is genuinely empty).
     bashio::log.debug "··· bashio::config() - key '$key' has value '$value'"
     echo "$value"
 }
@@ -68,10 +69,9 @@ function bashio::config.set() {
   local value="$2"
   local assignment="="
 
-  if [[ "$value" =~ ^\{.*\}$ && $key =~ \[\]$ ]]; then 
-    key="${key%[]}"
-    value="[ $value ]"
-    assignment="+="
+  if [[ "$value" == ^* ]]; then
+    # Real bashio: a leading ^ means the remainder is raw JSON (jq --argjson)
+    value="${value:1}"
   elif [[ "$value" =~ ^(true|false)$ ]]; then 
     :
   elif [[ "$value" =~ ^-?[0-9]+$ ]]; then 
@@ -104,7 +104,7 @@ function bashio::addon.option() {
 }
 
 # --- Addon Information Functions ---
-function bashio::addon.version() { 
+function bashio::app.version() { 
     yq .version  ../../sigenergy2mqtt/config.yaml | tr -d '\n'
 }
 
@@ -139,7 +139,8 @@ function bashio::services() {
 # Usage: bashio::services.available <service_slug>
 function bashio::services.available() {
     local service=$1
-    if [ "$service" == "mqtt" ]; then
+    # Set MOCK_MQTT_AVAILABLE=false to simulate the MQTT service being absent
+    if [ "$service" == "mqtt" ] && [ "${MOCK_MQTT_AVAILABLE:-true}" == "true" ]; then
         return 0 # True (available)
     else
         return 1 # False (for other services not mocked yet)

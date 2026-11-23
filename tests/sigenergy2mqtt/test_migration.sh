@@ -58,14 +58,6 @@ scan_interval_high: 1
 scan_interval_low: 300
 scan_interval_medium: 30
 scan_interval_realtime: 1
-smartport_enabled: true
-smartport_host: 192.168.192.224
-smartport_module_name: enphase
-smartport_mqtt_gain: 1000
-smartport_mqtt_topic: mqtt/smartport
-smartport_password: test_enphase_password
-smartport_pv_power: EnphasePVPower
-smartport_username: test_enphase_user
 EOF
 #endregion
 
@@ -116,6 +108,7 @@ declare -A ASSERTIONS=(
     ["SIGENERGY2MQTT_HASS_UNIQUE_ID_PREFIX"]="unique"
     ["diagnostics-host"]="0.0.0.0"
     ["diagnostics-allowed-ips"]="172.30.32.2" # Default
+    ["publish-metrics"]="true"
 )
 #endregion
 
