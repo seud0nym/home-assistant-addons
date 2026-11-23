@@ -25,6 +25,11 @@ RUN rm -f /usr/bin/tempio
 RUN apk update && \
     apk add --no-cache 'openssl>=3.5.9-r1' 'libcrypto3>=3.5.9-r1' 'libssl3>=3.5.9-r1'
 
+# Mitigate Snyk findings for Alpine 3.24 and Python 3.15
+# - https://security.snyk.io/vuln/SNYK-ALPINE324-LIBXML2-22636290
+RUN apk update && \
+    apk add --no-cache 'libxml2>=2.13.9-r3'
+
 ENV PYTHONUNBUFFERED=1
 
 COPY rootfs /
