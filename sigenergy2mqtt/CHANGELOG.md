@@ -1,5 +1,104 @@
 # Changelog
 
+## [2026.11.26] - 2026-11-26
+
+> [!IMPORTANT]
+> **Note for Cloud DC Charger Beta testers** The Cloud API Surplus PV Priority setting has moved from the DC Charger device to the Sigenergy Cloud device and is renamed Site PV Surplus Priority, because it applies to the entire site rather than one charger (the mySigen app warns of this when it is changed). It replaces the previous entity, which can be deleted from Home Assistant (Thanks @sam-ward)
+
+### Added
+
+- Added support for Sigenergy Modbus Protocol V2.10 (2026-11-03):
+  - Added Phase A/B/C Current and Phase A/B/C Voltage sensors to the Grid Sensor device, measured at the grid sensor (registers 30292-30302). Only SigenStor and Sigen Hybrid systems support these, so they are not published for PV inverter plants
+  - Added the Reactive Power Regulation Gradient setting (register 40160), the percentage of rated power adjusted per second for reactive power
+  - Added the Remote EMS Power Limit Global Enable switch (register 40162, hybrid inverter plants only). It is hidden when `Disable Remote EMS Checks` is set, like the Remote EMS switch
+- Added a Cloud API DC Charger device for each DC charger, with mySigen charging settings, weekly/monthly/lifetime energy, status, OCPP connection and server details, V2X discharge settings and primary vehicle (#355)
+- Added Cloud API DC Charger live charging sensors for charging power, vehicle SOC, session energy and SECC run state (#355)
+- Added `Clear Sensor Validation Cache` Advanced Option to clear the persisted sensor validation cache at startup and probe every sensor again
+- Added MQTT client online/offline Last Will status topics and included them in Home Assistant entity availability, so entities become unavailable when sigenergy2mqtt loses its connection or stops unexpectedly
+
+### Changed
+
+- New Instant Manual Control Mode and Duration values are published immediately when written instead of waiting for the next repeated-state publish interval (#362)
+- A second `SIGINT` or `SIGTERM` during shutdown now forces an immediate exit
+- Bumped Docker base python image from 3.14-alpine3.24 to 3.15-alpine3.24
+- Updated pycryptodome from 4.3.0 to 4.5.0
+- Updated pydantic from 2.14.3 to 2.14.4
+- On Modbus Protocol V2.10 systems whose firmware supports the Remote EMS Power Limit Global Enable register, Max Charging Limit, Max Discharging Limit and PV Max Power Limit are available in Home Assistant when either Remote EMS or Remote EMS Power Limit Global Enable is on, which is when Sigenergy applies them. The Remote EMS Control Mode no longer matters. Otherwise the values are kept but not applied. On earlier protocol versions, or when the firmware does not support that register, they are only available when Remote EMS is enabled and in the matching Remote EMS control mode, except on firmware SPC113 to SPC116 where they apply globally
+- Max Charging Limit, Max Discharging Limit and PV Max Power Limit once again require Remote EMS (and the matching Remote EMS control mode) on firmware SPC117 and later that does not support Remote EMS Power Limit Global Enable. Sigenergy reverted the global behaviour introduced in SPC113 in SPC117, so the limits were shown as writeable but had no effect. The `Disable Remote EMS Checks` option is no longer ignored on these firmware versions
+
+### Fixed
+
+- Fixed transient Modbus validation errors permanently marking sensors unsupported; cached unsupported sensors are now probed again, and validation requires repeated confirmation
+- Fixed the dashboard Cell Temperature gauge being empty when plant-level Average Cell Temperature is unavailable; it now falls back to inverter averages (#363)
+- Fixed Cloud API requests hanging for up to five minutes, and made Cloud API outages report promptly with a useful error
+- Fixed DC charger weekly/monthly charged energy getting stuck after a period reset when the first new reading was not exactly zero (#355)
+- Fixed sensor scan groups stopping permanently after non-Modbus errors, worker threads crashing when Modbus became unreachable during startup, and DC charger initialization failures preventing startup
+- Fixed startup and recovery failures with unavailable Modbus hosts or MQTT brokers, refused MQTT reconnects, shutdown signals received during device creation/restart, and `SIGHUP` reloading configuration before worker threads stopped
+- Fixed worker-thread crashes and MQTT connection failures exiting with success status, so restart-on-failure service managers can recover them
+- Fixed MQTT command handling errors being discarded without logging and removed excess pymodbus frame dumps from error logs
+- Fixed PVOutput uploads stopping after unexpected responses, and corrected `l/l-avg` to report calculated line-to-line voltage (omitting it when a phase voltage is unavailable)
+- Fixed daily accumulation sensors carrying the previous day's total across a restart on a later day, and made persistent state writes atomic with MQTT fallback for empty or corrupt files
+- Fixed Home Assistant discovery blocking device event loops on persistent-state operations; runtime discovery now uses the asynchronous state-store API
+- Fixed Inverter Power Factor being read as unsigned instead of signed, and fixed inverter writes truncating values instead of rounding them
+- Fixed Active/Reactive Power Fixed Adjustment Target Value ranges, which were off by orders of magnitude
+- Fixed energy-profile limit writes interleaving with Site PV Surplus Priority writes, and unlocked grid sensor registers after a simulated grid outage
+- Fixed InfluxDB backlog handling so oversized retries can drain in batch-sized chunks; writes are serialized and bounded, in-flight batches survive cancellation, shutdown flushes pending data, and initialization failures are reported as outages
+- Fixed saved timer state using the time a queued write eventually ran instead of the time the save was requested; ordered timer flushes with resets and preserved queued writes when a newer save was held back
+
+### Removed
+
+- Removed the PSS and PID devices, which Sigenergy has removed from Modbus Protocol V2.10. These were commercial products. Auto-discovery no longer probes for PSS or PID devices
+
+---
+
+## [2026.11.23b2] - 2026-11-23
+
+### Added
+
+- Added the `Clear Sensor Validation Cache` option to Advanced Settings. When enabled, the next start passes `--clear-validation-cache` to sigenergy2mqtt, so every sensor is checked again for support, and the option is then reset to off so the cache is not cleared on later starts
+- Added a Cloud API DC Charger device for each DC charger, with the Charging Mode (Fast Charging, PV Surplus Charging or Sigen AI Mode), Battery Boost, Battery Boost Cut-off SOC and Surplus PV Priority (DC Charger First or Battery First) settings from the mySigen app, and the charger's weekly, monthly and lifetime charged energy, status, OCPP link status and server URL, V2X discharge settings and primary vehicle (#355)
+- Added Charging Power (negative while discharging to the vehicle), Vehicle SOC, Session Charged Energy and SECC Run State sensors to the Cloud API DC Charger device. These come from an endpoint that has not yet been captured during a charging session, so their meanings follow another integration using the same API and may need correcting (#355)
+
+### Fixed
+
+- Fixed credentials containing spaces (Cloud username/password, InfluxDB username/password/token and PVOutput API key) being split into multiple command line parameters
+- Fixed migration of legacy `device_name_prefix`, `discovery_prefix`, `entity_id_prefix` and `unique_id_prefix` options to `advanced.envvars`, which rewrote the array as a whole using properly escaped JSON
+- Legacy options are now only removed from the configuration after their replacement has been written successfully, so a failed migration no longer loses the value
+- Fixed the final service command being started with an unquoted parameter list
+- Secrets are now also redacted from the log when the name contains `secret` or `credential`, and legacy option values are logged correctly when they contain spaces
+- Fixed a sensor being permanently marked as unsupported (and shown as "Unsupported" on the Diagnostics page, with dashboard gauges such as Cell Temperature left empty) after the device returned a transient ILLEGAL DATA ADDRESS response during startup validation. A response is now only believed if it is repeated on up to three reads, and the result is no longer trusted blindly on later startups: sensors cached as unsupported are read again, so a wrong result corrects itself, as are sensors that the cache has not seen before (for example, those added by a software update). The cache is rewritten once on the first startup after upgrading
+- Fixed the dashboard Cell Temperature gauge being empty on systems whose firmware does not support the plant-level Average Cell Temperature register; it now shows the average of the inverters' Average Cell Temperature sensors instead (#363). Each inverter's average cell temperature is also shown in its device details
+- Fixed a stalled Cloud API request blocking cloud sensor updates for up to 5 minutes without any error being reported, while every cloud topic was logged as overdue. Cloud API requests now time out after 30 seconds (10 seconds to connect), so the outage is reported promptly, and its message is no longer empty (`CloudControlUnavailableError('')`)
+- Overdue cloud topics are logged at DEBUG level while a Cloud API outage is being reported
+- Fixed a new Instant Manual Control Mode or Duration value taking about a minute (the `repeated-state-publish-interval`) to appear in Home Assistant, which caused scripts waiting for the value before turning on Instant Manual Control to time out. A value replaced within that minute was never published at all. New values are now published as soon as they are set, without waiting for the Cloud API (#362)
+- Fixed a sensor scan group silently and permanently stopping its updates when a sensor raised an error other than a Modbus exception. The error is now logged and the group retried
+- Fixed PVOutput uploads stopping until the next restart when PVOutput (or a proxy in front of it) returned a response without rate-limit headers or with an unexpected body
+- Fixed the process exiting with a success status when a worker thread crashed or the MQTT broker refused the connection, which stopped service managers using restart-on-failure (such as the supplied systemd unit) from restarting it. It now exits with status 1
+- Fixed a worker thread crashing if the Modbus host became unreachable between device discovery and the thread starting; it now waits for the host
+- Fixed a shutdown signal being ignored when it was received while devices were being created, or during a restart
+- Fixed a refused MQTT connection shutting down sigenergy2mqtt after it had previously connected successfully (for example while the broker is restarting); this is now treated as an outage and retried
+- Fixed errors raised while handling an MQTT command being discarded without being logged
+- Fixed a DC charger that failed to initialise preventing startup, rather than being skipped like other device types
+- Fixed `SIGHUP` reloading the configuration underneath the running threads before they had been stopped
+- Fixed the range of the Active/Reactive Power Fixed Adjustment Target Value controls (plant and per-phase), which was wrong by orders of magnitude. The active power targets are now limited to ± the total rated active power of the plant, and the reactive power targets to ±60% of it
+- Fixed values written to the inverter being truncated instead of rounded (for example, setting 2.01 kW wrote 2.009 kW)
+- Fixed the PVOutput `l/l-avg` voltage option, which reported the line to neutral average. It now reports the true line to line voltage calculated from the three phase voltages (a balanced 230V system reports approximately 398V), and omits the voltage from an upload if a phase voltage is unavailable
+- Fixed daily accumulation sensors (such as Daily Self-Consumed Energy) continuing from the previous day's total when restarted on a later day
+- Fixed persistent state files being left empty if a write was interrupted (for example, by power loss), which reset accumulated totals to zero. State files are now written atomically, and an empty or corrupt state file falls back to the copy stored on the MQTT broker
+- Fixed Home Assistant discovery blocking device event loops while waiting for persistent-state reads, writes, or deletes; runtime discovery now uses the asynchronous state-store API
+- Fixed Inverter Power Factor incorrectly read as an unsigned integer, when Protocol specifies as signed
+
+### Changes
+
+- Removed the obsolete `smartport_*` legacy option migration and translations; the Smart-Port feature no longer exists
+- Each MQTT client now registers a Last Will on the retained topic `sigenergy2mqtt/status/{unique_id_prefix}/{client}` (where `{client}` is the client ID without its prefix, so that the topic is the same on every start) (`offline` if the connection is lost without a clean disconnect, `online` on every connect). Home Assistant discovery includes this topic in the availability of every entity, so that entities become unavailable if sigenergy2mqtt crashes, is killed or loses power, instead of showing stale values indefinitely
+- A second `SIGINT`/`SIGTERM` during shutdown now forces an immediate exit
+- Bumped Docker base python image from 3.14-alpine3.24 to 3.15-alpine3.24
+- Updated pycryptodome from 4.3.0 to 4.5.0
+- Updated pydantic from 2.14.3 to 2.14.4
+
+---
+
 ## [2026.11.11] - 2026-11-11
 
 > [!IMPORTANT]

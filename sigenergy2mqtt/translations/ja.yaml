@@ -131,6 +131,9 @@ configuration:
       clean:
         name: MQTT 保持メッセージをクリア
         description: MQTT 保持メッセージをクリアして、Home Assistant の sigenergy2mqtt MQTT デバイスを更新します。**注意して使用してください！** sigenergy2mqtt センサーを参照している Home Assistant ヘルパーはすべて*削除*されます！
+      clear_validation_cache:
+        name: "センサー検証キャッシュをクリア"
+        description: "デバイスが対応していないセンサーを非表示にする起動時チェックのキャッシュ結果を削除し、次回の起動時にすべてのセンサーを再確認します。センサーが表示されない、または診断ページで「Unsupported」と表示されるものの、デバイスが対応していると思われる場合に使用してください。このオプションは次回の起動後に自動的にオフに戻ります。"
       consumption_method:
         name: 消費量計算方式
         description: "`Plant Consumed Power` センサーの計算方式。Modbus プロトコル V2.8 に対応するより前のファームウェアでは、使用できるオプションは 'Calculated' のみで、他の値はすべて_無視_されます。V2.8 ファームウェアではデフォルトは 'Total Load' です。"

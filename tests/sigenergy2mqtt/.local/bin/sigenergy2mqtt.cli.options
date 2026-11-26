@@ -1,4 +1,5 @@
 clean
+clear-validation-cache
 cloud-accept-unofficial-api-risk
 cloud-discover-inverters
 cloud-log-level
@@ -65,9 +66,7 @@ modbus-inverter-device-id
 modbus-log-level
 modbus-log-skipped
 modbus-no-remote-ems
-modbus-pid-device-id
 modbus-port
-modbus-pss-device-id
 modbus-readonly
 modbus-retries
 modbus-timeout

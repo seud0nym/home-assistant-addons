@@ -131,6 +131,9 @@ configuration:
       clean:
         name: Limpiar mensajes MQTT retenidos
         description: Limpiar los mensajes MQTT retenidos para actualizar los dispositivos MQTT de sigenergy2mqtt en Home Assistant. **¡USAR CON PRECAUCIÓN!** Todos los helpers de Home Assistant definidos que hagan referencia a sensores de sigenergy2mqtt serán *eliminados*.
+      clear_validation_cache:
+        name: "Borrar caché de validación de sensores"
+        description: "Actívelo para borrar los resultados almacenados de la comprobación de inicio que oculta los sensores que su dispositivo no admite, de modo que todos los sensores se comprueben de nuevo en el siguiente inicio. Úselo si falta un sensor o aparece como 'Unsupported' en la página de Diagnóstico pero cree que su dispositivo lo admite. La opción se desactiva de nuevo automáticamente tras el siguiente inicio."
       consumption_method:
         name: Método de consumo
         description: El método de cálculo del sensor `Plant Consumed Power`. En firmware anterior al que admite el protocolo Modbus V2.8, la única opción disponible es 'Calculated', y todos los demás valores se _ignoran_. Para el firmware V2.8, el valor por defecto es 'Total Load'.
