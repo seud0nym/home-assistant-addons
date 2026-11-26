@@ -66,9 +66,7 @@ modbus-inverter-device-id
 modbus-log-level
 modbus-log-skipped
 modbus-no-remote-ems
-modbus-pid-device-id
 modbus-port
-modbus-pss-device-id
 modbus-readonly
 modbus-retries
 modbus-timeout
